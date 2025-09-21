@@ -42,7 +42,7 @@ Para activar la funcionalidad de mapas en el Gestor Inmobiliario, necesitas:
 ```
 3. Reemplaza `YOUR_API_KEY` con tu API Key real:
 ```html
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvOkBwVcHdEfGhIjKlMnOpQrStUvWxYzI&callback=initMap"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY_REAL&callback=initMap"></script>
 ```
 
 ### Opción B: Configuración segura (recomendada para producción)

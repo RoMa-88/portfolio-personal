@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- (Comentaris en català) Meta bàsica del document HTML -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marc Rodríguez - Portfolio Futurista</title>
+
+    <!-- (Comentaris en català) Tailwind via CDN per prototipar ràpid sense build -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // (Comentaris en català)
+        // Config Tailwind a runtime: defineix paleta fosca i accent (turquesa/violeta)
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ink: {
+                            900: '#0b0c10',
+                            800: '#111317',
+                            700: '#161920',
+                            600: '#1a1a2e'
+                        },
+                        accent: {
+                            cyan: '#00d4ff',
+                            violet: '#8a2be2',
+                            purple: '#8b5cf6'
+                        }
+                    },
+                    fontFamily: {
+                        tech: ["Orbitron", "system-ui", "sans-serif"],
+                        sans: ["Inter", "system-ui", "sans-serif"]
+                    },
+                    boxShadow: {
+                        glow: '0 0 30px rgba(0, 212, 255, .16)',
+                        'glow-violet': '0 0 30px rgba(138, 43, 226, .16)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- (Comentaris en català) Fonts tech per l'estètica futurista -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* (Comentaris en català) Petit gradient animat per headings */
+        .gradient-text {
+            background: linear-gradient(90deg, #00d4ff, #8a2be2, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradient-shift 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* (CAT) textura subtil per donar vibe gòtic/metal */
+        .noise {
+            position: fixed; 
+            inset: 0; 
+            pointer-events: none; 
+            opacity: .06; 
+            mix-blend-mode: overlay;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.4"/></svg>');
+        }
+
+        /* (CAT) Botó ciberpunk amb cantonades bisellades via clip-path */
+        .cyber-btn {
+            position: relative;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            transition: all 0.3s ease;
+        }
+        
+        .cyber-btn::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border: 2px solid #00d4ff;
+            border-radius: 10px;
+            opacity: .6;
+            filter: drop-shadow(0 0 12px rgba(0, 212, 255, 0.5));
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        
+        .cyber-btn:hover::after {
+            opacity: 1;
+            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.8));
+        }
+
+        /* (CAT) Marc "neó" tipus targeta amb cantonades retallades */
+        .neon-frame {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .neon-frame::before {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            border: 2px solid transparent;
+            background: linear-gradient(#0b0c10, #0b0c10) padding-box,
+                       conic-gradient(from 45deg, #00d4ff, #8a2be2, #8b5cf6) border-box;
+            border-radius: 18px;
+            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.25));
+            transition: all 0.3s ease;
+        }
+
+        .neon-frame:hover::before {
+            filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.4));
+        }
+
+        /* (CAT) HUD Rings – cercles i arcs amb animació suau */
+        .hud-spin {
+            animation: spin 8s linear infinite;
+        }
+        
+        .hud-spin-slow {
+            animation: spin 16s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* (CAT) Nodos orbitals que reaccionen al cursor */
+        .orbit-node {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #00d4ff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00d4ff;
+            transition: all 0.3s ease;
+        }
+
+        .orbit-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50%;
+            animation: spin 20s linear infinite;
+        }
+
+        /* (CAT) Efecte glassmorphism per navbar */
+        .glass-nav {
+            backdrop-filter: blur(10px);
+            background: rgba(11, 12, 16, 0.8);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        /* (CAT) Scanlines per efecte retro-futurista */
+        .scanlines::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 212, 255, 0.03) 2px,
+                rgba(0, 212, 255, 0.03) 4px
+            );
+            pointer-events: none;
+        }
+
+        /* (CAT) Efecte de glitch per títols */
+        .glitch {
+            position: relative;
+        }
+        
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch::before {
+            animation: glitch-1 0.5s infinite;
+            color: #00d4ff;
+            z-index: -1;
+        }
+        
+        .glitch::after {
+            animation: glitch-2 0.5s infinite;
+            color: #8a2be2;
+            z-index: -2;
+        }
+        
+        @keyframes glitch-1 {
+            0%, 14%, 15%, 49%, 50%, 99%, 100% { transform: translate(0); }
+            15%, 49% { transform: translate(-2px, 2px); }
+        }
+        
+        @keyframes glitch-2 {
+            0%, 20%, 21%, 62%, 63%, 99%, 100% { transform: translate(0); }
+            21%, 62% { transform: translate(2px, -2px); }
+        }
+
+        /* (CAT) Carrusel scroll-snap */
+        .scroll-snap {
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .scroll-snap::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .scroll-snap > * {
+            scroll-snap-align: start;
+        }
+
+        /* (CAT) Responsive adjustments */
+        @media (max-width: 768px) {
+            .orbit-container {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-ink-900 text-white overflow-x-hidden">
+    <!-- (Comentaris en català) Textura de soroll subtil per tot el fons -->
+    <div class="noise"></div>
+
+    <!-- (Comentaris en català) Navbar amb efecte glassmorphism -->
+    <nav class="glass-nav fixed top-0 left-0 right-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="font-tech text-xl font-bold gradient-text">
+                MARC.RODRIGUEZ
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="hover:text-accent-cyan transition-colors">HOME</a>
+                <a href="#about" class="hover:text-accent-cyan transition-colors">ABOUT</a>
+                <a href="#projects" class="hover:text-accent-cyan transition-colors">PROJECTS</a>
+                <a href="#contact" class="hover:text-accent-cyan transition-colors">CONTACT</a>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden cyber-btn px-4 py-2 bg-transparent text-accent-cyan">
+                MENU
+            </button>
+        </div>
+    </nav>
+
+    <!-- (Comentaris en català) Hero section amb efecte futurista -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative px-6">
+        <!-- (CAT) HUD Rings de fons -->
+        <div class="absolute inset-0 flex items-center justify-center opacity-20">
+            <div class="orbit-container">
+                <div class="orbit-node" style="top: -4px; left: 50%; transform: translateX(-50%);"></div>
+                <div class="orbit-node" style="top: 50%; right: -4px; transform: translateY(-50%);"></div>
+                <div class="orbit-node" style="bottom: -4px; left: 50%; transform: translateX(-50%);"></div>
+                <div class="orbit-node" style="top: 50%; left: -4px; transform: translateY(-50%);"></div>
+            </div>
+        </div>
+
+        <div class="text-center max-w-4xl mx-auto relative z-10">
+            <h1 class="font-tech text-6xl md:text-8xl font-black mb-6 glitch" data-text="DEVELOPER">
+                DEVELOPER
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-gray-300 font-light">
+                DAW • Bioinformatics • Full Stack Development
+            </p>
+            <div class="cyber-btn inline-block">
+                <a href="#projects" class="block px-8 py-4 bg-transparent text-accent-cyan font-tech font-semibold">
+                    EXPLORE PROJECTS →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- (Comentaris en català) Secció About amb cards neon -->
+    <section id="about" class="py-20 px-6 relative">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="font-tech text-4xl md:text-6xl font-bold text-center mb-16 gradient-text">
+                ABOUT.ME
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="neon-frame p-8 bg-ink-800/50">
+                    <h3 class="font-tech text-2xl mb-4 text-accent-cyan">EDUCATION</h3>
+                    <p class="text-gray-300 mb-4">
+                        <strong>DAW (Desarrollo de Aplicaciones Web)</strong><br>
+                        Especialización en Bioinformatics
+                    </p>
+                    <p class="text-gray-300">
+                        Certificado Profesional Nivel 3 • 8 años en Control de Calidad
+                    </p>
+                </div>
+                
+                <div class="neon-frame p-8 bg-ink-800/50">
+                    <h3 class="font-tech text-2xl mb-4 text-accent-violet">SKILLS</h3>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div class="text-accent-cyan">Java • Python • R</div>
+                        <div class="text-accent-cyan">SQL • MongoDB</div>
+                        <div class="text-accent-violet">HTML • CSS • JavaScript</div>
+                        <div class="text-accent-violet">PHP • Tailwind • Git</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- (Comentaris en català) Secció Projects amb carrusel futurista -->
+    <section id="projects" class="py-20 px-6 relative">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="font-tech text-4xl md:text-6xl font-bold text-center mb-16 gradient-text">
+                PROJECTS
+            </h2>
+            
+            <div class="relative">
+                <!-- (CAT) Carrusel scroll-snap -->
+                <div id="projects-carousel" class="flex space-x-6 overflow-x-auto scroll-snap pb-6">
+                    <!-- Project 1 -->
+                    <div class="neon-frame min-w-[400px] bg-ink-800/50 p-6">
+                        <div class="h-48 bg-gradient-to-br from-accent-cyan/20 to-accent-violet/20 rounded-lg mb-4 flex items-center justify-center">
+                            <span class="font-tech text-2xl">GESTOR INMOBILIARIO</span>
+                        </div>
+                        <h3 class="font-tech text-xl mb-2 text-accent-cyan">Gestor Inmobiliario</h3>
+                        <p class="text-gray-300 text-sm mb-4">
+                            CRUD completo con Google Maps, gestión de fotos y estados de propiedades.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-accent-cyan/20 text-accent-cyan text-xs">JavaScript</span>
+                            <span class="px-2 py-1 bg-accent-violet/20 text-accent-violet text-xs">Google Maps</span>
+                            <span class="px-2 py-1 bg-accent-cyan/20 text-accent-cyan text-xs">LocalStorage</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Project 2 -->
+                    <div class="neon-frame min-w-[400px] bg-ink-800/50 p-6">
+                        <div class="h-48 bg-gradient-to-br from-accent-violet/20 to-accent-cyan/20 rounded-lg mb-4 flex items-center justify-center">
+                            <span class="font-tech text-2xl">CUBO RUBIK 3D</span>
+                        </div>
+                        <h3 class="font-tech text-xl mb-2 text-accent-violet">Cubo de Rubik 3D</h3>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Simulación interactiva 3D con Three.js, controles de cámara y animaciones.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-accent-violet/20 text-accent-violet text-xs">Three.js</span>
+                            <span class="px-2 py-1 bg-accent-cyan/20 text-accent-cyan text-xs">WebGL</span>
+                            <span class="px-2 py-1 bg-accent-violet/20 text-accent-violet text-xs">3D Graphics</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Project 3 -->
+                    <div class="neon-frame min-w-[400px] bg-ink-800/50 p-6">
+                        <div class="h-48 bg-gradient-to-br from-accent-cyan/20 to-accent-purple/20 rounded-lg mb-4 flex items-center justify-center">
+                            <span class="font-tech text-2xl">ÍNDICE MICOLÓGICO</span>
+                        </div>
+                        <h3 class="font-tech text-xl mb-2 text-accent-purple">Índice Micológico Catalunya</h3>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Análisis de condiciones meteorológicas para recolección de setas con API Meteocat.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2 py-1 bg-accent-purple/20 text-accent-purple text-xs">Python</span>
+                            <span class="px-2 py-1 bg-accent-cyan/20 text-accent-cyan text-xs">API</span>
+                            <span class="px-2 py-1 bg-accent-purple/20 text-accent-purple text-xs">Data Analysis</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- (CAT) Controles del carrusel -->
+                <button id="prev-btn" class="absolute left-4 top-1/2 transform -translate-y-1/2 cyber-btn px-4 py-2 bg-ink-800 text-accent-cyan">
+                    ←
+                </button>
+                <button id="next-btn" class="absolute right-4 top-1/2 transform -translate-y-1/2 cyber-btn px-4 py-2 bg-ink-800 text-accent-cyan">
+                    →
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- (Comentaris en català) Secció Contact amb efecte futurista -->
+    <section id="contact" class="py-20 px-6 relative">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="font-tech text-4xl md:text-6xl font-bold mb-16 gradient-text">
+                CONTACT
+            </h2>
+            
+            <div class="neon-frame p-8 bg-ink-800/50 mb-8">
+                <p class="text-xl mb-6 text-gray-300">
+                    ¿Tienes un proyecto en mente? Vamos a crear algo increíble juntos.
+                </p>
+                <div class="flex justify-center space-x-6">
+                    <a href="mailto:m4rc.roma7@gmail.com" class="cyber-btn px-6 py-3 bg-transparent text-accent-cyan">
+                        EMAIL
+                    </a>
+                    <a href="https://github.com/RoMa-88" target="_blank" class="cyber-btn px-6 py-3 bg-transparent text-accent-violet">
+                        GITHUB
+                    </a>
+                </div>
+            </div>
+            
+            <div class="text-sm text-gray-400">
+                <p>© 2025 Marc Rodríguez • Desarrollado con pasión y mucho café ☕</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // (Comentaris en català) JavaScript per interactivitat futurista
+        
+        // (CAT) Menú mòbil
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            console.log('Menú mòbil activat');
+            // Aquí pots afegir lògica per mostrar/amagar el menú mòbil
+        });
+        
+        // (CAT) Controles del carrusel
+        const carousel = document.getElementById('projects-carousel');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        prevBtn.addEventListener('click', function() {
+            console.log('Carrusel: anterior');
+            carousel.scrollBy({ left: -420, behavior: 'smooth' });
+        });
+        
+        nextBtn.addEventListener('click', function() {
+            console.log('Carrusel: següent');
+            carousel.scrollBy({ left: 420, behavior: 'smooth' });
+        });
+        
+        // (CAT) Efecte parallax suau per els nodes orbitals
+        document.addEventListener('mousemove', function(e) {
+            const orbitNodes = document.querySelectorAll('.orbit-node');
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            orbitNodes.forEach((node, index) => {
+                const speed = (index + 1) * 0.02;
+                const x = (mouseX - 0.5) * speed * 20;
+                const y = (mouseY - 0.5) * speed * 20;
+                node.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        });
+        
+        // (CAT) Smooth scroll per navegació
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // (CAT) Efecte de typing per títols
+        function typeWriter(element, text, speed = 100) {
+            let i = 0;
+            element.innerHTML = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            
+            type();
+        }
+        
+        // (CAT) Inicialitzar efectes quan la pàgina carregui
+        window.addEventListener('load', function() {
+            console.log('Portfolio futurista carregat');
+            
+            // Efecte de typing opcional per títols
+            const titleElements = document.querySelectorAll('.glitch');
+            titleElements.forEach(element => {
+                const originalText = element.textContent;
+                element.style.opacity = '0';
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    typeWriter(element, originalText, 150);
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>
