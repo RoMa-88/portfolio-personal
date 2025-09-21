@@ -1119,7 +1119,27 @@ body {
     color: #b8b8b8;
     font-size: 0.9rem;
     font-style: italic;
+    margin: 0 0 0.5rem 0;
+}
+
+.music-description {
+    color: #d1d5db;
+    font-size: 0.85rem;
+    line-height: 1.4;
     margin: 0;
+    text-align: left;
+}
+
+.suno-link {
+    color: #1db954;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.suno-link:hover {
+    color: #1ed760;
+    text-decoration: underline;
 }
 
 .footer-content {
