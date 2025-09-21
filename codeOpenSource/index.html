@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -194,12 +195,15 @@
                 transform: translateY(100vh) translateX(0);
                 opacity: 0;
             }
+
             10% {
                 opacity: 0.5;
             }
+
             90% {
                 opacity: 0.5;
             }
+
             100% {
                 transform: translateY(-100px) translateX(50px);
                 opacity: 0;
@@ -216,9 +220,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <div class="particles" id="particles"></div>
-    
+
     <div class="container">
         <a href="../" class="back-btn">
             <i class="fas fa-arrow-left"></i> Volver al Portfolio
@@ -241,7 +246,7 @@
                 </p>
                 <ul class="projects-list">
                     <li class="project-item">
-                        <a href="python/optimizador-3d.py" class="project-link" target="_blank">
+                        <a href="python/optimizador-3d-demo.html" class="project-link" target="_blank">
                             <div class="project-name">🧱 Optimizador de Corte 3D</div>
                             <div class="project-description">
                                 Algoritmo para optimizar colocación de piezas en bloques de espuma con visualización 3D
@@ -266,6 +271,15 @@
                             <div class="project-name">🌐 MarketingDigital360</div>
                             <div class="project-description">
                                 Diseño completo de web corporativa con WordPress, responsive y optimizada SEO
+                            </div>
+                        </a>
+                    </li>
+                    <li class="project-item">
+                        <a href="html-css/crows-valky/" class="project-link" target="_blank">
+                            <div class="project-name">🐦‍⬛ Crow's Valky - Templates</div>
+                            <div class="project-description">
+                                Sistema modular de plantillas HTML para merchandising gaming con generación automática
+                                de contenido
                             </div>
                         </a>
                     </li>
@@ -370,16 +384,16 @@
         // Crear partículas de fondo
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
-            
+
             for (let i = 0; i < 20; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 particle.style.left = Math.random() * window.innerWidth + 'px';
                 particle.style.animationDelay = Math.random() * 10 + 's';
                 particle.style.animationDuration = (5 + Math.random() * 10) + 's';
-                
+
                 particlesContainer.appendChild(particle);
-                
+
                 // Remover partícula después de la animación
                 setTimeout(() => {
                     particle.remove();
@@ -393,14 +407,15 @@
 
         // Efecto de hover en las categorías
         document.querySelectorAll('.tech-category').forEach(category => {
-            category.addEventListener('mouseenter', function() {
+            category.addEventListener('mouseenter', function () {
                 this.style.transform = 'translateY(-10px) scale(1.02)';
             });
-            
-            category.addEventListener('mouseleave', function() {
+
+            category.addEventListener('mouseleave', function () {
                 this.style.transform = 'translateY(0) scale(1)';
             });
         });
     </script>
 </body>
+
 </html>
