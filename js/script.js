@@ -35,17 +35,30 @@ function updateLanguage(lang) {
 }
 
 function updateFormPlaceholders() {
-    const nameInput = document.querySelector('input[name="name"]');
-    const emailInput = document.querySelector('input[name="email"]');
-    const subjectInput = document.querySelector('input[name="subject"]');
-    const messageInput = document.querySelector('textarea[name="message"]');
-    const sendBtn = document.querySelector('button[type="submit"]');
+    // Update regular translatable elements
+    const elements = document.querySelectorAll('[data-translate-placeholder]');
+    elements.forEach(element => {
+        const key = element.getAttribute('data-translate-placeholder');
+        const keys = key.split('.');
+        let translation = translations[currentLanguage];
+        
+        for (let k of keys) {
+            translation = translation[k];
+        }
+        
+        if (translation) {
+            element.placeholder = translation;
+        }
+    });
     
-    if (nameInput) nameInput.placeholder = translations[currentLanguage].contact.name;
-    if (emailInput) emailInput.placeholder = translations[currentLanguage].contact.email;
-    if (subjectInput) subjectInput.placeholder = translations[currentLanguage].contact.subject;
-    if (messageInput) messageInput.placeholder = translations[currentLanguage].contact.message;
-    if (sendBtn) sendBtn.innerHTML = `<i class="fas fa-paper-plane"></i> ${translations[currentLanguage].contact.send}`;
+    // Update button text
+    const sendBtn = document.querySelector('button[type="submit"]');
+    if (sendBtn) {
+        const btnSpan = sendBtn.querySelector('span[data-translate]');
+        if (btnSpan) {
+            btnSpan.textContent = translations[currentLanguage].contact.send;
+        }
+    }
 }
 
 // ===== THEME TOGGLE FUNCTIONALITY =====
