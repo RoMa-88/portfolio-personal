@@ -284,6 +284,114 @@
             margin-bottom: 1rem;
         }
 
+        .map-container {
+            height: 300px;
+            width: 100%;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            margin: 1rem 0;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .photos-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .photo-item {
+            position: relative;
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .photo-preview {
+            width: 100%;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-preview .placeholder {
+            color: #f59e0b;
+            font-size: 2rem;
+        }
+
+        .photo-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .btn-photo {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .map-search {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .map-search input {
+            flex: 1;
+        }
+
+        .coordinates {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .coordinates input {
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .property-card .map-mini {
+            height: 150px;
+            width: 100%;
+            border: 1px solid #f59e0b;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .photo-gallery img {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #f59e0b;
+        }
+
         @media (max-width: 768px) {
             .nav-tabs {
                 flex-direction: column;
@@ -296,6 +404,14 @@
 
             .properties-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .coordinates {
+                grid-template-columns: 1fr;
+            }
+
+            .map-search {
+                flex-direction: column;
             }
         }
     </style>
@@ -393,6 +509,36 @@
                     <div class="form-group">
                         <label for="transp_publico">🚌 Transporte Público:</label>
                         <textarea id="transp_publico" name="transp_publico" rows="3" placeholder="Autobús línea 1, 2 y 5. Metro L1 a 10 min"></textarea>
+                    </div>
+
+                    <!-- Google Maps Integration -->
+                    <div class="form-group">
+                        <label for="map-search">🗺️ Buscar Ubicación en Google Maps:</label>
+                        <div class="map-search">
+                            <input type="text" id="map-search" placeholder="Buscar dirección en Google Maps...">
+                            <button type="button" class="btn btn-small" onclick="searchOnMap()">🔍 Buscar</button>
+                        </div>
+                        <div class="coordinates">
+                            <input type="text" id="latitude" name="latitude" placeholder="Latitud" readonly>
+                            <input type="text" id="longitude" name="longitude" placeholder="Longitud" readonly>
+                        </div>
+                        <div id="map" class="map-container"></div>
+                    </div>
+
+                    <!-- Photo Management -->
+                    <div class="form-group">
+                        <label>📸 Fotos de la Propiedad:</label>
+                        <div class="photos-container" id="photos-container">
+                            <div class="photo-item">
+                                <div class="photo-preview">
+                                    <div class="placeholder">📷</div>
+                                </div>
+                                <input type="file" class="file-input" accept="image/*" onchange="handlePhotoUpload(this, 0)">
+                                <button type="button" class="btn btn-photo" onclick="document.querySelector('input[type=file]').click()">📁 Subir Foto</button>
+                                <button type="button" class="btn btn-photo btn-secondary" onclick="removePhoto(0)">🗑️ Eliminar</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-small" onclick="addPhotoSlot()">➕ Añadir Más Fotos</button>
                     </div>
 
                     <button type="button" class="btn" onclick="previewProperty()">👁️ Previsualizar</button>
@@ -498,7 +644,17 @@
         </div>
     </div>
 
+    <!-- Google Maps API -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
+    
     <script>
+        // Variables globales
+        let map;
+        let marker;
+        let geocoder;
+        let photos = [];
+        let photoIndex = 0;
+
         // Base de datos local (LocalStorage)
         let properties = JSON.parse(localStorage.getItem('gestor_inmobiliario')) || [];
 
@@ -574,16 +730,18 @@
             // Generar preview
             const preview = `
                 <h3>🏠 ${data.direccion}</h3>
-                <div class="property-info">
-                    <p><strong>📍 Dirección:</strong> ${data.direccion}</p>
-                    <p><strong>📮 Código Postal:</strong> ${data.cp}</p>
-                    <p><strong>💰 Valor de Mercado:</strong> ${parseFloat(data.valor_mercado).toLocaleString()}€</p>
-                    <p><strong>🛏️ Dormitorios:</strong> ${data.dormitorios}</p>
-                    <p><strong>🚿 Baños:</strong> ${data.banos}</p>
-                    <p><strong>🏞️ Terraza:</strong> ${data.terraza}</p>
-                    <p><strong>⚡ Eficiencia:</strong> ${data.eficiencia || 'No especificada'}</p>
-                    <p><strong>🚌 Transporte:</strong> ${data.transp_publico || 'No especificado'}</p>
-                </div>
+                    <div class="property-info">
+                        <p><strong>📍 Dirección:</strong> ${data.direccion}</p>
+                        <p><strong>📮 Código Postal:</strong> ${data.cp}</p>
+                        <p><strong>💰 Valor de Mercado:</strong> ${parseFloat(data.valor_mercado).toLocaleString()}€</p>
+                        <p><strong>🛏️ Dormitorios:</strong> ${data.dormitorios}</p>
+                        <p><strong>🚿 Baños:</strong> ${data.banos}</p>
+                        <p><strong>🏞️ Terraza:</strong> ${data.terraza}</p>
+                        <p><strong>⚡ Eficiencia:</strong> ${data.eficiencia || 'No especificada'}</p>
+                        <p><strong>🚌 Transporte:</strong> ${data.transp_publico || 'No especificado'}</p>
+                        ${data.latitude && data.longitude ? `<p><strong>🗺️ Coordenadas:</strong> ${data.latitude}, ${data.longitude}</p>` : ''}
+                    </div>
+                    ${getPhotosPreview()}
             `;
 
             document.getElementById('preview-content').innerHTML = preview;
@@ -619,6 +777,9 @@
                 id: Date.now(), // ID único basado en timestamp
                 ...data,
                 valor_mercado: parseFloat(data.valor_mercado),
+                latitude: data.latitude || null,
+                longitude: data.longitude || null,
+                photos: photos.filter(photo => photo), // Filtrar fotos vacías
                 fecha_creacion: new Date().toISOString()
             };
 
@@ -677,6 +838,8 @@
                         <p><strong>Terraza:</strong> ${prop.terraza} | <strong>Eficiencia:</strong> ${prop.eficiencia || 'No especificada'}</p>
                         <p><strong>Transporte:</strong> ${prop.transp_publico || 'No especificado'}</p>
                         <p><strong>Fecha:</strong> ${new Date(prop.fecha_creacion).toLocaleDateString()}</p>
+                        ${prop.latitude && prop.longitude ? `<div class="map-mini" id="map-${prop.id}"></div>` : ''}
+                        ${prop.photos && prop.photos.length > 0 ? `<div class="photo-gallery">${prop.photos.map(photo => `<img src="${photo}" alt="Foto de la propiedad">`).join('')}</div>` : ''}
                     </div>
                     <div class="property-actions">
                         <button class="btn btn-small btn-secondary" onclick="editPropertyById(${prop.id})">✏️ Editar</button>
@@ -722,11 +885,68 @@
                 document.getElementById('eficiencia').value = property.eficiencia;
                 document.getElementById('transp_publico').value = property.transp_publico;
                 
+                // Coordenadas
+                if (property.latitude && property.longitude) {
+                    document.getElementById('latitude').value = property.latitude;
+                    document.getElementById('longitude').value = property.longitude;
+                    
+                    // Centrar mapa si está disponible
+                    if (map && geocoder) {
+                        const location = new google.maps.LatLng(property.latitude, property.longitude);
+                        map.setCenter(location);
+                        map.setZoom(15);
+                        
+                        if (marker) {
+                            marker.setPosition(location);
+                        } else {
+                            marker = new google.maps.Marker({
+                                position: location,
+                                map: map,
+                                title: 'Ubicación de la propiedad'
+                            });
+                        }
+                    }
+                }
+                
+                // Cargar fotos
+                if (property.photos && property.photos.length > 0) {
+                    photos = [...property.photos];
+                    loadPhotosInForm();
+                } else {
+                    photos = [];
+                }
+                
                 // Cambiar a pestaña de nueva propiedad
                 showTab('nueva-propiedad');
                 
                 // Marcar como edición
                 window.editingId = id;
+            }
+        }
+
+        function loadPhotosInForm() {
+            const container = document.getElementById('photos-container');
+            container.innerHTML = '';
+            
+            photos.forEach((photo, index) => {
+                const photoItem = document.createElement('div');
+                photoItem.className = 'photo-item';
+                photoItem.innerHTML = `
+                    <div class="photo-preview">
+                        <img src="${photo}" alt="Foto de la propiedad">
+                    </div>
+                    <input type="file" class="file-input" accept="image/*" onchange="handlePhotoUpload(this, ${index})">
+                    <div class="photo-actions">
+                        <button type="button" class="btn btn-photo" onclick="this.previousElementSibling.click()">📁 Cambiar Foto</button>
+                        <button type="button" class="btn btn-photo btn-secondary" onclick="removePhoto(${index})">🗑️ Eliminar</button>
+                    </div>
+                `;
+                container.appendChild(photoItem);
+            });
+            
+            // Añadir slot vacío si no hay fotos
+            if (photos.length === 0) {
+                addPhotoSlot();
             }
         }
 
@@ -806,10 +1026,161 @@
                 .join('');
         }
 
+        // Google Maps Functions
+        function initMap() {
+            // Inicializar mapa centrado en Barcelona
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 13,
+                center: { lat: 41.3851, lng: 2.1734 }, // Barcelona
+                mapTypeId: 'roadmap'
+            });
+
+            geocoder = new google.maps.Geocoder();
+
+            // Agregar listener para clicks en el mapa
+            map.addListener('click', function(event) {
+                const lat = event.latLng.lat();
+                const lng = event.latLng.lng();
+                
+                document.getElementById('latitude').value = lat.toFixed(6);
+                document.getElementById('longitude').value = lng.toFixed(6);
+                
+                // Actualizar marcador
+                if (marker) {
+                    marker.setPosition(event.latLng);
+                } else {
+                    marker = new google.maps.Marker({
+                        position: event.latLng,
+                        map: map,
+                        title: 'Ubicación de la propiedad'
+                    });
+                }
+
+                // Geocodificación inversa para obtener dirección
+                geocoder.geocode({ location: event.latLng }, function(results, status) {
+                    if (status === 'OK' && results[0]) {
+                        document.getElementById('direccion').value = results[0].formatted_address;
+                    }
+                });
+            });
+        }
+
+        function searchOnMap() {
+            const address = document.getElementById('map-search').value;
+            
+            if (address) {
+                geocoder.geocode({ address: address }, function(results, status) {
+                    if (status === 'OK') {
+                        const location = results[0].geometry.location;
+                        
+                        map.setCenter(location);
+                        map.setZoom(15);
+                        
+                        // Actualizar coordenadas
+                        document.getElementById('latitude').value = location.lat().toFixed(6);
+                        document.getElementById('longitude').value = location.lng().toFixed(6);
+                        
+                        // Actualizar dirección
+                        document.getElementById('direccion').value = results[0].formatted_address;
+                        
+                        // Actualizar marcador
+                        if (marker) {
+                            marker.setPosition(location);
+                        } else {
+                            marker = new google.maps.Marker({
+                                position: location,
+                                map: map,
+                                title: 'Ubicación de la propiedad'
+                            });
+                        }
+                    } else {
+                        alert('No se encontró la dirección: ' + status);
+                    }
+                });
+            }
+        }
+
+        // Photo Management Functions
+        function handlePhotoUpload(input, index) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const photoItem = input.closest('.photo-item');
+                    const preview = photoItem.querySelector('.photo-preview');
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Foto de la propiedad">`;
+                    
+                    // Guardar foto en array
+                    photos[index] = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function addPhotoSlot() {
+            const container = document.getElementById('photos-container');
+            const newIndex = container.children.length;
+            
+            const photoItem = document.createElement('div');
+            photoItem.className = 'photo-item';
+            photoItem.innerHTML = `
+                <div class="photo-preview">
+                    <div class="placeholder">📷</div>
+                </div>
+                <input type="file" class="file-input" accept="image/*" onchange="handlePhotoUpload(this, ${newIndex})">
+                <div class="photo-actions">
+                    <button type="button" class="btn btn-photo" onclick="this.previousElementSibling.click()">📁 Subir Foto</button>
+                    <button type="button" class="btn btn-photo btn-secondary" onclick="removePhoto(${newIndex})">🗑️ Eliminar</button>
+                </div>
+            `;
+            
+            container.appendChild(photoItem);
+        }
+
+        function removePhoto(index) {
+            const container = document.getElementById('photos-container');
+            if (container.children.length > 1) {
+                container.children[index].remove();
+                photos.splice(index, 1);
+            } else {
+                // Si es la última foto, solo limpiar
+                const photoItem = container.children[0];
+                const preview = photoItem.querySelector('.photo-preview');
+                preview.innerHTML = '<div class="placeholder">📷</div>';
+                const input = photoItem.querySelector('input[type="file"]');
+                input.value = '';
+                photos = [];
+            }
+        }
+
+        function getPhotosPreview() {
+            if (photos.length > 0) {
+                return `
+                    <div class="photo-gallery">
+                        ${photos.map(photo => `<img src="${photo}" alt="Foto de la propiedad">`).join('')}
+                    </div>
+                `;
+            }
+            return '<p style="color: #d1d5db; font-style: italic;">No hay fotos subidas</p>';
+        }
+
         // Inicializar al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
             loadProperties();
             loadStatistics();
+            
+            // Si no hay API key de Google Maps, mostrar mensaje
+            if (typeof google === 'undefined') {
+                document.getElementById('map').innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #f59e0b; text-align: center;">
+                        <div>
+                            <p><strong>🗺️ Google Maps</strong></p>
+                            <p>Para activar los mapas, configura tu API key de Google Maps</p>
+                            <p style="font-size: 0.9rem; color: #d1d5db;">Reemplaza "YOUR_API_KEY" en el código</p>
+                        </div>
+                    </div>
+                `;
+            }
         });
     </script>
 </body>
