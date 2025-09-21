@@ -1,3 +1,53 @@
+// ===== LANGUAGE SYSTEM =====
+let currentLanguage = localStorage.getItem('language') || 'es';
+
+function updateLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem('language', lang);
+    
+    // Update current language indicator
+    const currentLangSpan = document.getElementById('currentLang');
+    if (currentLangSpan) {
+        currentLangSpan.textContent = lang.toUpperCase();
+    }
+    
+    // Update all translatable elements
+    const elements = document.querySelectorAll('[data-translate]');
+    elements.forEach(element => {
+        const key = element.getAttribute('data-translate');
+        const keys = key.split('.');
+        let translation = translations[currentLanguage];
+        
+        for (let k of keys) {
+            translation = translation[k];
+        }
+        
+        if (translation) {
+            element.textContent = translation;
+        }
+    });
+    
+    // Update page title
+    document.title = translations[currentLanguage].hero.title + ' - Marc Rodríguez';
+    
+    // Update form placeholders
+    updateFormPlaceholders();
+}
+
+function updateFormPlaceholders() {
+    const nameInput = document.querySelector('input[name="name"]');
+    const emailInput = document.querySelector('input[name="email"]');
+    const subjectInput = document.querySelector('input[name="subject"]');
+    const messageInput = document.querySelector('textarea[name="message"]');
+    const sendBtn = document.querySelector('button[type="submit"]');
+    
+    if (nameInput) nameInput.placeholder = translations[currentLanguage].contact.name;
+    if (emailInput) emailInput.placeholder = translations[currentLanguage].contact.email;
+    if (subjectInput) subjectInput.placeholder = translations[currentLanguage].contact.subject;
+    if (messageInput) messageInput.placeholder = translations[currentLanguage].contact.message;
+    if (sendBtn) sendBtn.innerHTML = `<i class="fas fa-paper-plane"></i> ${translations[currentLanguage].contact.send}`;
+}
+
 // ===== THEME TOGGLE FUNCTIONALITY =====
 document.addEventListener('DOMContentLoaded', function () {
     const themeBtn = document.getElementById('themeBtn');
@@ -34,6 +84,25 @@ document.addEventListener('DOMContentLoaded', function () {
             themeIcon.className = 'fas fa-sun';
         }
     }
+    
+    // Initialize language system
+    updateLanguage(currentLanguage);
+    
+    // Language toggle functionality
+    const langOptions = document.querySelectorAll('.lang-option');
+    langOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            const selectedLang = this.getAttribute('data-lang');
+            updateLanguage(selectedLang);
+            
+            // Add animation effect
+            const langBtn = document.getElementById('langBtn');
+            langBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                langBtn.style.transform = 'scale(1)';
+            }, 150);
+        });
+    });
 });
 
 // ===== NAVIGATION FUNCTIONALITY =====

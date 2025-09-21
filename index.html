@@ -13,11 +13,25 @@
 </head>
 
 <body>
-    <!-- Toggle Theme -->
-    <div class="theme-toggle">
-        <button id="themeBtn" class="theme-btn">
-            <i class="fas fa-moon" id="themeIcon"></i>
-        </button>
+    <!-- Toggle Theme & Language -->
+    <div class="controls">
+        <div class="language-toggle">
+            <button id="langBtn" class="lang-btn">
+                <i class="fas fa-globe"></i>
+                <span id="currentLang">ES</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="lang-dropdown">
+                <button class="lang-option" data-lang="es">🇪🇸 Español</button>
+                <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                <button class="lang-option" data-lang="ca">🇪🇸 Català</button>
+            </div>
+        </div>
+        <div class="theme-toggle">
+            <button id="themeBtn" class="theme-btn">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+        </div>
     </div>
 
     <!-- Navigation -->
@@ -28,19 +42,19 @@
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="#home" class="nav-link">Inicio</a>
+                    <a href="#home" class="nav-link" data-translate="nav.home">Inicio</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#about" class="nav-link">Sobre Mí</a>
+                    <a href="#about" class="nav-link" data-translate="nav.about">Sobre Mí</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#projects" class="nav-link">Proyectos</a>
+                    <a href="#projects" class="nav-link" data-translate="nav.projects">Proyectos</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#skills" class="nav-link">Habilidades</a>
+                    <a href="#skills" class="nav-link" data-translate="nav.skills">Habilidades</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#contact" class="nav-link">Contacto</a>
+                    <a href="#contact" class="nav-link" data-translate="nav.contact">Contacto</a>
                 </li>
             </ul>
             <div class="hamburger">
@@ -57,23 +71,23 @@
             <div class="hero-content">
                 <div class="hero-text">
                     <h1 class="hero-title">
-                        <span class="gradient-text">Desarrollador Web</span>
+                        <span class="gradient-text" data-translate="hero.title">Desarrollador Web</span>
                         <br>
-                        <span class="subtitle">Bioinformático & Tech Enthusiast</span>
+                        <span class="subtitle" data-translate="hero.subtitle">Bioinformático & Tech Enthusiast</span>
                     </h1>
-                    <p class="hero-description">
-                        Especializado en desarrollo web con enfoque en bioinformática.
-                        Combinando mi experiencia en control de calidad con la programación
+                    <p class="hero-description" data-translate="hero.description">
+                        Especializado en desarrollo web con enfoque en bioinformática. 
+                        Combinando mi experiencia en control de calidad con la programación 
                         para crear soluciones innovadoras.
                     </p>
                     <div class="hero-buttons">
                         <a href="#projects" class="btn btn-primary">
                             <i class="fas fa-code"></i>
-                            Ver Proyectos
+                            <span data-translate="hero.btnProjects">Ver Proyectos</span>
                         </a>
                         <a href="#contact" class="btn btn-secondary">
                             <i class="fas fa-envelope"></i>
-                            Contactar
+                            <span data-translate="hero.btnContact">Contactar</span>
                         </a>
                     </div>
                 </div>
@@ -114,7 +128,7 @@
         <div class="container">
             <h2 class="section-title">
                 <span class="title-number">01</span>
-                Sobre Mí
+                <span data-translate="about.title">Sobre Mí</span>
             </h2>
             <div class="about-content">
                 <div class="about-image">
@@ -184,7 +198,7 @@
                     <div class="project-image">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="#" class="project-link">
+                                <a href="https://marketingdigital360.es" target="_blank" class="project-link">
                                     <i class="fas fa-external-link-alt"></i>
                                 </a>
                                 <a href="#" class="project-link">
@@ -197,9 +211,9 @@
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3>MarketingDigital360.es</h3>
-                        <p>
-                            Diseño completo de la web corporativa usando WordPress con tema de bloques.
+                        <h3 data-translate="projects.marketing360.title">MarketingDigital360.es</h3>
+                        <p data-translate="projects.marketing360.description">
+                            Diseño completo de la web corporativa usando WordPress con tema de bloques. 
                             Mantuve la coherencia visual del logotipo con animaciones fluidas y transiciones elegantes.
                         </p>
                         <div class="project-tech">
@@ -214,40 +228,10 @@
                     <div class="project-image">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="#" class="project-link">
+                                <a href="https://github.com/RoMa-88/day1NocthollowTheGame" target="_blank" class="project-link">
                                     <i class="fas fa-external-link-alt"></i>
                                 </a>
-                                <a href="#" class="project-link">
-                                    <i class="fab fa-github"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="project-placeholder">
-                            <i class="fas fa-dna"></i>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <h3>Análisis Bioinformático</h3>
-                        <p>
-                            Proyectos de análisis de datos biológicos usando Python y R,
-                            aplicando algoritmos de machine learning para estudios genómicos.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag">Python</span>
-                            <span class="tech-tag">R</span>
-                            <span class="tech-tag">SQL</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-image">
-                        <div class="project-overlay">
-                            <div class="project-links">
-                                <a href="#" class="project-link">
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                <a href="#" class="project-link">
+                                <a href="https://github.com/RoMa-88/day1NocthollowTheGame" target="_blank" class="project-link">
                                     <i class="fab fa-github"></i>
                                 </a>
                             </div>
@@ -257,15 +241,135 @@
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3>Gaming Portfolio</h3>
-                        <p>
-                            Colección de mini-juegos desarrollados en JavaScript,
-                            incluyendo clones de juegos clásicos y experiencias interactivas.
+                        <h3 data-translate="projects.nocthollow.title">Nocthollow - Videojuego 2D</h3>
+                        <p data-translate="projects.nocthollow.description">
+                            Videojuego 2D en desarrollo, explorando mecánicas de juego y diseño de niveles. 
+                            Un proyecto que combina mi pasión por el gaming con la programación.
                         </p>
                         <div class="project-tech">
                             <span class="tech-tag">JavaScript</span>
                             <span class="tech-tag">HTML5</span>
                             <span class="tech-tag">CSS3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="https://github.com/RoMa-88/M07-php" target="_blank" class="project-link">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                <a href="https://github.com/RoMa-88/M07-php" target="_blank" class="project-link">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-placeholder">
+                            <i class="fab fa-php"></i>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 data-translate="projects.php.title">Proyectos PHP</h3>
+                        <p data-translate="projects.php.description">
+                            Desarrollo de aplicaciones web dinámicas usando PHP, 
+                            incluyendo sistemas de gestión y APIs REST.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">PHP</span>
+                            <span class="tech-tag">MySQL</span>
+                            <span class="tech-tag">HTML</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="https://github.com/RoMa-88/M06-js" target="_blank" class="project-link">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                <a href="https://github.com/RoMa-88/M06-js" target="_blank" class="project-link">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-placeholder">
+                            <i class="fab fa-js-square"></i>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 data-translate="projects.js.title">Proyectos JavaScript</h3>
+                        <p data-translate="projects.js.description">
+                            Aplicaciones interactivas y dinámicas desarrolladas con JavaScript vanilla 
+                            y frameworks modernos.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">ES6+</span>
+                            <span class="tech-tag">DOM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="https://github.com/RoMa-88/m08merging" target="_blank" class="project-link">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                <a href="https://github.com/RoMa-88/m08merging" target="_blank" class="project-link">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-placeholder">
+                            <i class="fab fa-java"></i>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 data-translate="projects.java.title">Aplicaciones Java</h3>
+                        <p data-translate="projects.java.description">
+                            Desarrollo de aplicaciones robustas en Java, 
+                            incluyendo ejercicios prácticos y proyectos de integración.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Java</span>
+                            <span class="tech-tag">OOP</span>
+                            <span class="tech-tag">Algorithms</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <div class="project-links">
+                                <a href="https://github.com/RoMa-88/curso-tecnologias-web" target="_blank" class="project-link">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                <a href="https://github.com/RoMa-88/curso-tecnologias-web" target="_blank" class="project-link">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-placeholder">
+                            <i class="fas fa-dna"></i>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 data-translate="projects.bioinformatics.title">Análisis Bioinformático</h3>
+                        <p data-translate="projects.bioinformatics.description">
+                            Proyectos de análisis de datos biológicos usando Python y R, 
+                            aplicando algoritmos de machine learning para estudios genómicos.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">R</span>
+                            <span class="tech-tag">SQL</span>
                         </div>
                     </div>
                 </div>
@@ -448,7 +552,7 @@
             <div class="footer-content">
                 <div class="footer-text">
                     <p>&copy; 2024 Mi Portafolio. Todos los derechos reservados.</p>
-                    <p>Desarrollado con <i class="fas fa-heart"></i> y mucho café</p>
+                    <p>Desarrollado con <i class="fas fa-heart"></i> y muchos Monsters</p>
                 </div>
                 <div class="footer-links">
                     <a href="#">Términos y Condiciones</a>
@@ -458,6 +562,7 @@
         </div>
     </footer>
 
+    <script src="js/translations.js"></script>
     <script src="js/script.js"></script>
 </body>
 
