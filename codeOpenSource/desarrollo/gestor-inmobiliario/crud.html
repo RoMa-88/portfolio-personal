@@ -507,8 +507,15 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="transp_publico">🚌 Transporte Público:</label>
-                        <textarea id="transp_publico" name="transp_publico" rows="3" placeholder="Autobús línea 1, 2 y 5. Metro L1 a 10 min"></textarea>
+                        <label for="estado">🏠 Estado de la Propiedad:</label>
+                        <select id="estado" name="estado" required>
+                            <option value="">Seleccionar estado...</option>
+                            <option value="Vacio">🏠 Vacío</option>
+                            <option value="Okupado">⚠️ Okupado</option>
+                            <option value="Alquilado">🔑 Alquilado</option>
+                            <option value="Propietario">👤 Propietario</option>
+                            <option value="En Propiedad">🏡 En Propiedad</option>
+                        </select>
                     </div>
 
                     <!-- Google Maps Integration -->
@@ -670,7 +677,7 @@
                     banos: "2",
                     terraza: "Sí",
                     eficiencia: "C",
-                    transp_publico: "Autobús línea 1, 2 y 5. Metro L1 a 10 min",
+                    estado: "Alquilado",
                     fecha_creacion: new Date().toISOString()
                 },
                 {
@@ -682,7 +689,7 @@
                     banos: "1",
                     terraza: "No",
                     eficiencia: "D",
-                    transp_publico: "Metro L3 directo al centro",
+                    estado: "Vacio",
                     fecha_creacion: new Date().toISOString()
                 }
             ];
@@ -738,7 +745,7 @@
                         <p><strong>🚿 Baños:</strong> ${data.banos}</p>
                         <p><strong>🏞️ Terraza:</strong> ${data.terraza}</p>
                         <p><strong>⚡ Eficiencia:</strong> ${data.eficiencia || 'No especificada'}</p>
-                        <p><strong>🚌 Transporte:</strong> ${data.transp_publico || 'No especificado'}</p>
+                        <p><strong>🏠 Estado:</strong> ${data.estado || 'No especificado'}</p>
                         ${data.latitude && data.longitude ? `<p><strong>🗺️ Coordenadas:</strong> ${data.latitude}, ${data.longitude}</p>` : ''}
                     </div>
                     ${getPhotosPreview()}
@@ -836,7 +843,7 @@
                         <p><strong>Valor de Mercado:</strong> ${prop.valor_mercado.toLocaleString()}€</p>
                         <p><strong>Dormitorios:</strong> ${prop.dormitorios} | <strong>Baños:</strong> ${prop.banos}</p>
                         <p><strong>Terraza:</strong> ${prop.terraza} | <strong>Eficiencia:</strong> ${prop.eficiencia || 'No especificada'}</p>
-                        <p><strong>Transporte:</strong> ${prop.transp_publico || 'No especificado'}</p>
+                        <p><strong>Estado:</strong> ${prop.estado || 'No especificado'}</p>
                         <p><strong>Fecha:</strong> ${new Date(prop.fecha_creacion).toLocaleDateString()}</p>
                         ${prop.latitude && prop.longitude ? `<div class="map-mini" id="map-${prop.id}"></div>` : ''}
                         ${prop.photos && prop.photos.length > 0 ? `<div class="photo-gallery">${prop.photos.map(photo => `<img src="${photo}" alt="Foto de la propiedad">`).join('')}</div>` : ''}
@@ -883,7 +890,7 @@
                 document.getElementById('banos').value = property.banos;
                 document.getElementById('terraza').value = property.terraza;
                 document.getElementById('eficiencia').value = property.eficiencia;
-                document.getElementById('transp_publico').value = property.transp_publico;
+                document.getElementById('estado').value = property.estado;
                 
                 // Coordenadas
                 if (property.latitude && property.longitude) {
