@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crow's Valky - Product Templates</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            padding: 2rem;
+            border-radius: 8px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: #8b5cf6;
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #7c3aed;
+            transform: translateY(-2px);
+        }
+
+        .project-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .info-card {
+            background: #2a2a2a;
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 2rem;
+        }
+
+        .info-card h3 {
+            color: #8b5cf6;
+            margin-bottom: 1rem;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tech-tag {
+            background: #3b82f6;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .templates {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .template-card {
+            background: #2a2a2a;
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .template-card h4 {
+            color: #8b5cf6;
+            margin-bottom: 1rem;
+        }
+
+        .template-preview {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .features {
+            background: #2a2a2a;
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .features h3 {
+            color: #8b5cf6;
+            margin-bottom: 1rem;
+        }
+
+        .features ul {
+            list-style: none;
+        }
+
+        .features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .features li:before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .demo-section {
+            background: #2a2a2a;
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .demo-btn {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.4);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <a href="../" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Volver a Proyectos
+        </a>
+
+        <div class="header">
+            <h1>🐦‍⬛ Crow's Valky</h1>
+            <p>Sistema de plantillas HTML para merchandising gaming</p>
+        </div>
+
+        <div class="project-info">
+            <div class="info-card">
+                <h3>📋 Descripción del Proyecto</h3>
+                <p>
+                    Sistema modular de plantillas HTML para generar descripciones de productos 
+                    de merchandising gaming. Incluye tablas de tallas automáticas, diseños 
+                    personalizables y generación de contenido dinámico.
+                </p>
+                <div class="tech-stack">
+                    <span class="tech-tag">HTML5</span>
+                    <span class="tech-tag">CSS3</span>
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">E-commerce</span>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>🎯 Características Principales</h3>
+                <ul class="features">
+                    <li>Plantillas modulares reutilizables</li>
+                    <li>Generación automática de tablas de tallas</li>
+                    <li>Diseños personalizables por marca</li>
+                    <li>Sistema de colores dinámico</li>
+                    <li>Optimización para e-commerce</li>
+                    <li>Responsive design</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="templates">
+            <div class="template-card">
+                <h4><i class="fas fa-tshirt"></i> Plantilla de Camiseta</h4>
+                <div class="template-preview">
+                    <div style="color: #8b5cf6;">&lt;!-- Camiseta Gaming --&gt;</div>
+                    <div style="color: #10b981;">&lt;h2&gt;Camiseta Gaming Premium&lt;/h2&gt;</div>
+                    <div style="color: #3b82f6;">&lt;p&gt;Material: 100% Algodón&lt;/p&gt;</div>
+                    <div style="color: #f97316;">&lt;table&gt;Tallas: S, M, L, XL&lt;/table&gt;</div>
+                </div>
+                <p>Plantilla base para productos de ropa gaming con tabla de tallas automática.</p>
+            </div>
+
+            <div class="template-card">
+                <h4><i class="fas fa-mug-hot"></i> Plantilla de Taza</h4>
+                <div class="template-preview">
+                    <div style="color: #8b5cf6;">&lt;!-- Taza Gaming --&gt;</div>
+                    <div style="color: #10b981;">&lt;h2&gt;Taza Gaming Personalizada&lt;/h2&gt;</div>
+                    <div style="color: #3b82f6;">&lt;p&gt;Capacidad: 350ml&lt;/p&gt;</div>
+                    <div style="color: #f97316;">&lt;p&gt;Material: Cerámica&lt;/p&gt;</div>
+                </div>
+                <p>Plantilla para productos de cerámica y accesorios de escritorio.</p>
+            </div>
+
+            <div class="template-card">
+                <h4><i class="fas fa-gamepad"></i> Plantilla de Accesorio</h4>
+                <div class="template-preview">
+                    <div style="color: #8b5cf6;">&lt;!-- Accesorio Gaming --&gt;</div>
+                    <div style="color: #10b981;">&lt;h2&gt;Accesorio Gaming Pro&lt;/h2&gt;</div>
+                    <div style="color: #3b82f6;">&lt;p&gt;Compatibilidad: Universal&lt;/p&gt;</div>
+                    <div style="color: #f97316;">&lt;p&gt;Material: Silicona&lt;/p&gt;</div>
+                </div>
+                <p>Plantilla para accesorios de gaming y periféricos.</p>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>🚀 Demostración Interactiva</h3>
+            <p>Prueba las plantillas con diferentes configuraciones:</p>
+            <button class="demo-btn" onclick="generateTemplate('camiseta')">
+                <i class="fas fa-tshirt"></i> Generar Camiseta
+            </button>
+            <button class="demo-btn" onclick="generateTemplate('taza')">
+                <i class="fas fa-mug-hot"></i> Generar Taza
+            </button>
+            <button class="demo-btn" onclick="generateTemplate('accesorio')">
+                <i class="fas fa-gamepad"></i> Generar Accesorio
+            </button>
+            <div id="generatedTemplate" style="margin-top: 2rem; padding: 1rem; background: #1a1a1a; border-radius: 8px; text-align: left; display: none;">
+                <!-- Aquí se mostrará la plantilla generada -->
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h3>💡 Casos de Uso</h3>
+            <p>
+                Este sistema es ideal para tiendas de merchandising gaming que necesitan 
+                generar descripciones de productos de forma rápida y consistente. Las 
+                plantillas se pueden personalizar con los colores y estilos de cada marca.
+            </p>
+            <p>
+                <strong>Beneficios:</strong> Ahorro de tiempo, consistencia en el diseño, 
+                facilidad de mantenimiento y escalabilidad para nuevos productos.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const templates = {
+            camiseta: {
+                title: "Camiseta Gaming Premium",
+                material: "100% Algodón Orgánico",
+                description: "Camiseta de alta calidad con diseño gaming exclusivo. Perfecta para gamers y entusiastas de la tecnología.",
+                features: ["Secado rápido", "Resistente al lavado", "Diseño exclusivo"],
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                colors: ["Negro", "Blanco", "Gris", "Azul Gaming"]
+            },
+            taza: {
+                title: "Taza Gaming Personalizada",
+                material: "Cerámica de Alta Calidad",
+                description: "Taza personalizada con diseño gaming. Ideal para tu café matutino mientras juegas.",
+                features: ["Resistente al calor", "Fácil limpieza", "Diseño único"],
+                capacity: "350ml",
+                colors: ["Negro", "Blanco", "Rojo Gaming", "Azul Gaming"]
+            },
+            accesorio: {
+                title: "Accesorio Gaming Pro",
+                material: "Silicona Premium",
+                description: "Accesorio gaming de alta calidad. Mejora tu experiencia de juego con este producto profesional.",
+                features: ["Compatibilidad universal", "Durabilidad", "Diseño ergonómico"],
+                compatibility: ["PC", "PlayStation", "Xbox", "Nintendo Switch"],
+                colors: ["Negro", "Gris", "Azul", "Rojo"]
+            }
+        };
+
+        function generateTemplate(type) {
+            const template = templates[type];
+            const container = document.getElementById('generatedTemplate');
+            
+            let html = `
+                <h4 style="color: #8b5cf6; margin-bottom: 1rem;">${template.title}</h4>
+                <p><strong>Material:</strong> ${template.material}</p>
+                <p><strong>Descripción:</strong> ${template.description}</p>
+                
+                <h5 style="color: #10b981; margin-top: 1rem;">Características:</h5>
+                <ul style="margin-left: 1rem;">
+                    ${template.features.map(feature => `<li>${feature}</li>`).join('')}
+                </ul>
+            `;
+
+            if (template.sizes) {
+                html += `
+                    <h5 style="color: #3b82f6; margin-top: 1rem;">Tallas Disponibles:</h5>
+                    <p>${template.sizes.join(', ')}</p>
+                `;
+            }
+
+            if (template.capacity) {
+                html += `<p><strong>Capacidad:</strong> ${template.capacity}</p>`;
+            }
+
+            if (template.compatibility) {
+                html += `
+                    <h5 style="color: #f97316; margin-top: 1rem;">Compatibilidad:</h5>
+                    <p>${template.compatibility.join(', ')}</p>
+                `;
+            }
+
+            html += `
+                <h5 style="color: #8b5cf6; margin-top: 1rem;">Colores Disponibles:</h5>
+                <p>${template.colors.join(', ')}</p>
+            `;
+
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        // Efectos de hover en las tarjetas
+        document.querySelectorAll('.template-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
