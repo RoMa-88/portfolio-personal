@@ -971,6 +971,8 @@ body {
 
 .contact-methods {
     margin: 2rem 0;
+    position: relative;
+    z-index: 1;
 }
 
 .contact-method {
@@ -990,6 +992,8 @@ body {
     display: flex;
     gap: 1rem;
     margin-top: 2rem;
+    position: relative;
+    z-index: 10;
 }
 
 .social-link {
@@ -1005,6 +1009,8 @@ body {
     transition: all 0.3s ease;
     cursor: pointer;
     border: 2px solid transparent;
+    position: relative;
+    z-index: 15;
 }
 
 .social-link:hover {
