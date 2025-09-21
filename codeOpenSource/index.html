@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código Abierto - Marc Rodríguez</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            color: #b8b8b8;
+            font-size: 1.2rem;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .tech-category {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tech-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
+            border-color: #3b82f6;
+        }
+
+        .tech-category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .tech-category:hover::before {
+            left: 100%;
+        }
+
+        .tech-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #8b5cf6;
+        }
+
+        .tech-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .tech-description {
+            color: #b8b8b8;
+            margin-bottom: 1.5rem;
+        }
+
+        .projects-list {
+            list-style: none;
+        }
+
+        .project-item {
+            margin-bottom: 1rem;
+        }
+
+        .project-link {
+            display: block;
+            background: #2a2a2a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            text-decoration: none;
+            color: #ffffff;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-link:hover {
+            border-color: #8b5cf6;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.2);
+        }
+
+        .project-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .project-link:hover::before {
+            left: 100%;
+        }
+
+        .project-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #8b5cf6;
+        }
+
+        .project-description {
+            font-size: 0.9rem;
+            color: #b8b8b8;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #8b5cf6;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: float 10s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        .empty-category {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 2rem;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <a href="../" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Volver al Portfolio
+        </a>
+
+        <div class="header">
+            <h1>🚀 Código Abierto</h1>
+            <p>Explora mis proyectos organizados por tecnologías</p>
+        </div>
+
+        <div class="tech-grid">
+            <!-- Python -->
+            <div class="tech-category">
+                <div class="tech-icon">
+                    <i class="fab fa-python"></i>
+                </div>
+                <h2 class="tech-title">Python</h2>
+                <p class="tech-description">
+                    Algoritmos de optimización, análisis de datos y automatización
+                </p>
+                <ul class="projects-list">
+                    <li class="project-item">
+                        <a href="python/optimizador-3d.py" class="project-link" target="_blank">
+                            <div class="project-name">🧱 Optimizador de Corte 3D</div>
+                            <div class="project-description">
+                                Algoritmo para optimizar colocación de piezas en bloques de espuma con visualización 3D
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- HTML/CSS/JS -->
+            <div class="tech-category">
+                <div class="tech-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h2 class="tech-title">HTML/CSS/JS</h2>
+                <p class="tech-description">
+                    Herramientas web, validadores y aplicaciones frontend
+                </p>
+                <ul class="projects-list">
+                    <li class="project-item">
+                        <a href="html-css/marketing-digital360.html" class="project-link" target="_blank">
+                            <div class="project-name">🌐 MarketingDigital360</div>
+                            <div class="project-description">
+                                Diseño completo de web corporativa con WordPress, responsive y optimizada SEO
+                            </div>
+                        </a>
+                    </li>
+                    <li class="project-item">
+                        <a href="html-css/dni-validator.html" class="project-link" target="_blank">
+                            <div class="project-name">🆔 Validador de DNI Español</div>
+                            <div class="project-description">
+                                Herramienta web para validar DNI españoles y calcular letras de control
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- JavaScript -->
+            <div class="tech-category">
+                <div class="tech-icon">
+                    <i class="fab fa-js-square"></i>
+                </div>
+                <h2 class="tech-title">JavaScript</h2>
+                <p class="tech-description">
+                    Aplicaciones interactivas y juegos web
+                </p>
+                <ul class="projects-list">
+                    <li class="project-item">
+                        <a href="games/memory-game.html" class="project-link" target="_blank">
+                            <div class="project-name">🧠 Juego de Memoria</div>
+                            <div class="project-description">
+                                Juego interactivo de memoria con 6 cartas, efectos visuales y sistema de puntuación
+                            </div>
+                        </a>
+                    </li>
+                    <li class="project-item">
+                        <div class="empty-category">
+                            <i class="fas fa-plus-circle"></i><br>
+                            Más proyectos próximamente...
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Java -->
+            <div class="tech-category">
+                <div class="tech-icon">
+                    <i class="fab fa-java"></i>
+                </div>
+                <h2 class="tech-title">Java</h2>
+                <p class="tech-description">
+                    Aplicaciones robustas y ejercicios prácticos
+                </p>
+                <ul class="projects-list">
+                    <li class="project-item">
+                        <div class="empty-category">
+                            <i class="fas fa-plus-circle"></i><br>
+                            Proyectos próximamente...
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- PHP -->
+            <div class="tech-category">
+                <div class="tech-icon">
+                    <i class="fab fa-php"></i>
+                </div>
+                <h2 class="tech-title">PHP</h2>
+                <p class="tech-description">
+                    Desarrollo backend y aplicaciones web dinámicas
+                </p>
+                <ul class="projects-list">
+                    <li class="project-item">
+                        <div class="empty-category">
+                            <i class="fas fa-plus-circle"></i><br>
+                            Proyectos próximamente...
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Bioinformática -->
+            <div class="tech-category">
+                <div class="tech-icon">
+                    <i class="fas fa-dna"></i>
+                </div>
+                <h2 class="tech-title">Bioinformática</h2>
+                <p class="tech-description">
+                    Análisis de datos biológicos y algoritmos genómicos
+                </p>
+                <ul class="projects-list">
+                    <li class="project-item">
+                        <div class="empty-category">
+                            <i class="fas fa-plus-circle"></i><br>
+                            Proyectos próximamente...
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Crear partículas de fondo
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * window.innerWidth + 'px';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (5 + Math.random() * 10) + 's';
+                
+                particlesContainer.appendChild(particle);
+                
+                // Remover partícula después de la animación
+                setTimeout(() => {
+                    particle.remove();
+                }, 15000);
+            }
+        }
+
+        // Crear partículas cada 3 segundos
+        createParticles();
+        setInterval(createParticles, 3000);
+
+        // Efecto de hover en las categorías
+        document.querySelectorAll('.tech-category').forEach(category => {
+            category.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            category.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
