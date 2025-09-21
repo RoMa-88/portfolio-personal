@@ -101,6 +101,31 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initialize language system
     updateLanguage(currentLanguage);
     
+    // Navigation function for projects
+    window.navigateToProjects = function() {
+        // Try multiple navigation methods
+        const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '');
+        const projectsUrl = baseUrl + '/codeOpenSource/';
+        
+        // Method 1: Direct navigation
+        window.location.href = projectsUrl;
+        
+        // Fallback: Try alternative paths after a short delay
+        setTimeout(() => {
+            if (window.location.href === window.location.origin + window.location.pathname) {
+                // Method 2: Try with relative path
+                window.location.href = './codeOpenSource/';
+            }
+        }, 100);
+        
+        setTimeout(() => {
+            if (window.location.href === window.location.origin + window.location.pathname) {
+                // Method 3: Try with absolute path from root
+                window.location.href = '/codeOpenSource/';
+            }
+        }, 200);
+    };
+    
     // Language toggle functionality
     const langOptions = document.querySelectorAll('.lang-option');
     langOptions.forEach(option => {

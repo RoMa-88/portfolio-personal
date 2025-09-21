@@ -1002,11 +1002,20 @@ body {
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
 }
 
 .social-link:hover {
     transform: scale(1.1);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+.social-link i {
+    font-size: 1.5rem;
+    color: white;
 }
 
 .contact-form-container {
