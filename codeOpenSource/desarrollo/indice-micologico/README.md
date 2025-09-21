@@ -78,14 +78,18 @@ def indice_micologico_simple(lluvia7, lluvia14, pct_t_ok):
 
 ```bash
 # Instalar dependencias
-pip install requests pandas matplotlib python-dotenv
+pip install -r requirements.txt
 
 # Configurar API Key
 export METEOCAT_API_KEY="tu_api_key_aqui"
 
-# Ejecutar análisis
-python analisis_micologico.py
+# Ejecutar demo
+python demo.py
 ```
+
+### 🔗 Cliente Meteocat Integrado
+
+Este proyecto utiliza el cliente oficial de [herrera-lu/meteocat-api-client](https://github.com/herrera-lu/meteocat-api-client) como base, adaptado específicamente para análisis micológico.
 
 ## 📁 Estructura del Proyecto
 
