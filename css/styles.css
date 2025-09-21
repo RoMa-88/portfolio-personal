@@ -678,6 +678,7 @@ body {
     border: 2px solid #f59e0b;
     background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
     position: relative;
+    z-index: 1;
 }
 
 .project-card.development::before {
@@ -691,6 +692,7 @@ body {
     background-size: 20px 20px;
     opacity: 0.3;
     pointer-events: none;
+    z-index: -1;
 }
 
 .project-status {
@@ -711,6 +713,8 @@ body {
     background: rgba(245, 158, 11, 0.1);
     border-radius: 8px;
     border-left: 4px solid #f59e0b;
+    position: relative;
+    z-index: 10;
 }
 
 .development-features h4 {
@@ -746,6 +750,8 @@ body {
     flex-wrap: wrap;
     gap: 0.5rem;
     margin: 1rem 0;
+    position: relative;
+    z-index: 10;
 }
 
 .projects-grid {
