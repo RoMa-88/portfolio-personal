@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Memoria - Marc Rodríguez</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: #0a0a0a;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-container {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .score, .moves {
+            background: #2a2a2a;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            border: 1px solid #8b5cf6;
+        }
+
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(2, 100px);
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border: 2px solid #06b6d4;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.5);
+        }
+
+        .card.flipped {
+            background: #2a2a2a;
+            border-color: #8b5cf6;
+        }
+
+        .card.matched {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-color: #10b981;
+            animation: match 0.6s ease;
+        }
+
+        .card.mismatch {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-color: #ef4444;
+            animation: shake 0.6s ease;
+        }
+
+        @keyframes match {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .card::before {
+            content: '?';
+            position: absolute;
+            color: #ffffff;
+            font-size: 2rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .card.flipped::before {
+            opacity: 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .win-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border: 2px solid #10b981;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.3);
+            display: none;
+            z-index: 1000;
+        }
+
+        .win-message.show {
+            display: block;
+            animation: winPop 0.5s ease;
+        }
+
+        @keyframes winPop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .colors {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .color-demo {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+        }
+
+        .color1 { background: #ef4444; }
+        .color2 { background: #10b981; }
+        .color3 { background: #3b82f6; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">🧠 Juego de Memoria</h1>
+        
+        <div class="colors">
+            <div class="color-demo color1"></div>
+            <div class="color-demo color2"></div>
+            <div class="color-demo color3"></div>
+        </div>
+        
+        <div class="game-info">
+            <div class="score">Puntuación: <span id="score">0</span></div>
+            <div class="moves">Movimientos: <span id="moves">0</span></div>
+        </div>
+
+        <div class="memory-grid" id="memoryGrid">
+            <!-- Las cartas se generarán dinámicamente -->
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="newGame()">Nuevo Juego</button>
+            <button class="btn" onclick="window.close()">Cerrar</button>
+        </div>
+    </div>
+
+    <div class="win-message" id="winMessage">
+        <h2>🎉 ¡Felicidades!</h2>
+        <p>Has completado el juego en <span id="finalMoves">0</span> movimientos</p>
+        <p>Puntuación: <span id="finalScore">0</span></p>
+        <button class="btn" onclick="newGame()">Jugar de Nuevo</button>
+    </div>
+
+    <script>
+        class MemoryGame {
+            constructor() {
+                this.colors = ['#ef4444', '#10b981', '#3b82f6'];
+                this.cards = [];
+                this.flippedCards = [];
+                this.matchedPairs = 0;
+                this.moves = 0;
+                this.score = 0;
+                this.gameStarted = false;
+                
+                this.initGame();
+            }
+
+            initGame() {
+                this.createCards();
+                this.shuffleCards();
+                this.renderCards();
+            }
+
+            createCards() {
+                this.cards = [];
+                // Crear 6 cartas (3 pares)
+                for (let i = 0; i < 3; i++) {
+                    this.cards.push({
+                        id: i * 2,
+                        color: this.colors[i],
+                        matched: false,
+                        flipped: false
+                    });
+                    this.cards.push({
+                        id: i * 2 + 1,
+                        color: this.colors[i],
+                        matched: false,
+                        flipped: false
+                    });
+                }
+            }
+
+            shuffleCards() {
+                for (let i = this.cards.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
+                }
+            }
+
+            renderCards() {
+                const grid = document.getElementById('memoryGrid');
+                grid.innerHTML = '';
+
+                this.cards.forEach((card, index) => {
+                    const cardElement = document.createElement('div');
+                    cardElement.className = 'card';
+                    cardElement.dataset.index = index;
+                    cardElement.style.backgroundColor = card.flipped ? card.color : 'transparent';
+                    cardElement.onclick = () => this.flipCard(index);
+                    
+                    grid.appendChild(cardElement);
+                });
+            }
+
+            flipCard(index) {
+                const card = this.cards[index];
+                
+                if (card.flipped || card.matched || this.flippedCards.length >= 2) {
+                    return;
+                }
+
+                card.flipped = true;
+                this.flippedCards.push(index);
+                this.renderCards();
+
+                if (!this.gameStarted) {
+                    this.gameStarted = true;
+                }
+
+                if (this.flippedCards.length === 2) {
+                    this.moves++;
+                    document.getElementById('moves').textContent = this.moves;
+                    
+                    setTimeout(() => {
+                        this.checkMatch();
+                    }, 500);
+                }
+            }
+
+            checkMatch() {
+                const [index1, index2] = this.flippedCards;
+                const card1 = this.cards[index1];
+                const card2 = this.cards[index2];
+
+                if (card1.color === card2.color) {
+                    // Match!
+                    card1.matched = true;
+                    card2.matched = true;
+                    this.matchedPairs++;
+                    this.score += 10;
+                    document.getElementById('score').textContent = this.score;
+
+                    // Añadir animación de match
+                    const cardElements = document.querySelectorAll('.card');
+                    cardElements[index1].classList.add('matched');
+                    cardElements[index2].classList.add('matched');
+
+                    if (this.matchedPairs === 3) {
+                        setTimeout(() => {
+                            this.showWinMessage();
+                        }, 500);
+                    }
+                } else {
+                    // Mismatch
+                    card1.flipped = false;
+                    card2.flipped = false;
+
+                    // Añadir animación de error
+                    const cardElements = document.querySelectorAll('.card');
+                    cardElements[index1].classList.add('mismatch');
+                    cardElements[index2].classList.add('mismatch');
+
+                    setTimeout(() => {
+                        cardElements[index1].classList.remove('mismatch');
+                        cardElements[index2].classList.remove('mismatch');
+                        this.renderCards();
+                    }, 500);
+                }
+
+                this.flippedCards = [];
+            }
+
+            showWinMessage() {
+                document.getElementById('finalMoves').textContent = this.moves;
+                document.getElementById('finalScore').textContent = this.score;
+                document.getElementById('winMessage').classList.add('show');
+            }
+
+            reset() {
+                this.flippedCards = [];
+                this.matchedPairs = 0;
+                this.moves = 0;
+                this.score = 0;
+                this.gameStarted = false;
+                
+                document.getElementById('moves').textContent = '0';
+                document.getElementById('score').textContent = '0';
+                document.getElementById('winMessage').classList.remove('show');
+                
+                this.initGame();
+            }
+        }
+
+        let game = new MemoryGame();
+
+        function newGame() {
+            game.reset();
+        }
+
+        // Efectos de partículas de fondo
+        function createParticles() {
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'fixed';
+                particle.style.width = '2px';
+                particle.style.height = '2px';
+                particle.style.background = '#8b5cf6';
+                particle.style.borderRadius = '50%';
+                particle.style.pointerEvents = 'none';
+                particle.style.left = Math.random() * window.innerWidth + 'px';
+                particle.style.top = Math.random() * window.innerHeight + 'px';
+                particle.style.opacity = '0.5';
+                particle.style.animation = `float ${5 + Math.random() * 10}s infinite linear`;
+                
+                document.body.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, (5 + Math.random() * 10) * 1000);
+            }
+        }
+
+        // CSS para animación de partículas
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0% {
+                    transform: translateY(100vh) translateX(0);
+                    opacity: 0;
+                }
+                10% {
+                    opacity: 0.5;
+                }
+                90% {
+                    opacity: 0.5;
+                }
+                100% {
+                    transform: translateY(-100px) translateX(${Math.random() * 100 - 50}px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Crear partículas cada 2 segundos
+        setInterval(createParticles, 2000);
+        createParticles();
+    </script>
+</body>
+</html>
