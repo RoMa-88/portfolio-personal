@@ -216,6 +216,96 @@
             font-style: italic;
             padding: 2rem;
         }
+
+        /* Proyectos en Desarrollo */
+        .tech-category.development {
+            border: 2px solid #f59e0b;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+        }
+
+        .project-item.development {
+            border: 1px solid #f59e0b;
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-header i {
+            color: #f59e0b;
+            font-size: 1.5rem;
+        }
+
+        .project-header h3 {
+            flex: 1;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .dev-status {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .tech-tag {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .project-features {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .project-features h4 {
+            color: #f59e0b;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .project-features ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .project-features li {
+            padding: 0.3rem 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .project-features li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: #f59e0b;
+            font-size: 0.7rem;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -354,6 +444,74 @@
                         <div class="empty-category">
                             <i class="fas fa-plus-circle"></i><br>
                             Proyectos próximamente...
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Proyectos en Desarrollo -->
+            <div class="tech-category development">
+                <div class="tech-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h2 class="tech-title">🚧 Proyectos en Desarrollo</h2>
+                <p class="tech-description">
+                    Proyectos actualmente en desarrollo y próximas funcionalidades
+                </p>
+                <ul class="projects-list">
+                    <li class="project-item development">
+                        <div class="project-header">
+                            <i class="fas fa-building"></i>
+                            <h3>Gestor Inmobiliario</h3>
+                            <span class="dev-status">En Desarrollo</span>
+                        </div>
+                        <p class="project-description">
+                            Sistema web CRUD para gestión de propiedades inmobiliarias. 
+                            Reemplaza Excel con base de datos estructurada, formularios dinámicos y gestión de citas.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">PHP</span>
+                            <span class="tech-tag">MySQL</span>
+                            <span class="tech-tag">MVC</span>
+                            <span class="tech-tag">PDO</span>
+                        </div>
+                        <div class="project-features">
+                            <h4>Características en desarrollo:</h4>
+                            <ul>
+                                <li>CRUD completo de propiedades</li>
+                                <li>Gestión de contactos por propiedad</li>
+                                <li>Sistema de citas y agenda</li>
+                                <li>Exportación a Excel/CSV</li>
+                                <li>Validaciones y seguridad</li>
+                            </ul>
+                        </div>
+                    </li>
+                    
+                    <li class="project-item development">
+                        <div class="project-header">
+                            <i class="fas fa-chart-line"></i>
+                            <h3>Índice Micológico Catalunya</h3>
+                            <span class="dev-status">En Desarrollo</span>
+                        </div>
+                        <p class="project-description">
+                            Análisis de datos meteorológicos de Meteocat para predecir las mejores épocas 
+                            de recolección de setas en diferentes zonas de Catalunya.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">API Meteocat</span>
+                            <span class="tech-tag">Pandas</span>
+                            <span class="tech-tag">Matplotlib</span>
+                        </div>
+                        <div class="project-features">
+                            <h4>Características en desarrollo:</h4>
+                            <ul>
+                                <li>Descarga de datos de estaciones XO (Vic) y XL (El Prat)</li>
+                                <li>Análisis de precipitaciones y temperaturas</li>
+                                <li>Índice micológico personalizado</li>
+                                <li>Gráficos y visualizaciones</li>
+                                <li>Predicción por zonas geográficas</li>
+                            </ul>
                         </div>
                     </li>
                 </ul>
