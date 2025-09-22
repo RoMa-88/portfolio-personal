@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏢 Gestor Inmobiliario - App Interactiva</title>
+    <link rel="stylesheet" href="gestor-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="project-title">🏢 Gestor Inmobiliario</h1>
+            <p class="project-subtitle">Sistema de gestión de propiedades con integración de mapas</p>
+        </div>
+
+        <!-- Formulario de API Key -->
+        <div class="api-form">
+            <h2 class="form-title">
+                <span>🗺️</span>
+                Configuración de Google Maps (Opcional)
+            </h2>
+            <form id="apiForm">
+                <div class="form-group">
+                    <label for="apiKey" class="form-label">API Key de Google Maps</label>
+                    <input 
+                        type="text" 
+                        id="apiKey" 
+                        name="apiKey" 
+                        class="form-input" 
+                        placeholder="Introduce tu API key de Google Maps (opcional)..."
+                    >
+                    <small style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; display: block;">
+                        Sin API key: Solo funcionalidad básica • Con API key: Mapas interactivos y geocodificación
+                    </small>
+                </div>
+                <button type="submit" class="btn" id="saveApiBtn">
+                    💾 Guardar Configuración
+                </button>
+            </form>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalProperties">0</div>
+                <div class="stat-label">Total Propiedades</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalValue">€0</div>
+                <div class="stat-label">Valor Total</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avgPrice">€0</div>
+                <div class="stat-label">Precio Promedio</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="withMaps">0</div>
+                <div class="stat-label">Con Mapas</div>
+            </div>
+        </div>
+
+        <!-- Formulario de nueva propiedad -->
+        <div class="property-form">
+            <h2 class="form-title">
+                <span>➕</span>
+                Nueva Propiedad
+            </h2>
+            <form id="propertyForm">
+                <div class="form-grid">
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <span>📍</span>
+                            Ubicación
+                        </h3>
+                        <div class="form-group">
+                            <label for="calle" class="form-label">Calle *</label>
+                            <input type="text" id="calle" name="calle" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="numero" class="form-label">Número *</label>
+                            <input type="text" id="numero" name="numero" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="piso" class="form-label">Piso</label>
+                            <input type="text" id="piso" name="piso" class="form-input" placeholder="Ej: 4A, Bajo, Ático">
+                        </div>
+                        <div class="form-group">
+                            <label for="codigoPostal" class="form-label">Código Postal *</label>
+                            <input type="text" id="codigoPostal" name="codigoPostal" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <span>🏠</span>
+                            Características
+                        </h3>
+                        <div class="form-group">
+                            <label for="valorMercado" class="form-label">Valor de Mercado (€) *</label>
+                            <input type="number" id="valorMercado" name="valorMercado" class="form-input" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="dormitorios" class="form-label">Dormitorios *</label>
+                            <input type="number" id="dormitorios" name="dormitorios" class="form-input" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="banos" class="form-label">Baños *</label>
+                            <input type="number" id="banos" name="banos" class="form-input" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="estado" class="form-label">Estado de la Propiedad *</label>
+                            <select id="estado" name="estado" class="form-select" required>
+                                <option value="">Seleccionar estado...</option>
+                                <option value="Vacío">Vacío</option>
+                                <option value="Okupado">Okupado</option>
+                                <option value="Alquilado">Alquilado</option>
+                                <option value="Propietario">Propietario</option>
+                                <option value="En Propiedad">En Propiedad</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <span>⚡</span>
+                            Eficiencia
+                        </h3>
+                        <div class="form-group">
+                            <label for="eficienciaEnergetica" class="form-label">Eficiencia Energética</label>
+                            <select id="eficienciaEnergetica" name="eficienciaEnergetica" class="form-select">
+                                <option value="">Seleccionar...</option>
+                                <option value="A">A (Muy eficiente)</option>
+                                <option value="B">B (Eficiente)</option>
+                                <option value="C">C (Moderadamente eficiente)</option>
+                                <option value="D">D (Poco eficiente)</option>
+                                <option value="E">E (Ineficiente)</option>
+                                <option value="F">F (Muy ineficiente)</option>
+                                <option value="G">G (Extremadamente ineficiente)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Terraza</label>
+                            <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="radio" name="terraza" value="true" style="margin: 0;">
+                                    Sí
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="radio" name="terraza" value="false" style="margin: 0;">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección de mapas (solo si hay API key) -->
+                <div id="mapSection" style="display: none;">
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <span>🗺️</span>
+                            Ubicación en el Mapa
+                        </h3>
+                        <div class="form-group">
+                            <label for="mapSearch" class="form-label">Buscar en el mapa</label>
+                            <input type="text" id="mapSearch" class="form-input" placeholder="Buscar dirección...">
+                            <button type="button" id="searchBtn" class="btn btn-secondary" style="margin-top: 0.5rem; width: auto;">
+                                🔍 Buscar
+                            </button>
+                        </div>
+                        <div class="map-container" id="mapContainer">
+                            <div class="map-placeholder">
+                                <div class="icon">🗺️</div>
+                                <div>Mapa interactivo disponible</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Coordenadas</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <input type="text" id="latitude" class="form-input" placeholder="Latitud" readonly>
+                                <input type="text" id="longitude" class="form-input" placeholder="Longitud" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección de fotos -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <span>📸</span>
+                        Fotos de la Propiedad
+                    </h3>
+                    <div class="photos-container" id="photosContainer">
+                        <!-- Se llenará dinámicamente -->
+                    </div>
+                    <input type="file" id="photoInput" multiple accept="image/*" style="display: none;">
+                    <button type="button" id="addPhotoBtn" class="btn btn-secondary" style="margin-top: 1rem;">
+                        📸 Añadir Fotos
+                    </button>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                    <button type="submit" class="btn">
+                        💾 Guardar Propiedad
+                    </button>
+                    <button type="button" id="previewBtn" class="btn btn-secondary">
+                        👁️ Previsualizar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Grid de propiedades -->
+        <div id="propertiesGrid" class="properties-grid">
+            <!-- Se llenará dinámicamente -->
+        </div>
+
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Procesando...</p>
+        </div>
+
+        <!-- Mensajes -->
+        <div id="messageContainer"></div>
+    </div>
+
+    <script>
+        class GestorInmobiliario {
+            constructor() {
+                this.properties = [];
+                this.apiKey = '';
+                this.map = null;
+                this.marker = null;
+                this.photos = [];
+                
+                this.initializeElements();
+                this.setupEventListeners();
+                this.loadProperties();
+                this.loadApiKey();
+                this.updateStats();
+            }
+
+            initializeElements() {
+                this.apiForm = document.getElementById('apiForm');
+                this.propertyForm = document.getElementById('propertyForm');
+                this.propertiesGrid = document.getElementById('propertiesGrid');
+                this.photosContainer = document.getElementById('photosContainer');
+                this.mapSection = document.getElementById('mapSection');
+                this.mapContainer = document.getElementById('mapContainer');
+                this.loading = document.getElementById('loading');
+                this.messageContainer = document.getElementById('messageContainer');
+            }
+
+            setupEventListeners() {
+                this.apiForm.addEventListener('submit', (e) => this.handleApiSubmit(e));
+                this.propertyForm.addEventListener('submit', (e) => this.handlePropertySubmit(e));
+                
+                document.getElementById('addPhotoBtn').addEventListener('click', () => {
+                    document.getElementById('photoInput').click();
+                });
+                
+                document.getElementById('photoInput').addEventListener('change', (e) => {
+                    this.handlePhotoUpload(e);
+                });
+
+                document.getElementById('previewBtn').addEventListener('click', () => {
+                    this.previewProperty();
+                });
+
+                // Inicializar contenedor de fotos
+                this.initializePhotoSlots();
+            }
+
+            async handleApiSubmit(e) {
+                e.preventDefault();
+                const apiKey = document.getElementById('apiKey').value.trim();
+                
+                if (apiKey) {
+                    this.apiKey = apiKey;
+                    localStorage.setItem('googleMapsApiKey', apiKey);
+                    this.showMessage('API key guardada correctamente', 'success');
+                    this.initializeMap();
+                } else {
+                    this.apiKey = '';
+                    localStorage.removeItem('googleMapsApiKey');
+                    this.showMessage('Configuración de mapas deshabilitada', 'warning');
+                    this.hideMapSection();
+                }
+            }
+
+            loadApiKey() {
+                const savedApiKey = localStorage.getItem('googleMapsApiKey');
+                if (savedApiKey) {
+                    this.apiKey = savedApiKey;
+                    document.getElementById('apiKey').value = savedApiKey;
+                    this.initializeMap();
+                }
+            }
+
+            async initializeMap() {
+                if (!this.apiKey) return;
+
+                try {
+                    // Cargar Google Maps API dinámicamente
+                    await this.loadGoogleMapsAPI();
+                    
+                    this.mapSection.style.display = 'block';
+                    this.showMessage('Mapas habilitados correctamente', 'success');
+                    
+                    // Inicializar mapa
+                    this.map = new google.maps.Map(this.mapContainer, {
+                        center: { lat: 41.3851, lng: 2.1734 }, // Barcelona
+                        zoom: 13,
+                        mapTypeId: 'roadmap'
+                    });
+
+                    // Evento de clic en el mapa
+                    this.map.addListener('click', (event) => {
+                        this.setMapLocation(event.latLng);
+                    });
+
+                } catch (error) {
+                    this.showMessage(`Error al cargar Google Maps: ${error.message}`, 'error');
+                    this.hideMapSection();
+                }
+            }
+
+            loadGoogleMapsAPI() {
+                return new Promise((resolve, reject) => {
+                    if (window.google && window.google.maps) {
+                        resolve();
+                        return;
+                    }
+
+                    const script = document.createElement('script');
+                    script.src = `https://maps.googleapis.com/maps/api/js?key=${this.apiKey}&libraries=places`;
+                    script.onload = resolve;
+                    script.onerror = () => reject(new Error('No se pudo cargar Google Maps API'));
+                    document.head.appendChild(script);
+                });
+            }
+
+            hideMapSection() {
+                this.mapSection.style.display = 'none';
+            }
+
+            setMapLocation(latLng) {
+                document.getElementById('latitude').value = latLng.lat().toFixed(6);
+                document.getElementById('longitude').value = latLng.lng().toFixed(6);
+
+                if (this.marker) {
+                    this.marker.setPosition(latLng);
+                } else {
+                    this.marker = new google.maps.Marker({
+                        position: latLng,
+                        map: this.map,
+                        title: 'Ubicación de la propiedad'
+                    });
+                }
+            }
+
+            async handlePropertySubmit(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this.propertyForm);
+                const property = {
+                    id: Date.now(),
+                    calle: formData.get('calle'),
+                    numero: formData.get('numero'),
+                    piso: formData.get('piso'),
+                    codigoPostal: formData.get('codigoPostal'),
+                    valorMercado: parseFloat(formData.get('valorMercado')),
+                    dormitorios: parseInt(formData.get('dormitorios')),
+                    banos: parseInt(formData.get('banos')),
+                    terraza: formData.get('terraza') === 'true',
+                    eficienciaEnergetica: formData.get('eficienciaEnergetica'),
+                    estado: formData.get('estado'),
+                    latitude: document.getElementById('latitude').value,
+                    longitude: document.getElementById('longitude').value,
+                    photos: [...this.photos],
+                    fechaCreacion: new Date().toISOString()
+                };
+
+                this.properties.push(property);
+                this.saveProperties();
+                this.renderProperties();
+                this.updateStats();
+                this.clearForm();
+                
+                this.showMessage('Propiedad guardada correctamente', 'success');
+            }
+
+            loadProperties() {
+                const saved = localStorage.getItem('gestorInmobiliarioProperties');
+                if (saved) {
+                    this.properties = JSON.parse(saved);
+                    this.renderProperties();
+                }
+            }
+
+            saveProperties() {
+                localStorage.setItem('gestorInmobiliarioProperties', JSON.stringify(this.properties));
+            }
+
+            renderProperties() {
+                this.propertiesGrid.innerHTML = '';
+
+                this.properties.forEach(property => {
+                    const propertyCard = document.createElement('div');
+                    propertyCard.className = 'property-card';
+                    
+                    const hasMap = property.latitude && property.longitude;
+                    const mapIcon = hasMap ? '🗺️' : '';
+                    
+                    propertyCard.innerHTML = `
+                        <div class="property-header">
+                            <div class="property-address">
+                                ${property.calle} ${property.numero}${property.piso ? ', ' + property.piso : ''}
+                            </div>
+                            <div class="property-details">
+                                <span>${property.codigoPostal}</span>
+                                <span>${property.estado}</span>
+                                ${hasMap ? '<span>🗺️</span>' : ''}
+                            </div>
+                        </div>
+                        <div class="property-body">
+                            <div class="property-price">€${property.valorMercado.toLocaleString()}</div>
+                            <div class="property-info">
+                                <div class="info-item">
+                                    <div class="info-label">Dormitorios</div>
+                                    <div class="info-value">${property.dormitorios}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Baños</div>
+                                    <div class="info-value">${property.banos}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Terraza</div>
+                                    <div class="info-value">${property.terraza ? 'Sí' : 'No'}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Eficiencia</div>
+                                    <div class="info-value">${property.eficienciaEnergetica || 'N/A'}</div>
+                                </div>
+                            </div>
+                            ${property.photos.length > 0 ? `
+                                <div class="photos-container" style="margin-top: 1rem;">
+                                    ${property.photos.slice(0, 3).map(photo => `
+                                        <div class="photo-item has-photo">
+                                            <img src="${photo}" class="photo-preview" alt="Foto propiedad">
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                            <div class="property-actions">
+                                <button class="btn btn-sm" onclick="gestor.editProperty(${property.id})">
+                                    ✏️ Editar
+                                </button>
+                                <button class="btn btn-sm btn-secondary" onclick="gestor.deleteProperty(${property.id})">
+                                    🗑️ Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                    this.propertiesGrid.appendChild(propertyCard);
+                });
+            }
+
+            updateStats() {
+                const total = this.properties.length;
+                const totalValue = this.properties.reduce((sum, prop) => sum + prop.valorMercado, 0);
+                const avgPrice = total > 0 ? totalValue / total : 0;
+                const withMaps = this.properties.filter(prop => prop.latitude && prop.longitude).length;
+
+                document.getElementById('totalProperties').textContent = total;
+                document.getElementById('totalValue').textContent = `€${totalValue.toLocaleString()}`;
+                document.getElementById('avgPrice').textContent = `€${Math.round(avgPrice).toLocaleString()}`;
+                document.getElementById('withMaps').textContent = withMaps;
+            }
+
+            initializePhotoSlots() {
+                for (let i = 0; i < 6; i++) {
+                    const photoSlot = document.createElement('div');
+                    photoSlot.className = 'photo-item';
+                    photoSlot.innerHTML = '<span style="font-size: 2rem; opacity: 0.5;">📸</span>';
+                    this.photosContainer.appendChild(photoSlot);
+                }
+            }
+
+            handlePhotoUpload(e) {
+                const files = Array.from(e.target.files);
+                files.forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            this.photos.push(event.target.result);
+                            this.updatePhotoDisplay();
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            updatePhotoDisplay() {
+                const slots = this.photosContainer.children;
+                this.photos.forEach((photo, index) => {
+                    if (index < slots.length) {
+                        slots[index].className = 'photo-item has-photo';
+                        slots[index].innerHTML = `
+                            <img src="${photo}" class="photo-preview" alt="Foto propiedad">
+                            <div class="photo-actions">
+                                <button class="btn-photo btn-remove" onclick="gestor.removePhoto(${index})">×</button>
+                            </div>
+                        `;
+                    }
+                });
+            }
+
+            removePhoto(index) {
+                this.photos.splice(index, 1);
+                this.updatePhotoDisplay();
+            }
+
+            clearForm() {
+                this.propertyForm.reset();
+                this.photos = [];
+                this.updatePhotoDisplay();
+                document.getElementById('latitude').value = '';
+                document.getElementById('longitude').value = '';
+                if (this.marker) {
+                    this.marker.setMap(null);
+                    this.marker = null;
+                }
+            }
+
+            editProperty(id) {
+                const property = this.properties.find(p => p.id === id);
+                if (!property) return;
+
+                // Llenar formulario con datos de la propiedad
+                document.getElementById('calle').value = property.calle;
+                document.getElementById('numero').value = property.numero;
+                document.getElementById('piso').value = property.piso || '';
+                document.getElementById('codigoPostal').value = property.codigoPostal;
+                document.getElementById('valorMercado').value = property.valorMercado;
+                document.getElementById('dormitorios').value = property.dormitorios;
+                document.getElementById('banos').value = property.banos;
+                document.getElementById('estado').value = property.estado;
+                document.getElementById('eficienciaEnergetica').value = property.eficienciaEnergetica || '';
+                
+                const terrazaRadios = document.querySelectorAll('input[name="terraza"]');
+                terrazaRadios.forEach(radio => {
+                    radio.checked = radio.value === property.terraza.toString();
+                });
+
+                this.photos = [...property.photos];
+                this.updatePhotoDisplay();
+
+                if (property.latitude && property.longitude) {
+                    document.getElementById('latitude').value = property.latitude;
+                    document.getElementById('longitude').value = property.longitude;
+                }
+
+                // Eliminar propiedad actual para edición
+                this.properties = this.properties.filter(p => p.id !== id);
+                this.saveProperties();
+                this.renderProperties();
+                this.updateStats();
+
+                // Scroll al formulario
+                document.getElementById('propertyForm').scrollIntoView({ behavior: 'smooth' });
+            }
+
+            deleteProperty(id) {
+                if (confirm('¿Estás seguro de que quieres eliminar esta propiedad?')) {
+                    this.properties = this.properties.filter(p => p.id !== id);
+                    this.saveProperties();
+                    this.renderProperties();
+                    this.updateStats();
+                    this.showMessage('Propiedad eliminada correctamente', 'success');
+                }
+            }
+
+            previewProperty() {
+                const formData = new FormData(this.propertyForm);
+                const preview = `
+                    📍 ${formData.get('calle')} ${formData.get('numero')}${formData.get('piso') ? ', ' + formData.get('piso') : ''}
+                    🏠 ${formData.get('dormitorios')} dormitorios, ${formData.get('banos')} baños
+                    💰 €${parseFloat(formData.get('valorMercado')).toLocaleString()}
+                    📊 Estado: ${formData.get('estado')}
+                    ⚡ Eficiencia: ${formData.get('eficienciaEnergetica') || 'N/A'}
+                    🏞️ Terraza: ${formData.get('terraza') === 'true' ? 'Sí' : 'No'}
+                `;
+                
+                alert(preview);
+            }
+
+            showMessage(message, type) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message message-${type}`;
+                messageDiv.innerHTML = `
+                    <span>${this.getMessageIcon(type)}</span>
+                    ${message}
+                `;
+                
+                this.messageContainer.appendChild(messageDiv);
+                
+                setTimeout(() => {
+                    messageDiv.remove();
+                }, 5000);
+            }
+
+            getMessageIcon(type) {
+                const icons = {
+                    success: '✅',
+                    error: '❌',
+                    warning: '⚠️'
+                };
+                return icons[type] || 'ℹ️';
+            }
+        }
+
+        // Inicializar la aplicación
+        let gestor;
+        document.addEventListener('DOMContentLoaded', () => {
+            gestor = new GestorInmobiliario();
+        });
+    </script>
+</body>
+</html>
