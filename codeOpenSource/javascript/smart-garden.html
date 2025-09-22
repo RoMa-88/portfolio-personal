@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌱 Smart Garden Assistant - Demo</title>
+    <link rel="stylesheet" href="smart-garden-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header con Login -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-seedling"></i>
+                    <span>Smart Garden</span>
+                </div>
+                <div class="login-section">
+                    <button id="loginBtn" class="btn-login">Iniciar Sesión</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Modal de Login -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Acceso al Sistema</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuario:</label>
+                    <input type="text" id="username" placeholder="Ej: SaraC o MarcR" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" placeholder="Introduce tu contraseña" required>
+                </div>
+                <button type="submit" class="btn-primary">Acceder</button>
+            </form>
+            <div class="demo-credentials">
+                <p><strong>Credenciales Demo:</strong></p>
+                <p>SaraC / JadeEgo</p>
+                <p>MarcR / PituBlue</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Dashboard Principal -->
+            <div id="dashboard" class="dashboard">
+                <div class="welcome-section">
+                    <h1>🌱 Bienvenido a tu Smart Garden</h1>
+                    <p>Gestiona tu jardín inteligente con datos meteorológicos en tiempo real</p>
+                </div>
+
+                <!-- Configuración de API -->
+                <div class="api-config-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-key"></i> Configuración de API</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="api-form">
+                                <label for="apiKey">API Key de Meteocat:</label>
+                                <input type="text" id="apiKey" placeholder="Ej: 1234abc56789def01234567890abcdef">
+                                <button id="saveApiKey" class="btn-secondary">Guardar API Key</button>
+                                <div class="help-text">
+                                    <p><strong>Ayuda:</strong> La clave de la API es una cadena alfanumérica de 32 caracteres.</p>
+                                    <p>Puedes obtenerla en: <a href="https://www.meteo.cat" target="_blank">meteo.cat</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard de Métricas -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-thermometer-half"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3 id="temperature">22°C</h3>
+                            <p>Temperatura Actual</p>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-cloud-rain"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3 id="humidity">65%</h3>
+                            <p>Humedad</p>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3 id="soilMoisture">78%</h3>
+                            <p>Humedad del Suelo</p>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3 id="lightLevel">850 lux</h3>
+                            <p>Nivel de Luz</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recomendaciones -->
+                <div class="recommendations-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-lightbulb"></i> Recomendaciones Inteligentes</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="recommendations">
+                                <div class="recommendation-item">
+                                    <i class="fas fa-tint text-blue"></i>
+                                    <span>Riego automático programado para las 6:00 AM</span>
+                                </div>
+                                <div class="recommendation-item">
+                                    <i class="fas fa-thermometer-half text-orange"></i>
+                                    <span>Temperatura óptima para el crecimiento</span>
+                                </div>
+                                <div class="recommendation-item">
+                                    <i class="fas fa-sun text-yellow"></i>
+                                    <span>Exposición solar adecuada detectada</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plantas Registradas -->
+                <div class="plants-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-seedling"></i> Mis Plantas</h3>
+                            <button id="addPlantBtn" class="btn-primary">+ Añadir Planta</button>
+                        </div>
+                        <div class="card-content">
+                            <div class="plants-grid" id="plantsGrid">
+                                <div class="plant-card">
+                                    <div class="plant-image">
+                                        <i class="fas fa-leaf"></i>
+                                    </div>
+                                    <div class="plant-info">
+                                        <h4>Tomate Cherry</h4>
+                                        <p>Estado: <span class="status healthy">Saludable</span></p>
+                                        <p>Último riego: Hace 2 horas</p>
+                                    </div>
+                                    <div class="plant-actions">
+                                        <button class="btn-icon" title="Regar"><i class="fas fa-tint"></i></button>
+                                        <button class="btn-icon" title="Editar"><i class="fas fa-edit"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="plant-card">
+                                    <div class="plant-image">
+                                        <i class="fas fa-seedling"></i>
+                                    </div>
+                                    <div class="plant-info">
+                                        <h4>Albahaca</h4>
+                                        <p>Estado: <span class="status healthy">Saludable</span></p>
+                                        <p>Último riego: Hace 1 hora</p>
+                                    </div>
+                                    <div class="plant-actions">
+                                        <button class="btn-icon" title="Regar"><i class="fas fa-tint"></i></button>
+                                        <button class="btn-icon" title="Editar"><i class="fas fa-edit"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="plant-card">
+                                    <div class="plant-image">
+                                        <i class="fas fa-tree"></i>
+                                    </div>
+                                    <div class="plant-info">
+                                        <h4>Pimiento</h4>
+                                        <p>Estado: <span class="status warning">Necesita atención</span></p>
+                                        <p>Último riego: Hace 5 horas</p>
+                                    </div>
+                                    <div class="plant-actions">
+                                        <button class="btn-icon urgent" title="Regar Urgente"><i class="fas fa-tint"></i></button>
+                                        <button class="btn-icon" title="Editar"><i class="fas fa-edit"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Historial de Actividades -->
+                <div class="activity-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-history"></i> Historial de Actividades</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="activity-list" id="activityList">
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-tint"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>Riego automático completado</h4>
+                                        <p>Tomate Cherry - 150ml de agua</p>
+                                        <span class="activity-time">Hace 2 horas</span>
+                                    </div>
+                                </div>
+
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-thermometer-half"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>Alerta de temperatura</h4>
+                                        <p>Temperatura subió a 28°C - Riego adicional aplicado</p>
+                                        <span class="activity-time">Hace 4 horas</span>
+                                    </div>
+                                </div>
+
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-seedling"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>Nueva planta añadida</h4>
+                                        <p>Albahaca registrada en el sistema</p>
+                                        <span class="activity-time">Ayer</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mensaje cuando no hay API Key -->
+            <div id="noApiMessage" class="no-api-message" style="display: none;">
+                <div class="card">
+                    <div class="card-content">
+                        <h3><i class="fas fa-info-circle"></i> Datos de Ejemplo</h3>
+                        <p>Actualmente mostrando datos simulados. Configura tu API Key de Meteocat para obtener datos en tiempo real.</p>
+                        <div class="demo-data">
+                            <h4>Datos de Ejemplo Activos:</h4>
+                            <ul>
+                                <li>🌡️ Temperatura: 22°C (simulada)</li>
+                                <li>💧 Humedad: 65% (simulada)</li>
+                                <li>🌱 Humedad del suelo: 78% (simulada)</li>
+                                <li>☀️ Nivel de luz: 850 lux (simulado)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Smart Garden Assistant - Demo/Esqueleto</p>
+            <p>Desarrollado por Marc Rodríguez - Código real disponible bajo petición</p>
+        </div>
+    </footer>
+
+    <script>
+        class SmartGardenAssistant {
+            constructor() {
+                this.currentUser = null;
+                this.apiKey = localStorage.getItem('meteocatApiKey') || '';
+                this.initializeEventListeners();
+                this.checkApiKeyStatus();
+            }
+
+            initializeEventListeners() {
+                // Login
+                document.getElementById('loginBtn').addEventListener('click', () => {
+                    this.showLoginModal();
+                });
+
+                document.getElementById('loginForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleLogin();
+                });
+
+                document.querySelector('.close').addEventListener('click', () => {
+                    this.hideLoginModal();
+                });
+
+                // API Key
+                document.getElementById('saveApiKey').addEventListener('click', () => {
+                    this.saveApiKey();
+                });
+
+                // Add Plant
+                document.getElementById('addPlantBtn').addEventListener('click', () => {
+                    this.addPlant();
+                });
+
+                // Plant actions
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.btn-icon')) {
+                        this.handlePlantAction(e.target.closest('.btn-icon'));
+                    }
+                });
+            }
+
+            showLoginModal() {
+                document.getElementById('loginModal').style.display = 'block';
+            }
+
+            hideLoginModal() {
+                document.getElementById('loginModal').style.display = 'none';
+            }
+
+            handleLogin() {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                // Credenciales válidas
+                const validCredentials = {
+                    'SaraC': 'JadeEgo',
+                    'MarcR': 'PituBlue'
+                };
+
+                if (validCredentials[username] === password) {
+                    this.currentUser = username;
+                    this.hideLoginModal();
+                    this.updateUI();
+                    this.showNotification(`Bienvenido, ${username}!`, 'success');
+                } else {
+                    this.showNotification('Credenciales incorrectas', 'error');
+                }
+            }
+
+            saveApiKey() {
+                const apiKey = document.getElementById('apiKey').value.trim();
+                
+                if (apiKey.length >= 20) {
+                    this.apiKey = apiKey;
+                    localStorage.setItem('meteocatApiKey', apiKey);
+                    this.checkApiKeyStatus();
+                    this.showNotification('API Key guardada correctamente', 'success');
+                    
+                    // Simular carga de datos reales
+                    this.loadRealData();
+                } else {
+                    this.showNotification('API Key debe tener al menos 20 caracteres', 'error');
+                }
+            }
+
+            checkApiKeyStatus() {
+                const noApiMessage = document.getElementById('noApiMessage');
+                
+                if (this.apiKey) {
+                    noApiMessage.style.display = 'none';
+                    document.getElementById('apiKey').value = this.apiKey;
+                } else {
+                    noApiMessage.style.display = 'block';
+                }
+            }
+
+            loadRealData() {
+                // Simular datos reales de la API
+                this.updateMetric('temperature', '24°C');
+                this.updateMetric('humidity', '72%');
+                this.updateMetric('soilMoisture', '82%');
+                this.updateMetric('lightLevel', '920 lux');
+                
+                this.showNotification('Datos actualizados desde la API', 'info');
+            }
+
+            updateMetric(id, value) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = value;
+                    element.style.animation = 'pulse 0.5s ease-in-out';
+                    setTimeout(() => {
+                        element.style.animation = '';
+                    }, 500);
+                }
+            }
+
+            addPlant() {
+                const plantsGrid = document.getElementById('plantsGrid');
+                const plantNames = ['Lavanda', 'Romero', 'Menta', 'Orégano', 'Cilantro'];
+                const randomName = plantNames[Math.floor(Math.random() * plantNames.length)];
+                
+                const plantCard = document.createElement('div');
+                plantCard.className = 'plant-card';
+                plantCard.innerHTML = `
+                    <div class="plant-image">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <div class="plant-info">
+                        <h4>${randomName}</h4>
+                        <p>Estado: <span class="status healthy">Saludable</span></p>
+                        <p>Último riego: Recién añadida</p>
+                    </div>
+                    <div class="plant-actions">
+                        <button class="btn-icon" title="Regar"><i class="fas fa-tint"></i></button>
+                        <button class="btn-icon" title="Editar"><i class="fas fa-edit"></i></button>
+                    </div>
+                `;
+                
+                plantsGrid.appendChild(plantCard);
+                this.showNotification(`${randomName} añadida al jardín`, 'success');
+            }
+
+            handlePlantAction(button) {
+                const plantCard = button.closest('.plant-card');
+                const plantName = plantCard.querySelector('h4').textContent;
+                const action = button.title;
+                
+                if (action === 'Regar') {
+                    const statusElement = plantCard.querySelector('.status');
+                    statusElement.textContent = 'Regada';
+                    statusElement.className = 'status healthy';
+                    this.showNotification(`${plantName} regada correctamente`, 'success');
+                    this.addActivity('Riego manual', `${plantName} - 100ml de agua`);
+                } else if (action === 'Editar') {
+                    this.showNotification(`Editando ${plantName}...`, 'info');
+                }
+            }
+
+            addActivity(title, description) {
+                const activityList = document.getElementById('activityList');
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                activityItem.innerHTML = `
+                    <div class="activity-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <div class="activity-content">
+                        <h4>${title}</h4>
+                        <p>${description}</p>
+                        <span class="activity-time">Ahora</span>
+                    </div>
+                `;
+                
+                activityList.insertBefore(activityItem, activityList.firstChild);
+            }
+
+            updateUI() {
+                if (this.currentUser) {
+                    document.querySelector('.welcome-section h1').textContent = `🌱 Bienvenido, ${this.currentUser}!`;
+                }
+            }
+
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 100);
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+        }
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', () => {
+            new SmartGardenAssistant();
+        });
+    </script>
+</body>
+</html>
