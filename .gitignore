@@ -1,0 +1,36 @@
+# Archivos de configuración con API keys (NO SUBIR A GIT)
+**/config.js
+**/api-keys.js
+**/secrets.js
+
+# Archivos de entorno
+.env
+.env.local
+.env.production
+
+# Logs
+*.log
+logs/
+
+# Archivos temporales
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (si se añaden en el futuro)
+node_modules/
+
+# Archivos de build
+dist/
+build/
+
+# Archivos de backup
+*.bak
+*.backup
