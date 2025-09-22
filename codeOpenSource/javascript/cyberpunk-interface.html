@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +39,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
@@ -54,7 +55,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 20%, rgba(138, 43, 226, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 40% 40%, rgba(255, 0, 128, 0.05) 0%, transparent 50%);
@@ -64,8 +65,17 @@
         }
 
         @keyframes particleFloat {
-            0%, 100% { opacity: 0.3; transform: translateY(0px); }
-            50% { opacity: 0.6; transform: translateY(-20px); }
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: translateY(0px);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: translateY(-20px);
+            }
         }
 
         .container {
@@ -97,8 +107,13 @@
         }
 
         @keyframes titleGlow {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(20deg); }
+            0% {
+                filter: hue-rotate(0deg);
+            }
+
+            100% {
+                filter: hue-rotate(20deg);
+            }
         }
 
         .subtitle {
@@ -269,13 +284,23 @@
         }
 
         @keyframes orbitalSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         @keyframes orbitalPoint {
-            0% { transform: rotate(0deg) translateX(-50%) translateY(-60px); }
-            100% { transform: rotate(360deg) translateX(-50%) translateY(-60px); }
+            0% {
+                transform: rotate(0deg) translateX(-50%) translateY(-60px);
+            }
+
+            100% {
+                transform: rotate(360deg) translateX(-50%) translateY(-60px);
+            }
         }
 
         .counter-value {
@@ -312,8 +337,13 @@
         }
 
         @keyframes barGrow {
-            from { height: 0; }
-            to { height: var(--bar-height, 100%); }
+            from {
+                height: 0;
+            }
+
+            to {
+                height: var(--bar-height, 100%);
+            }
         }
 
         .bar::before {
@@ -356,8 +386,15 @@
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .activity-time {
@@ -400,19 +437,51 @@
         }
 
         @keyframes glitch-1 {
-            0%, 100% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
+
+            0%,
+            100% {
+                transform: translate(0);
+            }
+
+            20% {
+                transform: translate(-2px, 2px);
+            }
+
+            40% {
+                transform: translate(-2px, -2px);
+            }
+
+            60% {
+                transform: translate(2px, 2px);
+            }
+
+            80% {
+                transform: translate(2px, -2px);
+            }
         }
 
         @keyframes glitch-2 {
-            0%, 100% { transform: translate(0); }
-            20% { transform: translate(2px, -2px); }
-            40% { transform: translate(2px, 2px); }
-            60% { transform: translate(-2px, -2px); }
-            80% { transform: translate(-2px, 2px); }
+
+            0%,
+            100% {
+                transform: translate(0);
+            }
+
+            20% {
+                transform: translate(2px, -2px);
+            }
+
+            40% {
+                transform: translate(2px, 2px);
+            }
+
+            60% {
+                transform: translate(-2px, -2px);
+            }
+
+            80% {
+                transform: translate(-2px, 2px);
+            }
         }
 
         /* Responsive */
@@ -420,16 +489,16 @@
             .container {
                 padding: 1rem;
             }
-            
+
             .main-title {
                 font-size: 2rem;
             }
-            
+
             .data-selectors {
                 flex-direction: column;
                 align-items: center;
             }
-            
+
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
@@ -453,8 +522,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;700;900&display=swap" rel="stylesheet">
@@ -476,14 +550,14 @@
                 <div class="chip-selector" data-type="phishing">Phishing Attempts</div>
                 <div class="chip-selector" data-type="network">Network Traffic</div>
             </div>
-            
+
             <div class="selector-group">
                 <label class="selector-label">Período</label>
                 <div class="chip-selector active" data-period="24h">24 Hours</div>
                 <div class="chip-selector" data-period="7d">7 Days</div>
                 <div class="chip-selector" data-period="1m">1 Month</div>
             </div>
-            
+
             <div class="selector-group">
                 <label class="selector-label">Región</label>
                 <div class="chip-selector active" data-region="all">All Regions</div>
@@ -603,7 +677,7 @@
                     period: '24h',
                     region: 'all'
                 };
-                
+
                 this.dataSets = {
                     malware: {
                         '24h': { score: 87, threats: 23, health: 94, attacks: [40, 75, 60, 30], traffic: [60, 85, 45, 90, 70, 55] },
@@ -660,22 +734,22 @@
 
             updateDashboard() {
                 this.showLoading();
-                
+
                 setTimeout(() => {
                     const data = this.dataSets[this.currentData.type][this.currentData.period];
-                    
+
                     // Actualizar contadores
                     this.animateCounter('securityScore', data.score);
                     this.animateCounter('threatCount', data.threats);
                     this.animateCounter('systemHealth', data.health);
-                    
+
                     // Actualizar gráficos
                     this.updateBarChart('networkChart', data.traffic);
                     this.updateBarChart('attackChart', data.attacks);
-                    
+
                     // Actualizar actividad reciente
                     this.updateActivityList();
-                    
+
                     this.hideLoading();
                 }, 1000);
             }
@@ -699,7 +773,7 @@
             updateBarChart(chartId, data) {
                 const chart = document.getElementById(chartId);
                 const bars = chart.querySelectorAll('.bar');
-                
+
                 bars.forEach((bar, index) => {
                     if (data[index]) {
                         bar.style.setProperty('--bar-height', `${data[index]}%`);
@@ -734,7 +808,7 @@
 
                 const activityList = document.getElementById('activityList');
                 const currentActivities = activities[this.currentData.type];
-                
+
                 activityList.innerHTML = '';
                 currentActivities.forEach(activity => {
                     const li = document.createElement('li');
@@ -762,4 +836,5 @@
         });
     </script>
 </body>
+
 </html>
