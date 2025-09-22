@@ -125,6 +125,20 @@
             margin-bottom: 3rem;
         }
 
+        .author-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .author-link:hover {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+            transform: translateY(-1px);
+        }
+
         .feature-card {
             background: var(--card-bg);
             padding: 2rem;
@@ -604,7 +618,7 @@
                 <div class="credit-item">
                     <div class="credit-title">👨‍💻 Desarrollador</div>
                     <p class="credit-description">
-                        <strong>Marc Rodríguez Martínez</strong><br>
+                        <strong><a href="https://github.com/RoMa-88/portfolio-personal#contact" target="_blank" class="author-link">Marc RoMa-88</a></strong><br>
                         Projecte personal d'anàlisi micològica
                     </p>
                 </div>

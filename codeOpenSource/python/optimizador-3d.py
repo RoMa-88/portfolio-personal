@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 🧱 Optimizador de Corte 3D para Bloques de Espuma
-Autor: Marc Rodríguez (@RoMa-88)
+Autor: Marc RoMa-88 (@RoMa-88)
 Fecha: 2025
 
 Proyecto Python para simular y optimizar la colocación de piezas dentro de un bloque cúbico de espuma,
@@ -261,7 +261,7 @@ def main():
     """Función principal"""
     print("🧱 Optimizador de Corte 3D para Bloques de Espuma")
     print("=" * 50)
-    print("Autor: Marc Rodríguez (@RoMa-88)")
+    print("Autor: Marc RoMa-88 (@RoMa-88)")
     print()
     
     # Crear bloque de ejemplo (118x200x180 cm)

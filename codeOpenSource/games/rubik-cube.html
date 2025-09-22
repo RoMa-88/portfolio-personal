@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎲 Cubo de Rubik 3D - Marc Rodríguez</title>
+    <title>🎲 Cubo de Rubik 3D - Marc RoMa-88</title>
     <style>
         :root {
             --background-color: #1a1a2e;
@@ -211,6 +211,20 @@
             transform: scale(1.2);
         }
 
+        .author-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .author-link:hover {
+            color: #00d4ff;
+            border-bottom-color: #00d4ff;
+            transform: translateY(-1px);
+        }
+
         @media (max-width: 768px) {
             .controls, .info {
                 position: relative;
@@ -235,7 +249,7 @@
     <div class="game-container">
         <div class="header">
             <h1>🎲 Cubo de Rubik 3D</h1>
-            <p>Simulación interactiva con Three.js - Desarrollado por Marc Rodríguez</p>
+            <p>Simulación interactiva con Three.js - Desarrollado por <a href="https://github.com/RoMa-88/portfolio-personal#contact" target="_blank" class="author-link">Marc RoMa-88</a></p>
         </div>
 
         <div class="controls">

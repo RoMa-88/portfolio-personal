@@ -715,6 +715,20 @@ body {
     margin-bottom: var(--spacing-xs);
 }
 
+.author-link {
+    color: var(--primary-green);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.author-link:hover {
+    color: var(--primary-green-light);
+    border-bottom-color: var(--primary-green-light);
+    transform: translateY(-1px);
+}
+
 /* Notifications */
 .notification {
     position: fixed;

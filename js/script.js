@@ -28,7 +28,7 @@ function updateLanguage(lang) {
     });
     
     // Update page title
-    document.title = translations[currentLanguage].hero.title + ' - Marc Rodríguez';
+    document.title = translations[currentLanguage].hero.title + ' - Marc RoMa-88';
     
     // Update form placeholders
     updateFormPlaceholders();
