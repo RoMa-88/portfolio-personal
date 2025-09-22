@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍄 Índice Micológico Catalunya - Demo Interactivo</title>
+    <style>
+        :root {
+            --mushroom-bg: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --accent-green: #4a7c59;
+            --accent-orange: #e67e22;
+            --text-dark: #2d5016;
+            --text-light: #ffffff;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--mushroom-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--text-light);
+        }
+
+        .project-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        /* Aviso de API en uso */
+        .api-notice {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #f59e0b;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .notice-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .notice-icon {
+            font-size: 2.5rem;
+            color: #f59e0b;
+        }
+
+        .notice-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        .notice-content {
+            color: var(--text-light);
+        }
+
+        .notice-content p {
+            margin-bottom: 0.8rem;
+        }
+
+        .notice-content strong {
+            color: #f59e0b;
+        }
+
+        .notice-content a {
+            color: #f59e0b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .notice-content a:hover {
+            text-decoration: underline;
+        }
+
+        .project-description {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            color: var(--text-dark);
+        }
+
+        .description-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .feature-description {
+            color: #666666;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 1.5rem;
+            color: var(--text-dark);
+        }
+
+        .feature-list li::before {
+            content: "🍄";
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+
+        .algorithm-section {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            color: var(--text-dark);
+        }
+
+        .algorithm-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--text-dark);
+        }
+
+        .algorithm-steps {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: rgba(74, 124, 89, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .step-number {
+            background: var(--accent-green);
+            color: var(--text-light);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-dark);
+            font-size: 1.2rem;
+        }
+
+        .step-content p {
+            margin: 0;
+            color: #666666;
+        }
+
+        .demo-section {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--text-dark);
+        }
+
+        .demo-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+        }
+
+        .demo-container {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 3rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mushroom-icon {
+            font-size: 4rem;
+            color: var(--accent-green);
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .demo-message {
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .demo-description {
+            color: #666666;
+            margin-bottom: 2rem;
+        }
+
+        .demo-button {
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-orange));
+            color: var(--text-light);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 124, 89, 0.3);
+        }
+
+        .tech-stack {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            color: var(--text-dark);
+        }
+
+        .tech-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--text-dark);
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .tech-item {
+            background: rgba(74, 124, 89, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(74, 124, 89, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            background: rgba(74, 124, 89, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tech-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-green);
+        }
+
+        .tech-name {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .credits-section {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #f59e0b;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            color: var(--text-light);
+        }
+
+        .credits-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #f59e0b;
+        }
+
+        .credits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .credit-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .credit-title {
+            font-weight: 600;
+            color: #f59e0b;
+            margin-bottom: 0.5rem;
+        }
+
+        .credit-description {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .credit-link {
+            color: #f59e0b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .credit-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .project-title {
+                font-size: 2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .step-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .tech-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .credits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="project-title">🍄 Índice Micológico Catalunya</h1>
+            <p class="project-subtitle">Análisis de condiciones meteorológicas para recolección de setas</p>
+        </div>
+
+        <!-- Aviso de API en uso -->
+        <div class="api-notice">
+            <div class="notice-header">
+                <div class="notice-icon">🌤️</div>
+                <div class="notice-title">API Meteocat en Uso</div>
+            </div>
+            <div class="notice-content">
+                <p><strong>Este proyecto utiliza datos meteorológicos oficiales del Servei Meteorològic de Catalunya.</strong></p>
+                <p><strong>Créditos:</strong> Dades proporcionades per <a href="https://www.meteo.cat" target="_blank" rel="noopener">meteo.cat</a> - Generalitat de Catalunya</p>
+                <p><strong>Uso:</strong> Proyecto personal de análisis micológico • <strong>No comercial</strong></p>
+                <p><strong>Límites:</strong> 100 predicciones, 750 XEMA, 250 XDDE consultas por mes</p>
+                <p><strong>Válida hasta:</strong> 30 de septiembre de 2026</p>
+            </div>
+        </div>
+
+        <div class="project-description">
+            <h2>📋 Descripción del Proyecto</h2>
+            <p class="description-text">
+                El Índice Micológico Catalunya es un proyecto de análisis de datos meteorológicos que utiliza la API oficial de Meteocat para determinar las mejores condiciones para la recolección de setas en diferentes regiones de Catalunya.
+            </p>
+            <p class="description-text">
+                El sistema analiza variables como temperatura, humedad relativa, precipitaciones y días transcurridos desde la última lluvia para generar un índice de idoneidad micológica personalizado.
+            </p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🌡️</div>
+                <h3 class="feature-title">Análisis Meteorológico</h3>
+                <p class="feature-description">
+                    Procesamiento de datos en tiempo real de estaciones meteorológicas oficiales.
+                </p>
+                <ul class="feature-list">
+                    <li>Temperatura óptima (8-20°C)</li>
+                    <li>Humedad relativa (>70%)</li>
+                    <li>Días desde última lluvia</li>
+                    <li>Análisis de tendencias</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🧮</div>
+                <h3 class="feature-title">Algoritmo Personalizado</h3>
+                <p class="feature-description">
+                    Algoritmo desarrollado específicamente para condiciones micológicas en Catalunya.
+                </p>
+                <ul class="feature-list">
+                    <li>Puntuación de idoneidad</li>
+                    <li>Recomendaciones automáticas</li>
+                    <li>Análisis por regiones</li>
+                    <li>Predicciones a corto plazo</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">Visualización de Datos</h3>
+                <p class="feature-description">
+                    Gráficos y visualizaciones interactivas de las condiciones meteorológicas.
+                </p>
+                <ul class="feature-list">
+                    <li>Gráficos de temperatura</li>
+                    <li>Histogramas de humedad</li>
+                    <li>Mapas de precipitación</li>
+                    <li>Dashboard interactivo</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="algorithm-section">
+            <h2 class="algorithm-title">🔬 Algoritmo Micológico</h2>
+            <div class="algorithm-steps">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Recolección de Datos</h4>
+                        <p>Consulta a la API de Meteocat para obtener datos actuales de temperatura, humedad y precipitaciones de las estaciones XO (Vic) y XL (El Prat de Llobregat).</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Análisis de Condiciones</h4>
+                        <p>Evaluación de las condiciones meteorológicas según parámetros óptimos para el crecimiento de setas: temperatura entre 8-20°C, humedad >70%, y lluvia reciente.</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Cálculo del Índice</h4>
+                        <p>Aplicación del algoritmo personalizado que asigna puntuaciones a cada variable y genera un índice de idoneidad micológica de 0 a 10.</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Generación de Recomendaciones</h4>
+                        <p>Interpretación del índice para generar recomendaciones específicas sobre la idoneidad del momento para la recolección de setas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2 class="demo-title">🚀 Demo Interactivo</h2>
+            <div class="demo-container">
+                <div class="mushroom-icon">🍄</div>
+                <div class="demo-message">¡Análisis Micológico en Acción!</div>
+                <p class="demo-description">
+                    Prueba el sistema de análisis de condiciones meteorológicas para recolección de setas en tiempo real.
+                </p>
+                <a href="#" class="demo-button" onclick="runDemo()">🌤️ Analizar Condiciones Actuales</a>
+            </div>
+        </div>
+
+        <div class="tech-stack">
+            <h2 class="tech-title">🛠️ Stack Tecnológico</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <div class="tech-icon">🐍</div>
+                    <div class="tech-name">Python</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">🌤️</div>
+                    <div class="tech-name">Meteocat API</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">📊</div>
+                    <div class="tech-name">Data Analysis</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">🧮</div>
+                    <div class="tech-name">Algoritmo Personalizado</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="credits-section">
+            <h2 class="credits-title">📚 Créditos y Referencias</h2>
+            <div class="credits-grid">
+                <div class="credit-item">
+                    <div class="credit-title">🌤️ Servei Meteorològic de Catalunya</div>
+                    <p class="credit-description">
+                        <a href="https://www.meteo.cat" class="credit-link" target="_blank" rel="noopener">meteo.cat</a><br>
+                        Dades meteorològiques oficials de la Generalitat de Catalunya
+                    </p>
+                </div>
+                <div class="credit-item">
+                    <div class="credit-title">🔗 API Meteocat</div>
+                    <p class="credit-description">
+                        <a href="https://api.meteo.cat" class="credit-link" target="_blank" rel="noopener">api.meteo.cat</a><br>
+                        API oficial per a consultes de dades meteorològiques
+                    </p>
+                </div>
+                <div class="credit-item">
+                    <div class="credit-title">📖 Documentación</div>
+                    <p class="credit-description">
+                        <a href="https://apidocs.meteocat.gencat.cat/" class="credit-link" target="_blank" rel="noopener">apidocs.meteocat.gencat.cat</a><br>
+                        Documentació completa de l'API de Meteocat
+                    </p>
+                </div>
+                <div class="credit-item">
+                    <div class="credit-title">👨‍💻 Desarrollador</div>
+                    <p class="credit-description">
+                        <strong>Marc Rodríguez Martínez</strong><br>
+                        Projecte personal d'anàlisi micològica
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función demo
+        function runDemo() {
+            const button = document.querySelector('.demo-button');
+            const message = document.querySelector('.demo-message');
+            const description = document.querySelector('.demo-description');
+            
+            button.textContent = '⏳ Analizando...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                message.textContent = '✅ Análisis Completado';
+                description.textContent = 'Condiciones actuales: Temperatura 15°C, Humedad 78%, Lluvia hace 4 días. Índice micológico: 7.5/10 - ¡Buenas condiciones para buscar setas!';
+                button.textContent = '🔄 Analizar Nuevamente';
+                button.disabled = false;
+                button.onclick = () => location.reload();
+            }, 2000);
+        }
+
+        // Validar configuración al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🍄 Índice Micológico Catalunya - Demo cargado');
+            
+            // Verificar si hay configuración de API
+            if (typeof window.API_CONFIG !== 'undefined' && window.API_CONFIG.METEOCAT_API_KEY) {
+                console.log('✅ API Meteocat configurada correctamente');
+            } else {
+                console.warn('⚠️ API Meteocat no configurada. Ejecuta: node setup-simple.js');
+            }
+        });
+    </script>
+</body>
+</html>
