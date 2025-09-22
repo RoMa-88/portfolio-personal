@@ -33,7 +33,7 @@
             <form id="loginForm">
                 <div class="form-group">
                     <label for="username">Usuario:</label>
-                    <input type="text" id="username" placeholder="Ej: SaraC o MarcR" required>
+                    <input type="text" id="username" placeholder="Ej: Admin" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Contraseña:</label>
@@ -43,8 +43,8 @@
             </form>
             <div class="demo-credentials">
                 <p><strong>Credenciales Demo:</strong></p>
-                <p>SaraC / JadeEgo</p>
-                <p>MarcR / PituBlue</p>
+                <p>Usuario: Admin</p>
+                <p>Contraseña: 1234</p>
             </div>
         </div>
     </div>
@@ -59,20 +59,35 @@
                     <p>Gestiona tu jardín inteligente con datos meteorológicos en tiempo real</p>
                 </div>
 
-                <!-- Configuración de API -->
+                <!-- Configuración de API y Ubicación -->
                 <div class="api-config-section">
                     <div class="card">
                         <div class="card-header">
-                            <h3><i class="fas fa-key"></i> Configuración de API</h3>
+                            <h3><i class="fas fa-key"></i> Configuración del Sistema</h3>
                         </div>
                         <div class="card-content">
                             <div class="api-form">
-                                <label for="apiKey">API Key de Meteocat:</label>
-                                <input type="text" id="apiKey" placeholder="Ej: 1234abc56789def01234567890abcdef">
-                                <button id="saveApiKey" class="btn-secondary">Guardar API Key</button>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="userLocation">Ubicación del Jardín:</label>
+                                        <input type="text" id="userLocation" placeholder="Ej: Barcelona, España" value="Barcelona, España">
+                                        <small>Dirección específica para datos meteorológicos precisos</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="apiKey">API Key de Meteocat:</label>
+                                        <input type="text" id="apiKey" placeholder="Ej: 1234abc56789def01234567890abcdef">
+                                        <button id="saveApiKey" class="btn-secondary">Guardar API Key</button>
+                                    </div>
+                                </div>
                                 <div class="help-text">
-                                    <p><strong>Ayuda:</strong> La clave de la API es una cadena alfanumérica de 32 caracteres.</p>
-                                    <p>Puedes obtenerla en: <a href="https://www.meteo.cat" target="_blank">meteo.cat</a></p>
+                                    <p><strong>¿Por qué Meteocat?</strong> Proporciona datos meteorológicos precisos incluyendo:</p>
+                                    <ul>
+                                        <li>🌡️ Temperatura actual y pronóstico</li>
+                                        <li>💧 Humedad relativa del aire</li>
+                                        <li>☀️ Radiación solar y horas de sol</li>
+                                        <li>🌧️ Precipitaciones y probabilidad de lluvia</li>
+                                    </ul>
+                                    <p>Puedes obtener tu API Key gratuita en: <a href="https://www.meteo.cat" target="_blank">meteo.cat</a></p>
                                 </div>
                             </div>
                         </div>
@@ -116,8 +131,8 @@
                             <i class="fas fa-sun"></i>
                         </div>
                         <div class="metric-content">
-                            <h3 id="lightLevel">850 lux</h3>
-                            <p>Nivel de Luz</p>
+                            <h3 id="lightLevel">6.2 horas</h3>
+                            <p>Horas de Sol</p>
                         </div>
                     </div>
                 </div>
@@ -140,7 +155,7 @@
                                 </div>
                                 <div class="recommendation-item">
                                     <i class="fas fa-sun text-yellow"></i>
-                                    <span>Exposición solar adecuada detectada</span>
+                                    <span>Horas de sol óptimas para el crecimiento (6.2h)</span>
                                 </div>
                             </div>
                         </div>
@@ -263,8 +278,9 @@
                                 <li>🌡️ Temperatura: 22°C (simulada)</li>
                                 <li>💧 Humedad: 65% (simulada)</li>
                                 <li>🌱 Humedad del suelo: 78% (simulada)</li>
-                                <li>☀️ Nivel de luz: 850 lux (simulado)</li>
+                                <li>☀️ Horas de sol: 6.2 horas (simulada)</li>
                             </ul>
+                            <p><strong>Ubicación configurada:</strong> <span id="demoLocation">Barcelona, España</span></p>
                         </div>
                     </div>
                 </div>
@@ -285,8 +301,10 @@
             constructor() {
                 this.currentUser = null;
                 this.apiKey = localStorage.getItem('meteocatApiKey') || '';
+                this.userLocation = localStorage.getItem('userLocation') || 'Barcelona, España';
                 this.initializeEventListeners();
                 this.checkApiKeyStatus();
+                this.loadUserLocation();
             }
 
             initializeEventListeners() {
@@ -314,6 +332,11 @@
                     this.addPlant();
                 });
 
+                // Location change
+                document.getElementById('userLocation').addEventListener('change', () => {
+                    this.saveUserLocation();
+                });
+
                 // Plant actions
                 document.addEventListener('click', (e) => {
                     if (e.target.closest('.btn-icon')) {
@@ -334,10 +357,9 @@
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
 
-                // Credenciales válidas
+                // Credenciales válidas para demo
                 const validCredentials = {
-                    'SaraC': 'JadeEgo',
-                    'MarcR': 'PituBlue'
+                    'Admin': '1234'
                 };
 
                 if (validCredentials[username] === password) {
@@ -368,6 +390,12 @@
 
             checkApiKeyStatus() {
                 const noApiMessage = document.getElementById('noApiMessage');
+                const demoLocation = document.getElementById('demoLocation');
+                
+                // Actualizar ubicación en demo
+                if (demoLocation) {
+                    demoLocation.textContent = this.userLocation;
+                }
                 
                 if (this.apiKey) {
                     noApiMessage.style.display = 'none';
@@ -377,14 +405,43 @@
                 }
             }
 
+            loadUserLocation() {
+                document.getElementById('userLocation').value = this.userLocation;
+            }
+
+            saveUserLocation() {
+                this.userLocation = document.getElementById('userLocation').value;
+                localStorage.setItem('userLocation', this.userLocation);
+                this.showNotification(`Ubicación actualizada: ${this.userLocation}`, 'success');
+            }
+
             loadRealData() {
-                // Simular datos reales de la API
-                this.updateMetric('temperature', '24°C');
-                this.updateMetric('humidity', '72%');
-                this.updateMetric('soilMoisture', '82%');
-                this.updateMetric('lightLevel', '920 lux');
+                // Simular datos reales de la API basados en la ubicación
+                const location = this.userLocation;
                 
-                this.showNotification('Datos actualizados desde la API', 'info');
+                // Datos simulados según ubicación
+                let tempData = '22°C', humidityData = '65%', sunData = '6.2 horas';
+                
+                if (location.toLowerCase().includes('barcelona')) {
+                    tempData = '24°C';
+                    humidityData = '72%';
+                    sunData = '7.8 horas';
+                } else if (location.toLowerCase().includes('madrid')) {
+                    tempData = '26°C';
+                    humidityData = '58%';
+                    sunData = '8.5 horas';
+                } else if (location.toLowerCase().includes('valencia')) {
+                    tempData = '25°C';
+                    humidityData = '68%';
+                    sunData = '7.2 horas';
+                }
+                
+                this.updateMetric('temperature', tempData);
+                this.updateMetric('humidity', humidityData);
+                this.updateMetric('soilMoisture', '82%');
+                this.updateMetric('lightLevel', sunData);
+                
+                this.showNotification(`Datos actualizados para ${location}`, 'info');
             }
 
             updateMetric(id, value) {
