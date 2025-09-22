@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="rpg-dice-theme.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Alegreya:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.20.0/cannon.min.js"></script>
 </head>
 
 <body>
@@ -80,6 +82,21 @@
 
             <!-- Área de Resultados -->
             <div class="results-area">
+                <div class="dice-3d-container">
+                    <div id="dice3D" class="dice-3d-viewport">
+                        <!-- Three.js canvas se insertará aquí -->
+                    </div>
+                    <div class="dice-controls-3d">
+                        <button id="throwDice" class="throw-btn">
+                            <i class="fas fa-hand-rock"></i>
+                            Lanzar Dados
+                        </button>
+                        <button id="resetDice" class="reset-btn">
+                            <i class="fas fa-undo"></i>
+                            Reset
+                        </button>
+                    </div>
+                </div>
                 <div class="dice-display" id="diceDisplay">
                     <!-- Los dados aparecerán aquí -->
                 </div>
@@ -158,10 +175,17 @@
                 this.diceHistory = [];
                 this.currentDiceType = 'd6';
                 this.currentSides = 6;
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.world = null;
+                this.diceMeshes = [];
+                this.isRolling = false;
                 this.initializeEventListeners();
                 this.loadGameState();
                 this.renderPlayers();
                 this.addDemoPlayer();
+                this.init3D();
             }
 
             initializeEventListeners() {
@@ -174,6 +198,14 @@
 
                 document.getElementById('rollDice').addEventListener('click', () => {
                     this.rollDice();
+                });
+
+                document.getElementById('throwDice').addEventListener('click', () => {
+                    this.throwDice3D();
+                });
+
+                document.getElementById('resetDice').addEventListener('click', () => {
+                    this.resetDice3D();
                 });
 
                 // Jugadores
@@ -372,14 +404,17 @@
                         </div>
                         <div class="player-hp">
                             <span class="hp-label">Vida:</span>
-                            <span class="hp-value">${player.hp}/${player.maxHP}</span>
+                            <span class="hp-value ${player.hp > player.maxHP ? 'hp-exceeded' : ''}">${player.hp}/${player.maxHP}${player.hp > player.maxHP ? ' ⬆️' : ''}</span>
                             <div class="hp-bar">
-                                <div class="hp-fill" style="width: ${(player.hp / player.maxHP) * 100}%"></div>
+                                <div class="hp-fill ${player.hp > player.maxHP ? 'hp-exceeded-fill' : ''}" style="width: ${Math.min((player.hp / player.maxHP) * 100, 100)}%"></div>
+                                ${player.hp > player.maxHP ? `<div class="hp-exceeded-bar" style="width: ${((player.hp - player.maxHP) / player.maxHP) * 100}%"></div>` : ''}
                             </div>
                         </div>
                         <div class="player-actions">
                             <button class="hp-btn decrease" onclick="rpgGame.changeHP(${player.id}, -1)">-1</button>
                             <button class="hp-btn increase" onclick="rpgGame.changeHP(${player.id}, 1)">+1</button>
+                            <button class="hp-btn increase-big" onclick="rpgGame.changeHP(${player.id}, 5)">+5</button>
+                            <button class="hp-btn decrease-big" onclick="rpgGame.changeHP(${player.id}, -5)">-5</button>
                             <button class="hp-btn reset" onclick="rpgGame.resetHP(${player.id})">Reset</button>
                         </div>
                     `;
@@ -391,7 +426,8 @@
                 const player = this.players.find(p => p.id === playerId);
                 if (!player) return;
 
-                player.hp = Math.max(0, Math.min(player.maxHP, player.hp + change));
+                // Permitir HP negativo y exceder el máximo
+                player.hp = Math.max(0, player.hp + change);
                 
                 if (player.hp === 0) {
                     alert(`¡${player.name} ha perdido! ¡Por noob! 😄`);
@@ -448,6 +484,229 @@
                     this.players = gameState.players || [];
                     this.diceHistory = gameState.diceHistory || [];
                 }
+            }
+
+            init3D() {
+                // Configurar Three.js
+                const container = document.getElementById('dice3D');
+                const width = container.clientWidth;
+                const height = 300;
+
+                // Escena
+                this.scene = new THREE.Scene();
+                this.scene.background = new THREE.Color(0x1a1a1a);
+
+                // Cámara
+                this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+                this.camera.position.set(0, 5, 10);
+                this.camera.lookAt(0, 0, 0);
+
+                // Renderer
+                this.renderer = new THREE.WebGLRenderer({ antialias: true });
+                this.renderer.setSize(width, height);
+                this.renderer.shadowMap.enabled = true;
+                this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                container.appendChild(this.renderer.domElement);
+
+                // Iluminación
+                const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+                this.scene.add(ambientLight);
+
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(10, 10, 5);
+                directionalLight.castShadow = true;
+                this.scene.add(directionalLight);
+
+                // Mundo de física
+                this.world = new CANNON.World();
+                this.world.gravity.set(0, -9.82, 0);
+                this.world.broadphase = new CANNON.NaiveBroadphase();
+
+                // Suelo
+                const groundShape = new CANNON.Plane();
+                const groundBody = new CANNON.Body({ mass: 0 });
+                groundBody.addShape(groundShape);
+                groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+                this.world.add(groundBody);
+
+                const groundGeometry = new THREE.PlaneGeometry(20, 20);
+                const groundMaterial = new THREE.MeshLambertMaterial({ color: 0x8b4513 });
+                const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+                groundMesh.rotation.x = -Math.PI / 2;
+                groundMesh.receiveShadow = true;
+                this.scene.add(groundMesh);
+
+                // Animar
+                this.animate();
+            }
+
+            createDice3D(sides, x = 0, z = 0) {
+                let geometry, material, diceMesh, diceBody;
+
+                switch(sides) {
+                    case 2: // Moneda
+                        geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.1, 8);
+                        material = new THREE.MeshLambertMaterial({ color: 0xffd700 });
+                        diceMesh = new THREE.Mesh(geometry, material);
+                        diceBody = new CANNON.Body({ mass: 1 });
+                        diceBody.addShape(new CANNON.Cylinder(0.5, 0.5, 0.1, 8));
+                        break;
+                    
+                    case 4: // d4
+                        geometry = new THREE.TetrahedronGeometry(1);
+                        material = new THREE.MeshLambertMaterial({ color: 0x8b0000 });
+                        diceMesh = new THREE.Mesh(geometry, material);
+                        diceBody = new CANNON.Body({ mass: 1 });
+                        diceBody.addShape(new CANNON.ConvexPolyhedron(
+                            new THREE.TetrahedronGeometry(1).attributes.position.array
+                        ));
+                        break;
+                    
+                    case 6: // d6
+                        geometry = new THREE.BoxGeometry(1, 1, 1);
+                        material = new THREE.MeshLambertMaterial({ color: 0xffffff });
+                        diceMesh = new THREE.Mesh(geometry, material);
+                        diceBody = new CANNON.Body({ mass: 1 });
+                        diceBody.addShape(new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)));
+                        break;
+                    
+                    case 10: // d10
+                        geometry = new THREE.ConeGeometry(0.8, 1.5, 5);
+                        material = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+                        diceMesh = new THREE.Mesh(geometry, material);
+                        diceBody = new CANNON.Body({ mass: 1 });
+                        diceBody.addShape(new CANNON.Cone(0.8, 1.5, 5));
+                        break;
+                    
+                    case 20: // d20
+                        geometry = new THREE.OctahedronGeometry(1);
+                        material = new THREE.MeshLambertMaterial({ color: 0x0000ff });
+                        diceMesh = new THREE.Mesh(geometry, material);
+                        diceBody = new CANNON.Body({ mass: 1 });
+                        diceBody.addShape(new CANNON.ConvexPolyhedron(
+                            new THREE.OctahedronGeometry(1).attributes.position.array
+                        ));
+                        break;
+                    
+                    case 100: // d100
+                        geometry = new THREE.SphereGeometry(0.8, 20, 20);
+                        material = new THREE.MeshLambertMaterial({ color: 0xff00ff });
+                        diceMesh = new THREE.Mesh(geometry, material);
+                        diceBody = new CANNON.Body({ mass: 1 });
+                        diceBody.addShape(new CANNON.Sphere(0.8));
+                        break;
+                }
+
+                // Posición inicial
+                diceBody.position.set(x, 5, z);
+                diceMesh.position.set(x, 5, z);
+                diceMesh.castShadow = true;
+
+                // Añadir al mundo
+                this.world.add(diceBody);
+                this.scene.add(diceMesh);
+                this.diceMeshes.push({ mesh: diceMesh, body: diceBody, sides: sides });
+
+                return { mesh: diceMesh, body: diceBody };
+            }
+
+            throwDice3D() {
+                if (this.isRolling) return;
+                
+                this.isRolling = true;
+                const quantity = parseInt(document.getElementById('diceQuantity').value);
+                
+                // Limpiar dados anteriores
+                this.clearDice3D();
+                
+                // Crear nuevos dados
+                for (let i = 0; i < quantity; i++) {
+                    const x = (i - quantity/2) * 2;
+                    const z = Math.random() * 2 - 1;
+                    const dice = this.createDice3D(this.currentSides, x, z);
+                    
+                    // Aplicar fuerza aleatoria
+                    const force = new CANNON.Vec3(
+                        (Math.random() - 0.5) * 10,
+                        Math.random() * 5 + 5,
+                        (Math.random() - 0.5) * 10
+                    );
+                    dice.body.applyImpulse(force, dice.body.position);
+                    
+                    // Aplicar torque aleatorio
+                    const torque = new CANNON.Vec3(
+                        Math.random() * 5,
+                        Math.random() * 5,
+                        Math.random() * 5
+                    );
+                    dice.body.angularVelocity = torque;
+                }
+
+                // Simular tirada después de un tiempo
+                setTimeout(() => {
+                    this.simulateDiceRoll();
+                }, 2000);
+            }
+
+            clearDice3D() {
+                this.diceMeshes.forEach(dice => {
+                    this.world.remove(dice.body);
+                    this.scene.remove(dice.mesh);
+                });
+                this.diceMeshes = [];
+            }
+
+            resetDice3D() {
+                this.clearDice3D();
+                this.isRolling = false;
+                document.getElementById('diceDisplay').innerHTML = '';
+                document.getElementById('resultSummary').innerHTML = '';
+            }
+
+            simulateDiceRoll() {
+                const results = [];
+                
+                this.diceMeshes.forEach(dice => {
+                    let result;
+                    if (dice.sides === 2) {
+                        result = Math.floor(Math.random() * 2);
+                    } else {
+                        result = Math.floor(Math.random() * dice.sides) + 1;
+                    }
+                    results.push(result);
+                });
+
+                // Mostrar resultados
+                this.displayResults(results);
+                this.updateStats();
+                this.saveGameState();
+                
+                // Guardar en historial
+                this.diceHistory.push({
+                    type: this.currentDiceType,
+                    sides: this.currentSides,
+                    quantity: results.length,
+                    results: results,
+                    timestamp: new Date()
+                });
+
+                this.isRolling = false;
+            }
+
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                
+                // Actualizar física
+                this.world.step(1/60);
+                
+                // Sincronizar meshes con cuerpos físicos
+                this.diceMeshes.forEach(dice => {
+                    dice.mesh.position.copy(dice.body.position);
+                    dice.mesh.quaternion.copy(dice.body.quaternion);
+                });
+                
+                // Renderizar
+                this.renderer.render(this.scene, this.camera);
             }
         }
 
