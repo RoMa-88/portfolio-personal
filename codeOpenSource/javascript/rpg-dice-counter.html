@@ -185,7 +185,11 @@
                 this.loadGameState();
                 this.renderPlayers();
                 this.addDemoPlayer();
-                this.init3D();
+                
+                // Intentar inicializar 3D después de un pequeño delay
+                setTimeout(() => {
+                    this.init3D();
+                }, 100);
             }
 
             initializeEventListeners() {
@@ -201,11 +205,22 @@
                 });
 
                 document.getElementById('throwDice').addEventListener('click', () => {
-                    this.throwDice3D();
+                    if (this.scene && this.renderer) {
+                        this.throwDice3D();
+                    } else {
+                        // Fallback a dados normales
+                        this.rollDice();
+                    }
                 });
 
                 document.getElementById('resetDice').addEventListener('click', () => {
-                    this.resetDice3D();
+                    if (this.scene && this.renderer) {
+                        this.resetDice3D();
+                    } else {
+                        // Fallback: limpiar área de resultados
+                        document.getElementById('diceDisplay').innerHTML = '';
+                        document.getElementById('resultSummary').innerHTML = '';
+                    }
                 });
 
                 // Jugadores
@@ -223,6 +238,16 @@
 
                 // Seleccionar dado por defecto
                 this.selectDice(document.querySelector('.dice-btn[data-sides="6"]'));
+
+                // Event listeners para botones de HP (usando delegación de eventos)
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.hp-btn')) {
+                        this.handleHPButton(e.target.closest('.hp-btn'));
+                    }
+                    if (e.target.closest('.delete-player')) {
+                        this.handleDeletePlayer(e.target.closest('.delete-player'));
+                    }
+                });
             }
 
             selectDice(button) {
@@ -398,9 +423,9 @@
                     playerCard.innerHTML = `
                         <div class="player-header">
                             <h3 class="player-name">${player.name}</h3>
-                            <button class="delete-player" onclick="rpgGame.deletePlayer(${player.id})">
-                                <i class="fas fa-times"></i>
-                            </button>
+                        <button class="delete-player" data-player-id="${player.id}" data-action="delete">
+                            <i class="fas fa-times"></i>
+                        </button>
                         </div>
                         <div class="player-hp">
                             <span class="hp-label">Vida:</span>
@@ -411,11 +436,11 @@
                             </div>
                         </div>
                         <div class="player-actions">
-                            <button class="hp-btn decrease" onclick="rpgGame.changeHP(${player.id}, -1)">-1</button>
-                            <button class="hp-btn increase" onclick="rpgGame.changeHP(${player.id}, 1)">+1</button>
-                            <button class="hp-btn increase-big" onclick="rpgGame.changeHP(${player.id}, 5)">+5</button>
-                            <button class="hp-btn decrease-big" onclick="rpgGame.changeHP(${player.id}, -5)">-5</button>
-                            <button class="hp-btn reset" onclick="rpgGame.resetHP(${player.id})">Reset</button>
+                            <button class="hp-btn decrease" data-player-id="${player.id}" data-hp-change="-1">-1</button>
+                            <button class="hp-btn increase" data-player-id="${player.id}" data-hp-change="1">+1</button>
+                            <button class="hp-btn increase-big" data-player-id="${player.id}" data-hp-change="5">+5</button>
+                            <button class="hp-btn decrease-big" data-player-id="${player.id}" data-hp-change="-5">-5</button>
+                            <button class="hp-btn reset" data-player-id="${player.id}" data-hp-action="reset">Reset</button>
                         </div>
                     `;
                     playersGrid.appendChild(playerCard);
@@ -454,6 +479,23 @@
                 }
             }
 
+            handleHPButton(button) {
+                const playerId = parseInt(button.dataset.playerId);
+                const hpChange = button.dataset.hpChange;
+                const hpAction = button.dataset.hpAction;
+
+                if (hpAction === 'reset') {
+                    this.resetHP(playerId);
+                } else if (hpChange) {
+                    this.changeHP(playerId, parseInt(hpChange));
+                }
+            }
+
+            handleDeletePlayer(button) {
+                const playerId = parseInt(button.dataset.playerId);
+                this.deletePlayer(playerId);
+            }
+
             addDemoPlayer() {
                 if (this.players.length === 0) {
                     const demoPlayer = {
@@ -487,57 +529,86 @@
             }
 
             init3D() {
-                // Configurar Three.js
-                const container = document.getElementById('dice3D');
-                const width = container.clientWidth;
-                const height = 300;
+                try {
+                    // Configurar Three.js
+                    const container = document.getElementById('dice3D');
+                    if (!container) {
+                        console.error('Container dice3D no encontrado');
+                        return;
+                    }
 
-                // Escena
-                this.scene = new THREE.Scene();
-                this.scene.background = new THREE.Color(0x1a1a1a);
+                    const width = container.clientWidth || 400;
+                    const height = 300;
 
-                // Cámara
-                this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-                this.camera.position.set(0, 5, 10);
-                this.camera.lookAt(0, 0, 0);
+                    // Escena
+                    this.scene = new THREE.Scene();
+                    this.scene.background = new THREE.Color(0x2a2a2a);
 
-                // Renderer
-                this.renderer = new THREE.WebGLRenderer({ antialias: true });
-                this.renderer.setSize(width, height);
-                this.renderer.shadowMap.enabled = true;
-                this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-                container.appendChild(this.renderer.domElement);
+                    // Cámara
+                    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+                    this.camera.position.set(0, 5, 10);
+                    this.camera.lookAt(0, 0, 0);
 
-                // Iluminación
-                const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
-                this.scene.add(ambientLight);
+                    // Renderer
+                    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+                    this.renderer.setSize(width, height);
+                    this.renderer.shadowMap.enabled = true;
+                    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                    this.renderer.setClearColor(0x2a2a2a);
+                    
+                    // Limpiar container antes de añadir
+                    container.innerHTML = '';
+                    container.appendChild(this.renderer.domElement);
 
-                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-                directionalLight.position.set(10, 10, 5);
-                directionalLight.castShadow = true;
-                this.scene.add(directionalLight);
+                    // Iluminación
+                    const ambientLight = new THREE.AmbientLight(0x404040, 0.8);
+                    this.scene.add(ambientLight);
 
-                // Mundo de física
-                this.world = new CANNON.World();
-                this.world.gravity.set(0, -9.82, 0);
-                this.world.broadphase = new CANNON.NaiveBroadphase();
+                    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+                    directionalLight.position.set(10, 10, 5);
+                    directionalLight.castShadow = true;
+                    directionalLight.shadow.mapSize.width = 2048;
+                    directionalLight.shadow.mapSize.height = 2048;
+                    this.scene.add(directionalLight);
 
-                // Suelo
-                const groundShape = new CANNON.Plane();
-                const groundBody = new CANNON.Body({ mass: 0 });
-                groundBody.addShape(groundShape);
-                groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
-                this.world.add(groundBody);
+                    // Mundo de física
+                    this.world = new CANNON.World();
+                    this.world.gravity.set(0, -9.82, 0);
+                    this.world.broadphase = new CANNON.NaiveBroadphase();
 
-                const groundGeometry = new THREE.PlaneGeometry(20, 20);
-                const groundMaterial = new THREE.MeshLambertMaterial({ color: 0x8b4513 });
-                const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-                groundMesh.rotation.x = -Math.PI / 2;
-                groundMesh.receiveShadow = true;
-                this.scene.add(groundMesh);
+                    // Suelo
+                    const groundShape = new CANNON.Plane();
+                    const groundBody = new CANNON.Body({ mass: 0 });
+                    groundBody.addShape(groundShape);
+                    groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+                    this.world.add(groundBody);
 
-                // Animar
-                this.animate();
+                    const groundGeometry = new THREE.PlaneGeometry(20, 20);
+                    const groundMaterial = new THREE.MeshLambertMaterial({ color: 0x8b4513 });
+                    const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+                    groundMesh.rotation.x = -Math.PI / 2;
+                    groundMesh.receiveShadow = true;
+                    this.scene.add(groundMesh);
+
+                    // Añadir un cubo de prueba para verificar que funciona
+                    const testGeometry = new THREE.BoxGeometry(1, 1, 1);
+                    const testMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+                    const testCube = new THREE.Mesh(testGeometry, testMaterial);
+                    testCube.position.set(0, 2, 0);
+                    this.scene.add(testCube);
+
+                    console.log('Three.js inicializado correctamente');
+                    
+                    // Animar
+                    this.animate();
+                } catch (error) {
+                    console.error('Error inicializando Three.js:', error);
+                    // Fallback: mostrar mensaje de error
+                    const container = document.getElementById('dice3D');
+                    if (container) {
+                        container.innerHTML = '<div style="color: white; text-align: center; padding: 50px;">Error cargando vista 3D. Usa los dados normales.</div>';
+                    }
+                }
             }
 
             createDice3D(sides, x = 0, z = 0) {
@@ -626,20 +697,22 @@
                     const dice = this.createDice3D(this.currentSides, x, z);
                     
                     // Aplicar fuerza aleatoria
-                    const force = new CANNON.Vec3(
-                        (Math.random() - 0.5) * 10,
-                        Math.random() * 5 + 5,
-                        (Math.random() - 0.5) * 10
-                    );
-                    dice.body.applyImpulse(force, dice.body.position);
-                    
-                    // Aplicar torque aleatorio
-                    const torque = new CANNON.Vec3(
-                        Math.random() * 5,
-                        Math.random() * 5,
-                        Math.random() * 5
-                    );
-                    dice.body.angularVelocity = torque;
+                    if (dice.body) {
+                        const force = new CANNON.Vec3(
+                            (Math.random() - 0.5) * 10,
+                            Math.random() * 5 + 5,
+                            (Math.random() - 0.5) * 10
+                        );
+                        dice.body.applyImpulse(force, dice.body.position);
+                        
+                        // Aplicar torque aleatorio
+                        const torque = new CANNON.Vec3(
+                            Math.random() * 5,
+                            Math.random() * 5,
+                            Math.random() * 5
+                        );
+                        dice.body.angularVelocity = torque;
+                    }
                 }
 
                 // Simular tirada después de un tiempo
@@ -649,10 +722,12 @@
             }
 
             clearDice3D() {
-                this.diceMeshes.forEach(dice => {
-                    this.world.remove(dice.body);
-                    this.scene.remove(dice.mesh);
-                });
+                if (this.diceMeshes && this.world && this.scene) {
+                    this.diceMeshes.forEach(dice => {
+                        if (dice.body) this.world.remove(dice.body);
+                        if (dice.mesh) this.scene.remove(dice.mesh);
+                    });
+                }
                 this.diceMeshes = [];
             }
 
@@ -694,19 +769,25 @@
             }
 
             animate() {
-                requestAnimationFrame(() => this.animate());
-                
-                // Actualizar física
-                this.world.step(1/60);
-                
-                // Sincronizar meshes con cuerpos físicos
-                this.diceMeshes.forEach(dice => {
-                    dice.mesh.position.copy(dice.body.position);
-                    dice.mesh.quaternion.copy(dice.body.quaternion);
-                });
-                
-                // Renderizar
-                this.renderer.render(this.scene, this.camera);
+                if (this.renderer && this.scene && this.camera) {
+                    requestAnimationFrame(() => this.animate());
+                    
+                    // Actualizar física
+                    if (this.world) {
+                        this.world.step(1/60);
+                        
+                        // Sincronizar meshes con cuerpos físicos
+                        this.diceMeshes.forEach(dice => {
+                            if (dice.mesh && dice.body) {
+                                dice.mesh.position.copy(dice.body.position);
+                                dice.mesh.quaternion.copy(dice.body.quaternion);
+                            }
+                        });
+                    }
+                    
+                    // Renderizar
+                    this.renderer.render(this.scene, this.camera);
+                }
             }
         }
 
