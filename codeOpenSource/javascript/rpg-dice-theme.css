@@ -585,13 +585,14 @@ body {
 
 /* Tarjetas de Jugadores */
 .player-card {
-    background: var(--parchment);
+    background: linear-gradient(135deg, var(--parchment) 0%, #f5f5dc 30%, #f0f0e6 70%, var(--parchment) 100%);
     border-radius: 15px;
     padding: var(--spacing-lg);
     box-shadow: var(--shadow-parchment);
     border: 2px solid var(--wood-dark);
     position: relative;
     transition: all 0.3s ease;
+    overflow: hidden;
 }
 
 .player-card:hover {
@@ -605,8 +606,9 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
+    height: 8px;
     border-radius: 13px 13px 0 0;
+    z-index: 1;
 }
 
 /* Degradados por Color de Jugador */
@@ -639,6 +641,8 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--spacing-md);
+    position: relative;
+    z-index: 2;
 }
 
 .player-name {
@@ -660,6 +664,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    z-index: 3;
 }
 
 .delete-player:hover {
@@ -669,6 +675,8 @@ body {
 
 .player-hp {
     margin-bottom: var(--spacing-md);
+    position: relative;
+    z-index: 2;
 }
 
 .hp-label {
@@ -692,6 +700,7 @@ body {
     border-radius: 10px;
     margin-top: var(--spacing-xs);
     overflow: hidden;
+    position: relative;
 }
 
 .hp-fill {
@@ -714,6 +723,8 @@ body {
     transition: width 0.3s ease;
     border-radius: 8px;
     opacity: 0.8;
+    pointer-events: none;
+    z-index: 1;
 }
 
 .hp-value.hp-exceeded {
@@ -726,6 +737,8 @@ body {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: var(--spacing-sm);
+    position: relative;
+    z-index: 2;
 }
 
 .hp-btn {
@@ -736,6 +749,8 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    position: relative;
+    z-index: 3;
 }
 
 .hp-btn.decrease {
