@@ -49,6 +49,81 @@
         </div>
     </div>
 
+    <!-- Modal de Formulario de Planta -->
+    <div id="plantModal" class="modal">
+        <div class="modal-content large">
+            <span class="close-plant">&times;</span>
+            <h2 id="plantModalTitle">Añadir Nueva Planta</h2>
+            <form id="plantForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="plantName">Nombre de la Planta:</label>
+                        <input type="text" id="plantName" placeholder="Ej: Tomate Cherry" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="plantType">Tipo de Planta:</label>
+                        <select id="plantType" required>
+                            <option value="">Seleccionar tipo...</option>
+                            <option value="vegetal">Vegetal</option>
+                            <option value="hierba">Hierba Aromática</option>
+                            <option value="flor">Flor</option>
+                            <option value="arbusto">Arbusto</option>
+                            <option value="arbol">Árbol</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="plantVariety">Variedad:</label>
+                        <input type="text" id="plantVariety" placeholder="Ej: Cherry, Roma, Beefsteak">
+                    </div>
+                    <div class="form-group">
+                        <label for="plantDate">Fecha de Plantación:</label>
+                        <input type="date" id="plantDate" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="plantLocation">Ubicación en el Jardín:</label>
+                        <input type="text" id="plantLocation" placeholder="Ej: Maceta 1, Huerto A, Balcón">
+                    </div>
+                    <div class="form-group">
+                        <label for="plantStatus">Estado Actual:</label>
+                        <select id="plantStatus" required>
+                            <option value="healthy">Saludable</option>
+                            <option value="warning">Necesita atención</option>
+                            <option value="critical">Crítico</option>
+                            <option value="dormant">Dormido</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="wateringFrequency">Frecuencia de Riego (días):</label>
+                        <input type="number" id="wateringFrequency" min="1" max="30" value="3" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastWatering">Último Riego:</label>
+                        <input type="datetime-local" id="lastWatering">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="plantNotes">Notas Adicionales:</label>
+                    <textarea id="plantNotes" placeholder="Observaciones, cuidados especiales, etc." rows="3"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="cancelPlant" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar Planta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Contenido Principal -->
     <main class="main-content">
         <div class="container">
@@ -171,50 +246,7 @@
                         </div>
                         <div class="card-content">
                             <div class="plants-grid" id="plantsGrid">
-                                <div class="plant-card">
-                                    <div class="plant-image">
-                                        <i class="fas fa-leaf"></i>
-                                    </div>
-                                    <div class="plant-info">
-                                        <h4>Tomate Cherry</h4>
-                                        <p>Estado: <span class="status healthy">Saludable</span></p>
-                                        <p>Último riego: Hace 2 horas</p>
-                                    </div>
-                                    <div class="plant-actions">
-                                        <button class="btn-icon" title="Regar"><i class="fas fa-tint"></i></button>
-                                        <button class="btn-icon" title="Editar"><i class="fas fa-edit"></i></button>
-                                    </div>
-                                </div>
-
-                                <div class="plant-card">
-                                    <div class="plant-image">
-                                        <i class="fas fa-seedling"></i>
-                                    </div>
-                                    <div class="plant-info">
-                                        <h4>Albahaca</h4>
-                                        <p>Estado: <span class="status healthy">Saludable</span></p>
-                                        <p>Último riego: Hace 1 hora</p>
-                                    </div>
-                                    <div class="plant-actions">
-                                        <button class="btn-icon" title="Regar"><i class="fas fa-tint"></i></button>
-                                        <button class="btn-icon" title="Editar"><i class="fas fa-edit"></i></button>
-                                    </div>
-                                </div>
-
-                                <div class="plant-card">
-                                    <div class="plant-image">
-                                        <i class="fas fa-tree"></i>
-                                    </div>
-                                    <div class="plant-info">
-                                        <h4>Pimiento</h4>
-                                        <p>Estado: <span class="status warning">Necesita atención</span></p>
-                                        <p>Último riego: Hace 5 horas</p>
-                                    </div>
-                                    <div class="plant-actions">
-                                        <button class="btn-icon urgent" title="Regar Urgente"><i class="fas fa-tint"></i></button>
-                                        <button class="btn-icon" title="Editar"><i class="fas fa-edit"></i></button>
-                                    </div>
-                                </div>
+                                <!-- Las plantas se renderizan dinámicamente aquí -->
                             </div>
                         </div>
                     </div>
@@ -302,9 +334,12 @@
                 this.currentUser = null;
                 this.apiKey = localStorage.getItem('meteocatApiKey') || '';
                 this.userLocation = localStorage.getItem('userLocation') || 'Barcelona, España';
+                this.plants = this.loadPlantsFromStorage();
+                this.editingPlantId = null;
                 this.initializeEventListeners();
                 this.checkApiKeyStatus();
                 this.loadUserLocation();
+                this.renderPlants();
             }
 
             initializeEventListeners() {
@@ -329,7 +364,21 @@
 
                 // Add Plant
                 document.getElementById('addPlantBtn').addEventListener('click', () => {
-                    this.addPlant();
+                    this.showPlantModal();
+                });
+
+                // Plant Modal
+                document.getElementById('plantForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.savePlant();
+                });
+
+                document.getElementById('cancelPlant').addEventListener('click', () => {
+                    this.hidePlantModal();
+                });
+
+                document.querySelector('.close-plant').addEventListener('click', () => {
+                    this.hidePlantModal();
                 });
 
                 // Location change
@@ -455,45 +504,265 @@
                 }
             }
 
-            addPlant() {
+            loadPlantsFromStorage() {
+                const stored = localStorage.getItem('smartGardenPlants');
+                if (stored) {
+                    return JSON.parse(stored);
+                }
+                // Plantas por defecto
+                return [
+                    {
+                        id: 1,
+                        name: 'Tomate Cherry',
+                        type: 'vegetal',
+                        variety: 'Cherry',
+                        location: 'Maceta 1',
+                        status: 'healthy',
+                        wateringFrequency: 2,
+                        lastWatering: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+                        plantDate: '2024-03-15',
+                        notes: 'Planta de tomate cherry en maceta grande'
+                    },
+                    {
+                        id: 2,
+                        name: 'Albahaca',
+                        type: 'hierba',
+                        variety: 'Genovese',
+                        location: 'Balcón',
+                        status: 'healthy',
+                        wateringFrequency: 1,
+                        lastWatering: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+                        plantDate: '2024-04-01',
+                        notes: 'Hierba aromática para cocina'
+                    },
+                    {
+                        id: 3,
+                        name: 'Pimiento',
+                        type: 'vegetal',
+                        variety: 'Rojo',
+                        location: 'Huerto A',
+                        status: 'warning',
+                        wateringFrequency: 3,
+                        lastWatering: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+                        plantDate: '2024-03-20',
+                        notes: 'Necesita más agua en verano'
+                    }
+                ];
+            }
+
+            savePlantsToStorage() {
+                localStorage.setItem('smartGardenPlants', JSON.stringify(this.plants));
+            }
+
+            showPlantModal(plantId = null) {
+                const modal = document.getElementById('plantModal');
+                const title = document.getElementById('plantModalTitle');
+                const form = document.getElementById('plantForm');
+                
+                if (plantId) {
+                    // Editar planta existente
+                    const plant = this.plants.find(p => p.id === plantId);
+                    if (plant) {
+                        this.editingPlantId = plantId;
+                        title.textContent = 'Editar Planta';
+                        this.fillPlantForm(plant);
+                    }
+                } else {
+                    // Nueva planta
+                    this.editingPlantId = null;
+                    title.textContent = 'Añadir Nueva Planta';
+                    form.reset();
+                    // Establecer fecha de hoy por defecto
+                    document.getElementById('plantDate').value = new Date().toISOString().split('T')[0];
+                }
+                
+                modal.style.display = 'block';
+            }
+
+            hidePlantModal() {
+                document.getElementById('plantModal').style.display = 'none';
+                this.editingPlantId = null;
+            }
+
+            fillPlantForm(plant) {
+                document.getElementById('plantName').value = plant.name;
+                document.getElementById('plantType').value = plant.type;
+                document.getElementById('plantVariety').value = plant.variety || '';
+                document.getElementById('plantDate').value = plant.plantDate;
+                document.getElementById('plantLocation').value = plant.location;
+                document.getElementById('plantStatus').value = plant.status;
+                document.getElementById('wateringFrequency').value = plant.wateringFrequency;
+                document.getElementById('plantNotes').value = plant.notes || '';
+                
+                if (plant.lastWatering) {
+                    const lastWateringDate = new Date(plant.lastWatering);
+                    document.getElementById('lastWatering').value = lastWateringDate.toISOString().slice(0, 16);
+                }
+            }
+
+            savePlant() {
+                const formData = {
+                    name: document.getElementById('plantName').value,
+                    type: document.getElementById('plantType').value,
+                    variety: document.getElementById('plantVariety').value,
+                    plantDate: document.getElementById('plantDate').value,
+                    location: document.getElementById('plantLocation').value,
+                    status: document.getElementById('plantStatus').value,
+                    wateringFrequency: parseInt(document.getElementById('wateringFrequency').value),
+                    lastWatering: document.getElementById('lastWatering').value ? new Date(document.getElementById('lastWatering').value).toISOString() : null,
+                    notes: document.getElementById('plantNotes').value
+                };
+
+                if (this.editingPlantId) {
+                    // Actualizar planta existente
+                    const plantIndex = this.plants.findIndex(p => p.id === this.editingPlantId);
+                    if (plantIndex !== -1) {
+                        this.plants[plantIndex] = { ...this.plants[plantIndex], ...formData };
+                        this.showNotification(`${formData.name} actualizada correctamente`, 'success');
+                    }
+                } else {
+                    // Nueva planta
+                    const newPlant = {
+                        id: Date.now(),
+                        ...formData
+                    };
+                    this.plants.push(newPlant);
+                    this.showNotification(`${formData.name} añadida al jardín`, 'success');
+                }
+
+                this.savePlantsToStorage();
+                this.renderPlants();
+                this.hidePlantModal();
+            }
+
+            deletePlant(plantId) {
+                const plant = this.plants.find(p => p.id === plantId);
+                if (plant && confirm(`¿Estás seguro de que quieres eliminar ${plant.name}?`)) {
+                    this.plants = this.plants.filter(p => p.id !== plantId);
+                    this.savePlantsToStorage();
+                    this.renderPlants();
+                    this.showNotification(`${plant.name} eliminada del jardín`, 'info');
+                }
+            }
+
+            renderPlants() {
                 const plantsGrid = document.getElementById('plantsGrid');
-                const plantNames = ['Lavanda', 'Romero', 'Menta', 'Orégano', 'Cilantro'];
-                const randomName = plantNames[Math.floor(Math.random() * plantNames.length)];
+                plantsGrid.innerHTML = '';
+
+                this.plants.forEach(plant => {
+                    const plantCard = document.createElement('div');
+                    plantCard.className = 'plant-card';
+                    plantCard.setAttribute('data-plant-id', plant.id);
+                    
+                    const statusText = this.getStatusText(plant.status);
+                    const statusClass = this.getStatusClass(plant.status);
+                    const lastWateringText = this.getLastWateringText(plant.lastWatering);
+                    const plantIcon = this.getPlantIcon(plant.type);
+                    
+                    plantCard.innerHTML = `
+                        <div class="plant-image">
+                            <i class="fas ${plantIcon}"></i>
+                        </div>
+                        <div class="plant-info">
+                            <h4>${plant.name}</h4>
+                            <p><strong>Variedad:</strong> ${plant.variety || 'No especificada'}</p>
+                            <p><strong>Ubicación:</strong> ${plant.location}</p>
+                            <p><strong>Estado:</strong> <span class="status ${statusClass}">${statusText}</span></p>
+                            <p><strong>Último riego:</strong> ${lastWateringText}</p>
+                            <p><strong>Frecuencia:</strong> Cada ${plant.wateringFrequency} días</p>
+                        </div>
+                        <div class="plant-actions">
+                            <button class="btn-icon" title="Regar" data-action="water" data-plant-id="${plant.id}">
+                                <i class="fas fa-tint"></i>
+                            </button>
+                            <button class="btn-icon" title="Editar" data-action="edit" data-plant-id="${plant.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-icon delete" title="Eliminar" data-action="delete" data-plant-id="${plant.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    plantsGrid.appendChild(plantCard);
+                });
+            }
+
+            getStatusText(status) {
+                const statusMap = {
+                    'healthy': 'Saludable',
+                    'warning': 'Necesita atención',
+                    'critical': 'Crítico',
+                    'dormant': 'Dormido'
+                };
+                return statusMap[status] || 'Desconocido';
+            }
+
+            getStatusClass(status) {
+                const classMap = {
+                    'healthy': 'healthy',
+                    'warning': 'warning',
+                    'critical': 'critical',
+                    'dormant': 'dormant'
+                };
+                return classMap[status] || 'healthy';
+            }
+
+            getLastWateringText(lastWatering) {
+                if (!lastWatering) return 'Nunca';
                 
-                const plantCard = document.createElement('div');
-                plantCard.className = 'plant-card';
-                plantCard.innerHTML = `
-                    <div class="plant-image">
-                        <i class="fas fa-seedling"></i>
-                    </div>
-                    <div class="plant-info">
-                        <h4>${randomName}</h4>
-                        <p>Estado: <span class="status healthy">Saludable</span></p>
-                        <p>Último riego: Recién añadida</p>
-                    </div>
-                    <div class="plant-actions">
-                        <button class="btn-icon" title="Regar"><i class="fas fa-tint"></i></button>
-                        <button class="btn-icon" title="Editar"><i class="fas fa-edit"></i></button>
-                    </div>
-                `;
+                const now = new Date();
+                const wateringDate = new Date(lastWatering);
+                const diffHours = Math.floor((now - wateringDate) / (1000 * 60 * 60));
                 
-                plantsGrid.appendChild(plantCard);
-                this.showNotification(`${randomName} añadida al jardín`, 'success');
+                if (diffHours < 1) return 'Hace menos de 1 hora';
+                if (diffHours < 24) return `Hace ${diffHours} horas`;
+                
+                const diffDays = Math.floor(diffHours / 24);
+                if (diffDays === 1) return 'Hace 1 día';
+                return `Hace ${diffDays} días`;
+            }
+
+            getPlantIcon(type) {
+                const iconMap = {
+                    'vegetal': 'fa-leaf',
+                    'hierba': 'fa-seedling',
+                    'flor': 'fa-spa',
+                    'arbusto': 'fa-tree',
+                    'arbol': 'fa-tree'
+                };
+                return iconMap[type] || 'fa-seedling';
             }
 
             handlePlantAction(button) {
-                const plantCard = button.closest('.plant-card');
-                const plantName = plantCard.querySelector('h4').textContent;
-                const action = button.title;
+                const action = button.dataset.action;
+                const plantId = parseInt(button.dataset.plantId);
+                const plant = this.plants.find(p => p.id === plantId);
                 
-                if (action === 'Regar') {
-                    const statusElement = plantCard.querySelector('.status');
-                    statusElement.textContent = 'Regada';
-                    statusElement.className = 'status healthy';
-                    this.showNotification(`${plantName} regada correctamente`, 'success');
-                    this.addActivity('Riego manual', `${plantName} - 100ml de agua`);
-                } else if (action === 'Editar') {
-                    this.showNotification(`Editando ${plantName}...`, 'info');
+                if (!plant) return;
+                
+                switch (action) {
+                    case 'water':
+                        this.waterPlant(plantId);
+                        break;
+                    case 'edit':
+                        this.showPlantModal(plantId);
+                        break;
+                    case 'delete':
+                        this.deletePlant(plantId);
+                        break;
+                }
+            }
+
+            waterPlant(plantId) {
+                const plantIndex = this.plants.findIndex(p => p.id === plantId);
+                if (plantIndex !== -1) {
+                    this.plants[plantIndex].lastWatering = new Date().toISOString();
+                    this.plants[plantIndex].status = 'healthy';
+                    this.savePlantsToStorage();
+                    this.renderPlants();
+                    this.showNotification(`${this.plants[plantIndex].name} regada correctamente`, 'success');
+                    this.addActivity('Riego manual', `${this.plants[plantIndex].name} - 100ml de agua`);
                 }
             }
 

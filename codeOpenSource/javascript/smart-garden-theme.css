@@ -113,6 +113,10 @@ body {
     box-shadow: 0 8px 32px rgba(0,0,0,0.2);
 }
 
+.modal-content.large {
+    max-width: 800px;
+}
+
 .close {
     color: var(--text-secondary);
     float: right;
@@ -349,6 +353,56 @@ body {
     font-style: italic;
 }
 
+.form-group select {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 2px solid var(--divider);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    background-color: var(--surface);
+}
+
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary-green);
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 2px solid var(--divider);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-green);
+}
+
+.form-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: flex-end;
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--divider);
+}
+
+.status.critical {
+    background-color: #ffebee;
+    color: #f44336;
+}
+
+.status.dormant {
+    background-color: #f3e5f5;
+    color: #9c27b0;
+}
+
 /* Metrics Grid */
 .metrics-grid {
     display: grid;
@@ -536,6 +590,14 @@ body {
 .btn-icon.urgent {
     background-color: var(--accent-orange);
     animation: pulse 2s infinite;
+}
+
+.btn-icon.delete {
+    background-color: #f44336;
+}
+
+.btn-icon.delete:hover {
+    background-color: #d32f2f;
 }
 
 /* Activity List */
