@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎲 RPG Dice & Life Counter - Marc RoMa-88</title>
+    <link rel="stylesheet" href="rpg-dice-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Alegreya:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <!-- Fondo de Castillo -->
+    <div class="castle-background"></div>
+    
+    <!-- Llamas Crepitantes -->
+    <div class="fire-effect">
+        <div class="flame flame-1"></div>
+        <div class="flame flame-2"></div>
+        <div class="flame flame-3"></div>
+    </div>
+
+    <!-- Mesa de Juego Principal -->
+    <div class="game-table">
+        <!-- Header del Juego -->
+        <header class="game-header">
+            <h1 class="game-title">
+                <i class="fas fa-dice-d20"></i>
+                RPG Dice & Life Counter
+            </h1>
+            <p class="game-subtitle">Herramienta de Rol para Aventureros</p>
+        </header>
+
+        <!-- Panel de Dados -->
+        <section class="dice-panel">
+            <div class="panel-title">
+                <i class="fas fa-dice"></i>
+                <span>Lanzar Dados</span>
+            </div>
+            
+            <div class="dice-selector">
+                <div class="dice-options">
+                    <button class="dice-btn" data-sides="2" data-name="Moneda">
+                        <i class="fas fa-coins"></i>
+                        <span>Moneda</span>
+                    </button>
+                    <button class="dice-btn" data-sides="4" data-name="d4">
+                        <i class="fas fa-dice-d4"></i>
+                        <span>d4</span>
+                    </button>
+                    <button class="dice-btn" data-sides="6" data-name="d6">
+                        <i class="fas fa-dice-d6"></i>
+                        <span>d6</span>
+                    </button>
+                    <button class="dice-btn" data-sides="10" data-name="d10">
+                        <i class="fas fa-dice-d10"></i>
+                        <span>d10</span>
+                    </button>
+                    <button class="dice-btn" data-sides="20" data-name="d20">
+                        <i class="fas fa-dice-d20"></i>
+                        <span>d20</span>
+                    </button>
+                    <button class="dice-btn" data-sides="100" data-name="d100">
+                        <i class="fas fa-dice-d20"></i>
+                        <span>d100</span>
+                    </button>
+                </div>
+
+                <div class="dice-controls">
+                    <div class="quantity-selector">
+                        <label for="diceQuantity">Cantidad:</label>
+                        <input type="number" id="diceQuantity" min="1" max="10" value="1">
+                    </div>
+                    <button id="rollDice" class="roll-btn">
+                        <i class="fas fa-magic"></i>
+                        Lanzar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Área de Resultados -->
+            <div class="results-area">
+                <div class="dice-display" id="diceDisplay">
+                    <!-- Los dados aparecerán aquí -->
+                </div>
+                <div class="result-summary" id="resultSummary">
+                    <!-- Resumen de resultados -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Panel de Jugadores -->
+        <section class="players-panel">
+            <div class="panel-title">
+                <i class="fas fa-users"></i>
+                <span>Jugadores</span>
+                <button id="addPlayerBtn" class="add-player-btn">
+                    <i class="fas fa-plus"></i>
+                    Añadir
+                </button>
+            </div>
+
+            <!-- Formulario de Nuevo Jugador -->
+            <div class="player-form" id="playerForm" style="display: none;">
+                <div class="form-group">
+                    <label for="playerName">Nombre del Jugador:</label>
+                    <input type="text" id="playerName" placeholder="Ej: Aragorn">
+                </div>
+                <div class="form-group">
+                    <label for="playerHP">Puntos de Vida:</label>
+                    <input type="number" id="playerHP" min="1" max="999" value="20">
+                </div>
+                <div class="form-group">
+                    <label for="playerColor">Color del Jugador:</label>
+                    <select id="playerColor">
+                        <option value="red-orange">Rojo a Naranja</option>
+                        <option value="green-brown">Verde a Marrón</option>
+                        <option value="turquoise-blue">Turquesa a Azul</option>
+                        <option value="purple-pink">Violeta a Rosa</option>
+                        <option value="gold-yellow">Dorado a Amarillo</option>
+                        <option value="silver-gray">Plata a Gris</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button id="savePlayer" class="save-btn">Guardar</button>
+                    <button id="cancelPlayer" class="cancel-btn">Cancelar</button>
+                </div>
+            </div>
+
+            <!-- Grid de Jugadores -->
+            <div class="players-grid" id="playersGrid">
+                <!-- Los jugadores aparecerán aquí -->
+            </div>
+        </section>
+
+        <!-- Panel de Estadísticas -->
+        <section class="stats-panel">
+            <div class="panel-title">
+                <i class="fas fa-chart-bar"></i>
+                <span>Estadísticas de Tiradas</span>
+            </div>
+            <div class="stats-content" id="statsContent">
+                <p>Lanza algunos dados para ver estadísticas</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="game-footer">
+        <p>&copy; 2025 RPG Dice & Life Counter - Demo/Esqueleto</p>
+        <p>Desarrollado por <a href="https://github.com/RoMa-88/portfolio-personal#contact" target="_blank" class="author-link">Marc RoMa-88</a> - Herramienta de Rol</p>
+    </footer>
+
+    <script>
+        class RPGGame {
+            constructor() {
+                this.players = [];
+                this.diceHistory = [];
+                this.currentDiceType = 'd6';
+                this.currentSides = 6;
+                this.initializeEventListeners();
+                this.loadGameState();
+                this.renderPlayers();
+                this.addDemoPlayer();
+            }
+
+            initializeEventListeners() {
+                // Dados
+                document.querySelectorAll('.dice-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.selectDice(e.target.closest('.dice-btn'));
+                    });
+                });
+
+                document.getElementById('rollDice').addEventListener('click', () => {
+                    this.rollDice();
+                });
+
+                // Jugadores
+                document.getElementById('addPlayerBtn').addEventListener('click', () => {
+                    this.showPlayerForm();
+                });
+
+                document.getElementById('savePlayer').addEventListener('click', () => {
+                    this.savePlayer();
+                });
+
+                document.getElementById('cancelPlayer').addEventListener('click', () => {
+                    this.hidePlayerForm();
+                });
+
+                // Seleccionar dado por defecto
+                this.selectDice(document.querySelector('.dice-btn[data-sides="6"]'));
+            }
+
+            selectDice(button) {
+                // Remover selección anterior
+                document.querySelectorAll('.dice-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+
+                // Seleccionar nuevo dado
+                button.classList.add('selected');
+                this.currentSides = parseInt(button.dataset.sides);
+                this.currentDiceType = button.dataset.name;
+            }
+
+            rollDice() {
+                const quantity = parseInt(document.getElementById('diceQuantity').value);
+                const results = [];
+                
+                // Generar resultados
+                for (let i = 0; i < quantity; i++) {
+                    let result;
+                    if (this.currentSides === 2) {
+                        // Moneda: 0 = cara, 1 = cruz
+                        result = Math.floor(Math.random() * 2);
+                    } else {
+                        result = Math.floor(Math.random() * this.currentSides) + 1;
+                    }
+                    results.push(result);
+                }
+
+                // Guardar en historial
+                this.diceHistory.push({
+                    type: this.currentDiceType,
+                    sides: this.currentSides,
+                    quantity: quantity,
+                    results: results,
+                    timestamp: new Date()
+                });
+
+                // Mostrar resultados
+                this.displayResults(results);
+                this.updateStats();
+                this.saveGameState();
+            }
+
+            displayResults(results) {
+                const diceDisplay = document.getElementById('diceDisplay');
+                const resultSummary = document.getElementById('resultSummary');
+                
+                // Limpiar display anterior
+                diceDisplay.innerHTML = '';
+                
+                // Mostrar dados individuales
+                results.forEach((result, index) => {
+                    const diceElement = document.createElement('div');
+                    diceElement.className = 'dice-result';
+                    diceElement.innerHTML = `
+                        <div class="dice-face">
+                            ${this.currentSides === 2 ? (result === 0 ? '👑' : '⚔️') : result}
+                        </div>
+                        <div class="dice-label">${this.currentDiceType}</div>
+                    `;
+                    diceDisplay.appendChild(diceElement);
+                });
+
+                // Mostrar resumen
+                const total = results.reduce((sum, result) => sum + result, 0);
+                const avg = (total / results.length).toFixed(1);
+                
+                resultSummary.innerHTML = `
+                    <div class="summary-item">
+                        <span class="summary-label">Total:</span>
+                        <span class="summary-value">${total}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Promedio:</span>
+                        <span class="summary-value">${avg}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Tiradas:</span>
+                        <span class="summary-value">${results.length}</span>
+                    </div>
+                `;
+            }
+
+            updateStats() {
+                const statsContent = document.getElementById('statsContent');
+                const recentRolls = this.diceHistory.slice(-10);
+                
+                if (recentRolls.length === 0) {
+                    statsContent.innerHTML = '<p>Lanza algunos dados para ver estadísticas</p>';
+                    return;
+                }
+
+                let statsHTML = '<div class="stats-grid">';
+                
+                // Agrupar por tipo de dado
+                const diceTypes = {};
+                recentRolls.forEach(roll => {
+                    if (!diceTypes[roll.type]) {
+                        diceTypes[roll.type] = [];
+                    }
+                    diceTypes[roll.type].push(...roll.results);
+                });
+
+                Object.entries(diceTypes).forEach(([type, results]) => {
+                    const counts = {};
+                    results.forEach(result => {
+                        counts[result] = (counts[result] || 0) + 1;
+                    });
+
+                    statsHTML += `
+                        <div class="stat-card">
+                            <h4>${type.toUpperCase()}</h4>
+                            <div class="stat-values">
+                                ${Object.entries(counts).map(([value, count]) => 
+                                    `<div class="stat-item">
+                                        <span class="stat-value">${value}:</span>
+                                        <span class="stat-count">${count}</span>
+                                    </div>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                statsHTML += '</div>';
+                statsContent.innerHTML = statsHTML;
+            }
+
+            showPlayerForm() {
+                document.getElementById('playerForm').style.display = 'block';
+                document.getElementById('playerName').focus();
+            }
+
+            hidePlayerForm() {
+                document.getElementById('playerForm').style.display = 'none';
+                document.getElementById('playerForm').reset();
+            }
+
+            savePlayer() {
+                const name = document.getElementById('playerName').value.trim();
+                const hp = parseInt(document.getElementById('playerHP').value);
+                const color = document.getElementById('playerColor').value;
+
+                if (!name) {
+                    alert('Por favor, introduce un nombre para el jugador');
+                    return;
+                }
+
+                const player = {
+                    id: Date.now(),
+                    name: name,
+                    hp: hp,
+                    maxHP: hp,
+                    color: color,
+                    createdAt: new Date()
+                };
+
+                this.players.push(player);
+                this.renderPlayers();
+                this.hidePlayerForm();
+                this.saveGameState();
+            }
+
+            renderPlayers() {
+                const playersGrid = document.getElementById('playersGrid');
+                playersGrid.innerHTML = '';
+
+                this.players.forEach(player => {
+                    const playerCard = document.createElement('div');
+                    playerCard.className = `player-card ${player.color}`;
+                    playerCard.innerHTML = `
+                        <div class="player-header">
+                            <h3 class="player-name">${player.name}</h3>
+                            <button class="delete-player" onclick="rpgGame.deletePlayer(${player.id})">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="player-hp">
+                            <span class="hp-label">Vida:</span>
+                            <span class="hp-value">${player.hp}/${player.maxHP}</span>
+                            <div class="hp-bar">
+                                <div class="hp-fill" style="width: ${(player.hp / player.maxHP) * 100}%"></div>
+                            </div>
+                        </div>
+                        <div class="player-actions">
+                            <button class="hp-btn decrease" onclick="rpgGame.changeHP(${player.id}, -1)">-1</button>
+                            <button class="hp-btn increase" onclick="rpgGame.changeHP(${player.id}, 1)">+1</button>
+                            <button class="hp-btn reset" onclick="rpgGame.resetHP(${player.id})">Reset</button>
+                        </div>
+                    `;
+                    playersGrid.appendChild(playerCard);
+                });
+            }
+
+            changeHP(playerId, change) {
+                const player = this.players.find(p => p.id === playerId);
+                if (!player) return;
+
+                player.hp = Math.max(0, Math.min(player.maxHP, player.hp + change));
+                
+                if (player.hp === 0) {
+                    alert(`¡${player.name} ha perdido! ¡Por noob! 😄`);
+                }
+
+                this.renderPlayers();
+                this.saveGameState();
+            }
+
+            resetHP(playerId) {
+                const player = this.players.find(p => p.id === playerId);
+                if (!player) return;
+
+                player.hp = player.maxHP;
+                this.renderPlayers();
+                this.saveGameState();
+            }
+
+            deletePlayer(playerId) {
+                if (confirm('¿Estás seguro de que quieres eliminar este jugador?')) {
+                    this.players = this.players.filter(p => p.id !== playerId);
+                    this.renderPlayers();
+                    this.saveGameState();
+                }
+            }
+
+            addDemoPlayer() {
+                if (this.players.length === 0) {
+                    const demoPlayer = {
+                        id: 1,
+                        name: 'Aragorn',
+                        hp: 20,
+                        maxHP: 20,
+                        color: 'red-orange',
+                        createdAt: new Date()
+                    };
+                    this.players.push(demoPlayer);
+                    this.renderPlayers();
+                }
+            }
+
+            saveGameState() {
+                const gameState = {
+                    players: this.players,
+                    diceHistory: this.diceHistory.slice(-50) // Guardar solo las últimas 50 tiradas
+                };
+                localStorage.setItem('rpgGameState', JSON.stringify(gameState));
+            }
+
+            loadGameState() {
+                const saved = localStorage.getItem('rpgGameState');
+                if (saved) {
+                    const gameState = JSON.parse(saved);
+                    this.players = gameState.players || [];
+                    this.diceHistory = gameState.diceHistory || [];
+                }
+            }
+        }
+
+        // Inicializar el juego
+        let rpgGame;
+        document.addEventListener('DOMContentLoaded', () => {
+            rpgGame = new RPGGame();
+        });
+    </script>
+</body>
+</html>
