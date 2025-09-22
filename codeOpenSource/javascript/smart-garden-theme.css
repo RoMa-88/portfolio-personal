@@ -114,7 +114,10 @@ body {
 }
 
 .modal-content.large {
-    max-width: 800px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: 2% auto;
 }
 
 .close {
@@ -290,6 +293,22 @@ body {
 @media (max-width: 768px) {
     .form-row {
         grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .modal-content.large {
+        max-width: 95vw;
+        margin: 1% auto;
+        padding: var(--spacing-lg);
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .form-actions button {
+        width: 100%;
     }
 }
 

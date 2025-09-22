@@ -79,16 +79,12 @@
                         <input type="text" id="plantVariety" placeholder="Ej: Cherry, Roma, Beefsteak">
                     </div>
                     <div class="form-group">
-                        <label for="plantDate">Fecha de Plantación:</label>
-                        <input type="date" id="plantDate" required>
+                        <label for="plantLocation">Ubicación en el Jardín:</label>
+                        <input type="text" id="plantLocation" placeholder="Ej: Maceta 1, Huerto A, Balcón">
                     </div>
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group">
-                        <label for="plantLocation">Ubicación en el Jardín:</label>
-                        <input type="text" id="plantLocation" placeholder="Ej: Maceta 1, Huerto A, Balcón">
-                    </div>
                     <div class="form-group">
                         <label for="plantStatus">Estado Actual:</label>
                         <select id="plantStatus" required>
@@ -98,22 +94,10 @@
                             <option value="dormant">Dormido</option>
                         </select>
                     </div>
-                </div>
-
-                <div class="form-row">
                     <div class="form-group">
                         <label for="wateringFrequency">Frecuencia de Riego (días):</label>
                         <input type="number" id="wateringFrequency" min="1" max="30" value="3" required>
                     </div>
-                    <div class="form-group">
-                        <label for="lastWatering">Último Riego:</label>
-                        <input type="datetime-local" id="lastWatering">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="plantNotes">Notas Adicionales:</label>
-                    <textarea id="plantNotes" placeholder="Observaciones, cuidados especiales, etc." rows="3"></textarea>
                 </div>
 
                 <div class="form-actions">
@@ -381,6 +365,13 @@
                     this.hidePlantModal();
                 });
 
+                // Cerrar modal al hacer click fuera
+                document.getElementById('plantModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'plantModal') {
+                        this.hidePlantModal();
+                    }
+                });
+
                 // Location change
                 document.getElementById('userLocation').addEventListener('change', () => {
                     this.saveUserLocation();
@@ -519,9 +510,7 @@
                         location: 'Maceta 1',
                         status: 'healthy',
                         wateringFrequency: 2,
-                        lastWatering: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-                        plantDate: '2024-03-15',
-                        notes: 'Planta de tomate cherry en maceta grande'
+                        lastWatering: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
                     },
                     {
                         id: 2,
@@ -531,9 +520,7 @@
                         location: 'Balcón',
                         status: 'healthy',
                         wateringFrequency: 1,
-                        lastWatering: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-                        plantDate: '2024-04-01',
-                        notes: 'Hierba aromática para cocina'
+                        lastWatering: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString()
                     },
                     {
                         id: 3,
@@ -543,9 +530,7 @@
                         location: 'Huerto A',
                         status: 'warning',
                         wateringFrequency: 3,
-                        lastWatering: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-                        plantDate: '2024-03-20',
-                        notes: 'Necesita más agua en verano'
+                        lastWatering: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString()
                     }
                 ];
             }
@@ -572,8 +557,6 @@
                     this.editingPlantId = null;
                     title.textContent = 'Añadir Nueva Planta';
                     form.reset();
-                    // Establecer fecha de hoy por defecto
-                    document.getElementById('plantDate').value = new Date().toISOString().split('T')[0];
                 }
                 
                 modal.style.display = 'block';
@@ -588,16 +571,9 @@
                 document.getElementById('plantName').value = plant.name;
                 document.getElementById('plantType').value = plant.type;
                 document.getElementById('plantVariety').value = plant.variety || '';
-                document.getElementById('plantDate').value = plant.plantDate;
                 document.getElementById('plantLocation').value = plant.location;
                 document.getElementById('plantStatus').value = plant.status;
                 document.getElementById('wateringFrequency').value = plant.wateringFrequency;
-                document.getElementById('plantNotes').value = plant.notes || '';
-                
-                if (plant.lastWatering) {
-                    const lastWateringDate = new Date(plant.lastWatering);
-                    document.getElementById('lastWatering').value = lastWateringDate.toISOString().slice(0, 16);
-                }
             }
 
             savePlant() {
@@ -605,12 +581,9 @@
                     name: document.getElementById('plantName').value,
                     type: document.getElementById('plantType').value,
                     variety: document.getElementById('plantVariety').value,
-                    plantDate: document.getElementById('plantDate').value,
                     location: document.getElementById('plantLocation').value,
                     status: document.getElementById('plantStatus').value,
-                    wateringFrequency: parseInt(document.getElementById('wateringFrequency').value),
-                    lastWatering: document.getElementById('lastWatering').value ? new Date(document.getElementById('lastWatering').value).toISOString() : null,
-                    notes: document.getElementById('plantNotes').value
+                    wateringFrequency: parseInt(document.getElementById('wateringFrequency').value)
                 };
 
                 if (this.editingPlantId) {
