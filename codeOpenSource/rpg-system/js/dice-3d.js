@@ -85,6 +85,9 @@ class Dice3D {
                 return;
             }
 
+            // Si llegamos aquí, las librerías están disponibles
+            console.log('✅ Todas las librerías están disponibles, iniciando sistema 3D...');
+
             const container = document.getElementById('dice3D');
             if (!container) {
                 console.error('Container dice3D no encontrado');

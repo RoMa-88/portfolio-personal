@@ -64,6 +64,14 @@
                 console.error('💥 Error cargando Cannon.js:', error.message);
                 // Crear una versión simplificada de Cannon.js
                 window.createFallbackCannon();
+                
+                // Esperar a que el sistema RPG esté listo y reinicializar
+                setTimeout(() => {
+                    if (window.rpgSystem && window.rpgSystem.dice3DManager) {
+                        console.log('🔄 Reinicializando con Cannon.js simplificado...');
+                        window.rpgSystem.dice3DManager.init3D();
+                    }
+                }, 2000);
             });
 
         // Crear una versión simplificada de Cannon.js como último recurso
