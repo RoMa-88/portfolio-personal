@@ -32,13 +32,11 @@ class RPGSystem {
                 this.isInitialized = true;
                 console.log('✅ Sistema RPG inicializado correctamente');
                 
-                // Esperar un poco más para que Cannon.js esté listo
-                setTimeout(() => {
-                    if (this.dice3DManager && typeof CANNON !== 'undefined') {
-                        console.log('🎯 Reinicializando sistema 3D con Cannon.js...');
-                        this.dice3DManager.init3D();
-                    }
-                }, 1000);
+                // Esperar a que Cannon.js esté listo y luego inicializar
+                if (this.dice3DManager) {
+                    console.log('🎯 Iniciando espera de Cannon.js...');
+                    this.dice3DManager.waitForCannonAndInit();
+                }
             } else {
                 console.error('❌ Error: No se pudieron cargar todos los módulos');
                 this.showErrorMessage();

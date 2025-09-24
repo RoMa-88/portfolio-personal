@@ -55,6 +55,22 @@ class Dice3D {
     }
 
     /**
+     * Espera a que Cannon.js esté disponible y luego inicializa
+     */
+    waitForCannonAndInit() {
+        const checkCannon = () => {
+            if (typeof CANNON !== 'undefined' && typeof CANNON.World !== 'undefined') {
+                console.log('✅ Cannon.js está listo, inicializando sistema 3D...');
+                this.init3D();
+            } else {
+                console.log('⏳ Esperando Cannon.js...');
+                setTimeout(checkCannon, 100);
+            }
+        };
+        checkCannon();
+    }
+
+    /**
      * Inicializa la escena 3D
      */
     init3D() {
@@ -68,7 +84,8 @@ class Dice3D {
 
             if (typeof CANNON === 'undefined') {
                 console.error('Cannon.js no está cargado');
-                this.showFallbackMessage('Cannon.js no disponible');
+                // No mostrar fallback inmediatamente, esperar a que se cargue
+                console.log('⏳ Esperando a que Cannon.js se cargue...');
                 return;
             }
 

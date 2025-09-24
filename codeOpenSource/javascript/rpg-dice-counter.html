@@ -64,14 +64,7 @@
                 console.error('💥 Error cargando Cannon.js:', error.message);
                 // Crear una versión simplificada de Cannon.js
                 window.createFallbackCannon();
-                
-                // Esperar a que el sistema esté listo y reinicializar
-                setTimeout(() => {
-                    if (window.rpgGame && window.rpgGame.init3D) {
-                        console.log('🔄 Reinicializando con Cannon.js simplificado...');
-                        window.rpgGame.init3D();
-                    }
-                }, 2000);
+                // El sistema ya está esperando, no necesitamos reinicializar
             });
 
         // Crear una versión simplificada de Cannon.js como último recurso
@@ -334,10 +327,9 @@
                 this.renderPlayers();
                 this.addDemoPlayer();
                 
-                // Intentar inicializar 3D después de un delay para cargar librerías
-                setTimeout(() => {
-                    this.init3D();
-                }, 1000);
+                // Esperar a que Cannon.js esté listo y luego inicializar
+                console.log('🎯 Iniciando espera de Cannon.js...');
+                this.waitForCannonAndInit();
             }
 
             initializeEventListeners() {
@@ -674,6 +666,19 @@
                     this.players = gameState.players || [];
                     this.diceHistory = gameState.diceHistory || [];
                 }
+            }
+
+            waitForCannonAndInit() {
+                const checkCannon = () => {
+                    if (typeof CANNON !== 'undefined' && typeof CANNON.World !== 'undefined') {
+                        console.log('✅ Cannon.js está listo, inicializando sistema 3D...');
+                        this.init3D();
+                    } else {
+                        console.log('⏳ Esperando Cannon.js...');
+                        setTimeout(checkCannon, 100);
+                    }
+                };
+                checkCannon();
             }
 
             init3D() {
