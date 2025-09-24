@@ -79,6 +79,7 @@
                     // Método para añadir cuerpos al mundo
                     this.add = function(body) {
                         this.bodies.push(body);
+                        console.log(`✅ Cuerpo añadido al mundo. Total: ${this.bodies.length}`);
                     };
                     
                     // Método para eliminar cuerpos del mundo
@@ -86,6 +87,7 @@
                         const index = this.bodies.indexOf(body);
                         if (index > -1) {
                             this.bodies.splice(index, 1);
+                            console.log(`✅ Cuerpo eliminado del mundo. Total: ${this.bodies.length}`);
                         }
                     };
                     
@@ -99,6 +101,12 @@
                                 
                                 // Simular gravedad
                                 body.velocity.y += this.gravity.y * dt;
+                                
+                                // Simular rebote en el suelo (y = 0)
+                                if (body.position.y <= 0 && body.velocity.y < 0) {
+                                    body.position.y = 0;
+                                    body.velocity.y *= -0.5; // Rebote con pérdida de energía
+                                }
                             }
                         });
                     };
