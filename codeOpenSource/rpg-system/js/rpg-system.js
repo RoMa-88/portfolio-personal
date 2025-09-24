@@ -35,7 +35,7 @@ class RPGSystem {
                 console.error('❌ Error: No se pudieron cargar todos los módulos');
                 this.showErrorMessage();
             }
-        }, 1000);
+        }, 1500);
     }
 
     /**

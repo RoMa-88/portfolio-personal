@@ -8,7 +8,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Alegreya:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.20.0/cannon.min.js"></script>
+    <script>
+        // Verificar que las librerías se cargan
+        window.addEventListener('load', () => {
+            console.log('🔍 Verificando librerías...');
+            console.log('Three.js:', typeof THREE !== 'undefined' ? '✅ Cargado' : '❌ No cargado');
+            console.log('Cannon.js:', typeof CANNON !== 'undefined' ? '✅ Cargado' : '❌ No cargado');
+            
+            if (typeof THREE !== 'undefined') {
+                console.log('Three.js Scene:', typeof THREE.Scene !== 'undefined' ? '✅ Disponible' : '❌ No disponible');
+            }
+            
+            if (typeof CANNON !== 'undefined') {
+                console.log('Cannon.js World:', typeof CANNON.World !== 'undefined' ? '✅ Disponible' : '❌ No disponible');
+            }
+        });
+    </script>
 </head>
 <body>
     <!-- Fondo de Castillo -->

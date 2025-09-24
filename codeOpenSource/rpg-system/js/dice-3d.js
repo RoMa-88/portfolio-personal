@@ -72,6 +72,19 @@ class Dice3D {
                 return;
             }
 
+            // Verificar que las funciones principales estén disponibles
+            if (typeof THREE.Scene === 'undefined') {
+                console.error('Three.js no está completamente cargado');
+                this.showFallbackMessage('Three.js incompleto');
+                return;
+            }
+
+            if (typeof CANNON.World === 'undefined') {
+                console.error('Cannon.js no está completamente cargado');
+                this.showFallbackMessage('Cannon.js incompleto');
+                return;
+            }
+
             const container = document.getElementById('dice3D');
             if (!container) {
                 console.error('Container dice3D no encontrado');
