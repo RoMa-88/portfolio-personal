@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎲 RPG Dice & Life Counter - Sistema Completo</title>
+    <link rel="stylesheet" href="css/rpg-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Alegreya:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.20.0/cannon.min.js"></script>
+</head>
+<body>
+    <!-- Fondo de Castillo -->
+    <div class="castle-background"></div>
+    
+    <!-- Efecto de Fuego -->
+    <div class="fire-animation"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1>🎲 RPG Dice & Life Counter</h1>
+            <p>Herramienta completa para juegos de rol con dados 3D y contador de vidas</p>
+        </header>
+
+        <main class="main-content">
+            <div class="game-table">
+                <!-- Panel de Dados -->
+                <section class="dice-panel">
+                    <div class="panel-title">
+                        <h2><i class="fas fa-dice-d20"></i> Tirador de Dados</h2>
+                        <p>Selecciona el tipo de dado y la cantidad</p>
+                    </div>
+
+                    <!-- Selector de Tipo de Dado -->
+                    <div class="dice-options">
+                        <button class="dice-btn" data-sides="2" data-type="moneda">
+                            <i class="fas fa-circle"></i>
+                            <span>Moneda</span>
+                            <small>0=Cara, 1=Cruz</small>
+                        </button>
+                        <button class="dice-btn" data-sides="4" data-type="d4">
+                            <i class="fas fa-dice-d4"></i>
+                            <span>d4</span>
+                            <small>4 caras</small>
+                        </button>
+                        <button class="dice-btn active" data-sides="6" data-type="d6">
+                            <i class="fas fa-dice-d6"></i>
+                            <span>d6</span>
+                            <small>6 caras</small>
+                        </button>
+                        <button class="dice-btn" data-sides="8" data-type="d8">
+                            <i class="fas fa-dice-d8"></i>
+                            <span>d8</span>
+                            <small>8 caras</small>
+                        </button>
+                        <button class="dice-btn" data-sides="10" data-type="d10">
+                            <i class="fas fa-dice-d10"></i>
+                            <span>d10</span>
+                            <small>10 caras</small>
+                        </button>
+                        <button class="dice-btn" data-sides="20" data-type="d20">
+                            <i class="fas fa-dice-d20"></i>
+                            <span>d20</span>
+                            <small>20 caras</small>
+                        </button>
+                        <button class="dice-btn" data-sides="100" data-type="d100">
+                            <i class="fas fa-dice-d20"></i>
+                            <span>d100</span>
+                            <small>100 caras</small>
+                        </button>
+                    </div>
+
+                    <!-- Controles de Tirada -->
+                    <div class="dice-controls">
+                        <div class="control-group">
+                            <label for="diceQuantity">Cantidad:</label>
+                            <input type="number" id="diceQuantity" min="1" max="20" value="1">
+                        </div>
+                        <button id="rollDice" class="roll-btn">
+                            <i class="fas fa-hand-rock"></i>
+                            Lanzar
+                        </button>
+                    </div>
+
+                    <!-- Vista 3D -->
+                    <div class="dice-3d-container">
+                        <div id="dice3D" class="dice-3d-viewport">
+                            <!-- Three.js canvas se insertará aquí -->
+                        </div>
+                        <div class="dice-controls-3d">
+                            <button id="throwDice" class="throw-btn">
+                                <i class="fas fa-hand-rock"></i>
+                                Lanzar Dados 3D
+                            </button>
+                            <button id="resetDice" class="reset-btn">
+                                <i class="fas fa-undo"></i>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Área de Resultados -->
+                    <div class="results-area">
+                        <div class="dice-display" id="diceDisplay">
+                            <!-- Los dados aparecerán aquí -->
+                        </div>
+                        <div class="result-summary" id="resultSummary">
+                            <!-- Resumen de resultados -->
+                        </div>
+                        <div class="roll-stats" id="rollStats">
+                            <!-- Estadísticas si hay 3+ dados -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Panel de Jugadores -->
+                <section class="players-panel">
+                    <div class="panel-title">
+                        <h2><i class="fas fa-users"></i> Contador de Vidas</h2>
+                        <p>Gestiona los jugadores y sus puntos de vida</p>
+                        <button id="addPlayerBtn" class="add-player-btn">
+                            <i class="fas fa-plus"></i>
+                            Añadir Jugador
+                        </button>
+                    </div>
+
+                    <div class="players-grid" id="playersGrid">
+                        <!-- Las tarjetas de jugadores aparecerán aquí -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Formulario de Jugador -->
+    <div class="player-form" id="playerForm">
+        <div class="form-content">
+            <h3>Añadir/Editar Jugador</h3>
+            <div class="form-group">
+                <label for="playerName">Nombre:</label>
+                <input type="text" id="playerName" placeholder="Nombre del jugador" required>
+            </div>
+            <div class="form-group">
+                <label for="playerHp">Puntos de Vida:</label>
+                <input type="number" id="playerHp" value="20" min="1" required>
+            </div>
+            <div class="form-group">
+                <label for="playerGradient">Color:</label>
+                <select id="playerGradient">
+                    <option value="red-orange">Rojo-Naranja</option>
+                    <option value="green-brown">Verde-Marrón</option>
+                    <option value="turquoise-blue">Turquesa-Azul</option>
+                    <option value="violet-pink">Violeta-Rosa</option>
+                    <option value="gold-bronze">Oro-Bronce</option>
+                    <option value="silver-grey">Plata-Gris</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button id="savePlayer" class="save-btn">Guardar</button>
+                <button id="cancelPlayer" class="cancel-btn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Estadísticas -->
+    <div class="stats-modal" id="statsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Estadísticas de Tirada</h3>
+                <button class="close-modal" id="closeStatsModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="statsContent">
+                    <!-- Contenido de estadísticas -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 RPG Dice & Life Counter - Sistema Completo</p>
+        <p>Desarrollado por <a href="https://github.com/RoMa-88/portfolio-personal#contact" target="_blank" class="author-link">Marc RoMa-88</a> - Herramienta de Rol Avanzada</p>
+    </footer>
+
+    <!-- Scripts del Sistema -->
+    <script src="js/storage.js"></script>
+    <script src="js/dice-core.js"></script>
+    <script src="js/dice-3d.js"></script>
+    <script src="js/players.js"></script>
+    <script src="js/rpg-system.js"></script>
+</body>
+</html>
