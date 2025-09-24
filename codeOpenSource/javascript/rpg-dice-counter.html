@@ -90,8 +90,36 @@
                     this.quaternion = { x: 0, y: 0, z: 0, w: 1 };
                     this.velocity = { x: 0, y: 0, z: 0 };
                     this.angularVelocity = { x: 0, y: 0, z: 0 };
-                    this.shape = options?.shape || null;
+                    this.shapes = [];
                     this.mass = options?.mass || 1;
+                    
+                    // Métodos necesarios
+                    this.addShape = function(shape) {
+                        this.shapes.push(shape);
+                    };
+                    
+                    this.removeShape = function(shape) {
+                        const index = this.shapes.indexOf(shape);
+                        if (index > -1) {
+                            this.shapes.splice(index, 1);
+                        }
+                    };
+                    
+                    this.applyImpulse = function(impulse, worldPoint) {
+                        if (this.velocity) {
+                            this.velocity.x += impulse.x / this.mass;
+                            this.velocity.y += impulse.y / this.mass;
+                            this.velocity.z += impulse.z / this.mass;
+                        }
+                    };
+                    
+                    this.applyForce = function(force, worldPoint) {
+                        if (this.velocity) {
+                            this.velocity.x += force.x / this.mass;
+                            this.velocity.y += force.y / this.mass;
+                            this.velocity.z += force.z / this.mass;
+                        }
+                    };
                 },
                 Box: function(size) {
                     this.type = 'Box';
@@ -114,12 +142,40 @@
                     this.x = x || 0;
                     this.y = y || 0;
                     this.z = z || 0;
+                    
+                    // Métodos necesarios
+                    this.set = function(x, y, z) {
+                        this.x = x;
+                        this.y = y;
+                        this.z = z;
+                    };
+                    
+                    this.copy = function(vector) {
+                        this.x = vector.x;
+                        this.y = vector.y;
+                        this.z = vector.z;
+                    };
                 },
                 Quaternion: function(x, y, z, w) {
                     this.x = x || 0;
                     this.y = y || 0;
                     this.z = z || 0;
                     this.w = w || 1;
+                    
+                    // Métodos necesarios
+                    this.set = function(x, y, z, w) {
+                        this.x = x;
+                        this.y = y;
+                        this.z = z;
+                        this.w = w;
+                    };
+                    
+                    this.copy = function(quaternion) {
+                        this.x = quaternion.x;
+                        this.y = quaternion.y;
+                        this.z = quaternion.z;
+                        this.w = quaternion.w;
+                    };
                 },
                 ContactMaterial: function() {},
                 Material: function() {}
