@@ -8,27 +8,131 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Alegreya:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/cannon@0.20.0/build/cannon.min.js"></script>
     <script>
-        // Fallback para Cannon.js si el CDN principal falla
-        if (typeof CANNON === 'undefined') {
-            console.log('🔄 Intentando cargar Cannon.js desde CDN alternativo...');
-            const script = document.createElement('script');
-            script.src = 'https://unpkg.com/cannon@0.20.0/build/cannon.min.js';
-            script.onload = () => {
-                console.log('✅ Cannon.js cargado desde CDN alternativo');
-                // Reinicializar el sistema 3D
+        // Sistema de carga con promesas para Cannon.js
+        window.loadCannonJS = () => {
+            return new Promise((resolve, reject) => {
+                // Lista de CDNs para probar
+                const cdns = [
+                    'https://cdn.jsdelivr.net/npm/cannon@0.20.0/build/cannon.min.js',
+                    'https://unpkg.com/cannon@0.20.0/build/cannon.min.js',
+                    'https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.20.0/cannon.min.js',
+                    'https://cdn.skypack.dev/cannon@0.20.0'
+                ];
+
+                let currentIndex = 0;
+
+                const tryLoadCDN = () => {
+                    if (currentIndex >= cdns.length) {
+                        reject(new Error('No se pudo cargar Cannon.js desde ningún CDN'));
+                        return;
+                    }
+
+                    const script = document.createElement('script');
+                    script.src = cdns[currentIndex];
+                    
+                    script.onload = () => {
+                        console.log(`✅ Cannon.js cargado desde: ${cdns[currentIndex]}`);
+                        resolve();
+                    };
+                    
+                    script.onerror = () => {
+                        console.log(`❌ Falló CDN: ${cdns[currentIndex]}`);
+                        currentIndex++;
+                        tryLoadCDN();
+                    };
+                    
+                    document.head.appendChild(script);
+                };
+
+                tryLoadCDN();
+            });
+        };
+
+        // Cargar Cannon.js con promesas
+        window.loadCannonJS()
+            .then(() => {
+                console.log('🎉 Cannon.js cargado exitosamente');
+                // Reinicializar el sistema 3D cuando esté listo
                 if (window.rpgSystem && window.rpgSystem.dice3DManager && window.rpgSystem.dice3DManager.init3D) {
                     setTimeout(() => {
                         window.rpgSystem.dice3DManager.init3D();
                     }, 500);
                 }
+            })
+            .catch((error) => {
+                console.error('💥 Error cargando Cannon.js:', error.message);
+                // Crear una versión simplificada de Cannon.js
+                window.createFallbackCannon();
+            });
+
+        // Crear una versión simplificada de Cannon.js como último recurso
+        window.createFallbackCannon = () => {
+            console.log('🔧 Creando versión simplificada de Cannon.js...');
+            
+            window.CANNON = {
+                World: function() {
+                    this.bodies = [];
+                    this.step = function(dt) {
+                        // Simulación básica sin física real
+                        this.bodies.forEach(body => {
+                            if (body.position) {
+                                body.position.x += (body.velocity?.x || 0) * dt;
+                                body.position.y += (body.velocity?.y || 0) * dt;
+                                body.position.z += (body.velocity?.z || 0) * dt;
+                            }
+                        });
+                    };
+                },
+                Body: function(options) {
+                    this.position = { x: 0, y: 0, z: 0 };
+                    this.quaternion = { x: 0, y: 0, z: 0, w: 1 };
+                    this.velocity = { x: 0, y: 0, z: 0 };
+                    this.angularVelocity = { x: 0, y: 0, z: 0 };
+                    this.shape = options?.shape || null;
+                    this.mass = options?.mass || 1;
+                },
+                Box: function(size) {
+                    this.type = 'Box';
+                    this.size = size;
+                },
+                Sphere: function(radius) {
+                    this.type = 'Sphere';
+                    this.radius = radius;
+                },
+                Cylinder: function(radiusTop, radiusBottom, height) {
+                    this.type = 'Cylinder';
+                    this.radiusTop = radiusTop;
+                    this.radiusBottom = radiusBottom;
+                    this.height = height;
+                },
+                Plane: function() {
+                    this.type = 'Plane';
+                },
+                Vec3: function(x, y, z) {
+                    this.x = x || 0;
+                    this.y = y || 0;
+                    this.z = z || 0;
+                },
+                Quaternion: function(x, y, z, w) {
+                    this.x = x || 0;
+                    this.y = y || 0;
+                    this.z = z || 0;
+                    this.w = w || 1;
+                },
+                ContactMaterial: function() {},
+                Material: function() {}
             };
-            script.onerror = () => {
-                console.error('❌ No se pudo cargar Cannon.js desde ningún CDN');
-            };
-            document.head.appendChild(script);
-        }
+
+            console.log('✅ Versión simplificada de Cannon.js creada');
+            
+            // Reinicializar el sistema 3D
+            if (window.rpgSystem && window.rpgSystem.dice3DManager && window.rpgSystem.dice3DManager.init3D) {
+                setTimeout(() => {
+                    window.rpgSystem.dice3DManager.init3D();
+                }, 500);
+            }
+        };
 
         // Verificar que las librerías se cargan
         window.addEventListener('load', () => {
