@@ -182,8 +182,16 @@ class Dice3D {
     setupPhysics() {
         this.world = new CANNON.World();
         this.world.gravity.set(0, -9.82, 0);
-        this.world.broadphase = new CANNON.NaiveBroadphase();
-        this.world.solver.iterations = 10;
+        
+        // Solo configurar si las propiedades existen (versión completa de Cannon.js)
+        if (typeof CANNON.NaiveBroadphase !== 'undefined') {
+            this.world.broadphase = new CANNON.NaiveBroadphase();
+        }
+        if (this.world.solver && typeof this.world.solver.iterations !== 'undefined') {
+            this.world.solver.iterations = 10;
+        }
+        
+        console.log('✅ Mundo de física configurado');
     }
 
     /**
@@ -279,9 +287,20 @@ class Dice3D {
         diceMesh.position.set(x, 6, z);
         diceMesh.castShadow = true;
 
-        // Añadir al mundo
-        this.world.add(diceBody);
-        this.scene.add(diceMesh);
+        // Añadir al mundo (verificar que existe)
+        if (this.world) {
+            this.world.add(diceBody);
+        } else {
+            console.error('❌ El mundo de física no está inicializado');
+            return null;
+        }
+        
+        if (this.scene) {
+            this.scene.add(diceMesh);
+        } else {
+            console.error('❌ La escena 3D no está inicializada');
+            return null;
+        }
         this.diceMeshes.push({ 
             mesh: diceMesh, 
             body: diceBody, 
