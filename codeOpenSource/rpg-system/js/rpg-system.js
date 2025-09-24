@@ -22,17 +22,20 @@ class RPGSystem {
     initialize() {
         console.log('🎲 Inicializando Sistema RPG...');
         
-        // Verificar que todos los módulos estén disponibles
-        if (this.checkModules()) {
-            this.setupModules();
-            this.setupEventListeners();
-            this.loadInitialData();
-            this.isInitialized = true;
-            console.log('✅ Sistema RPG inicializado correctamente');
-        } else {
-            console.error('❌ Error: No se pudieron cargar todos los módulos');
-            this.showErrorMessage();
-        }
+        // Esperar a que las librerías se carguen antes de inicializar
+        setTimeout(() => {
+            // Verificar que todos los módulos estén disponibles
+            if (this.checkModules()) {
+                this.setupModules();
+                this.setupEventListeners();
+                this.loadInitialData();
+                this.isInitialized = true;
+                console.log('✅ Sistema RPG inicializado correctamente');
+            } else {
+                console.error('❌ Error: No se pudieron cargar todos los módulos');
+                this.showErrorMessage();
+            }
+        }, 1000);
     }
 
     /**

@@ -59,6 +59,19 @@ class Dice3D {
      */
     init3D() {
         try {
+            // Verificar que las librerías estén cargadas
+            if (typeof THREE === 'undefined') {
+                console.error('Three.js no está cargado');
+                this.showFallbackMessage('Three.js no disponible');
+                return;
+            }
+
+            if (typeof CANNON === 'undefined') {
+                console.error('Cannon.js no está cargado');
+                this.showFallbackMessage('Cannon.js no disponible');
+                return;
+            }
+
             const container = document.getElementById('dice3D');
             if (!container) {
                 console.error('Container dice3D no encontrado');
@@ -497,14 +510,34 @@ class Dice3D {
     /**
      * Muestra mensaje de fallback
      */
-    showFallbackMessage() {
+    showFallbackMessage(message = 'Vista 3D no disponible') {
         const container = document.getElementById('dice3D');
         if (container) {
             container.innerHTML = `
-                <div style="color: white; text-align: center; padding: 50px; background: rgba(0,0,0,0.5); border-radius: 10px;">
-                    <h3>Vista 3D no disponible</h3>
-                    <p>Usa los dados normales para jugar</p>
-                    <p style="font-size: 0.8em; opacity: 0.7;">Tu navegador no soporta WebGL o Three.js</p>
+                <div style="
+                    color: white; 
+                    text-align: center; 
+                    padding: 50px; 
+                    background: rgba(0,0,0,0.5); 
+                    border-radius: 10px;
+                    border: 2px solid #8b4513;
+                ">
+                    <h3 style="color: #ffd700; margin-bottom: 15px;">⚠️ ${message}</h3>
+                    <p style="margin-bottom: 10px;">Usa los dados normales para jugar</p>
+                    <p style="font-size: 0.9em; opacity: 0.8; margin-bottom: 20px;">
+                        Tu navegador no soporta WebGL o las librerías no se cargaron
+                    </p>
+                    <button onclick="if(window.diceCore) window.diceCore.rollDice()" style="
+                        padding: 10px 20px;
+                        background: #8b4513;
+                        color: white;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-weight: bold;
+                    ">
+                        🎲 Lanzar Dados Normales
+                    </button>
                 </div>
             `;
         }
