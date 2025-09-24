@@ -95,6 +95,21 @@
                         // Simulación básica sin física real
                         this.bodies.forEach(body => {
                             if (body.position && body.velocity) {
+                                // Aplicar fricción
+                                const friction = 0.98;
+                                body.velocity.x *= friction;
+                                body.velocity.z *= friction;
+                                
+                                // Limitar velocidad máxima
+                                const maxSpeed = 15;
+                                const speed = Math.sqrt(body.velocity.x**2 + body.velocity.y**2 + body.velocity.z**2);
+                                if (speed > maxSpeed) {
+                                    const factor = maxSpeed / speed;
+                                    body.velocity.x *= factor;
+                                    body.velocity.y *= factor;
+                                    body.velocity.z *= factor;
+                                }
+                                
                                 body.position.x += body.velocity.x * dt;
                                 body.position.y += body.velocity.y * dt;
                                 body.position.z += body.velocity.z * dt;
@@ -105,7 +120,26 @@
                                 // Simular rebote en el suelo (y = 0)
                                 if (body.position.y <= 0 && body.velocity.y < 0) {
                                     body.position.y = 0;
-                                    body.velocity.y *= -0.5; // Rebote con pérdida de energía
+                                    body.velocity.y *= -0.4; // Rebote con más pérdida de energía
+                                }
+                                
+                                // Simular rebote en los bordes de la mesa
+                                const tableSize = 10;
+                                if (body.position.x > tableSize && body.velocity.x > 0) {
+                                    body.position.x = tableSize;
+                                    body.velocity.x *= -0.6;
+                                }
+                                if (body.position.x < -tableSize && body.velocity.x < 0) {
+                                    body.position.x = -tableSize;
+                                    body.velocity.x *= -0.6;
+                                }
+                                if (body.position.z > tableSize && body.velocity.z > 0) {
+                                    body.position.z = tableSize;
+                                    body.velocity.z *= -0.6;
+                                }
+                                if (body.position.z < -tableSize && body.velocity.z < 0) {
+                                    body.position.z = -tableSize;
+                                    body.velocity.z *= -0.6;
                                 }
                             }
                         });

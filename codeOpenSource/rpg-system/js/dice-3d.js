@@ -216,6 +216,55 @@ class Dice3D {
         groundMesh.rotation.x = -Math.PI / 2;
         groundMesh.receiveShadow = true;
         this.scene.add(groundMesh);
+
+        // Añadir bordes de la mesa para evitar que los dados se salgan
+        this.setupTableBorders();
+    }
+
+    /**
+     * Configura los bordes de la mesa
+     */
+    setupTableBorders() {
+        const borderHeight = 2;
+        const borderThickness = 0.5;
+        const tableSize = 10; // Radio de la mesa
+
+        // Bordes de la mesa (4 paredes)
+        const borders = [
+            // Pared frontal (Z positivo)
+            { position: [0, borderHeight/2, tableSize], rotation: [0, 0, 0] },
+            // Pared trasera (Z negativo)
+            { position: [0, borderHeight/2, -tableSize], rotation: [0, Math.PI, 0] },
+            // Pared izquierda (X negativo)
+            { position: [-tableSize, borderHeight/2, 0], rotation: [0, Math.PI/2, 0] },
+            // Pared derecha (X positivo)
+            { position: [tableSize, borderHeight/2, 0], rotation: [0, -Math.PI/2, 0] }
+        ];
+
+        borders.forEach((border, index) => {
+            // Física del borde
+            const borderShape = new CANNON.Box(new CANNON.Vec3(borderThickness, borderHeight, tableSize));
+            const borderBody = new CANNON.Body({ mass: 0 });
+            borderBody.addShape(borderShape);
+            borderBody.position.set(border.position[0], border.position[1], border.position[2]);
+            borderBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), border.rotation[1]);
+            this.world.add(borderBody);
+
+            // Visual del borde
+            const borderGeometry = new THREE.BoxGeometry(borderThickness * 2, borderHeight, tableSize * 2);
+            const borderMaterial = new THREE.MeshLambertMaterial({ 
+                color: 0x654321,
+                transparent: true,
+                opacity: 0.9
+            });
+            const borderMesh = new THREE.Mesh(borderGeometry, borderMaterial);
+            borderMesh.position.set(border.position[0], border.position[1], border.position[2]);
+            borderMesh.rotation.y = border.rotation[1];
+            borderMesh.castShadow = true;
+            this.scene.add(borderMesh);
+        });
+
+        console.log('✅ Bordes de mesa configurados');
     }
 
     /**
@@ -333,11 +382,19 @@ class Dice3D {
                 // Aplicar fuerza aleatoria
                 if (dice.body) {
                     const force = new CANNON.Vec3(
-                        (Math.random() - 0.5) * 10,
-                        Math.random() * 5 + 5,
-                        (Math.random() - 0.5) * 10
+                        (Math.random() - 0.5) * 6, // Reducido de 10 a 6
+                        Math.random() * 3 + 3,     // Reducido de 5+5 a 3+3
+                        (Math.random() - 0.5) * 6  // Reducido de 10 a 6
                     );
                     dice.body.applyImpulse(force, dice.body.position);
+
+                    // Aplicar rotación inicial
+                    const angularForce = new CANNON.Vec3(
+                        (Math.random() - 0.5) * 4,
+                        (Math.random() - 0.5) * 4,
+                        (Math.random() - 0.5) * 4
+                    );
+                    dice.body.angularVelocity.set(angularForce.x, angularForce.y, angularForce.z);
                     
                     // Aplicar torque aleatorio
                     const torque = new CANNON.Vec3(
