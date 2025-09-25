@@ -114,13 +114,17 @@
                                 body.position.y += body.velocity.y * dt;
                                 body.position.z += body.velocity.z * dt;
                                 
-                                // Simular gravedad
-                                body.velocity.y += this.gravity.y * dt;
+                                // Simular gravedad (reducida)
+                                body.velocity.y += this.gravity.y * dt * 0.5; // Gravedad reducida a la mitad
                                 
-                                // Simular rebote en el suelo (y = 0)
-                                if (body.position.y <= 0 && body.velocity.y < 0) {
-                                    body.position.y = 0;
-                                    body.velocity.y *= -0.4; // Rebote con más pérdida de energía
+                                // Simular rebote en el suelo (y = 0.5 para evitar sumersión)
+                                if (body.position.y <= 0.5 && body.velocity.y < 0) {
+                                    body.position.y = 0.5; // Elevar ligeramente sobre la mesa
+                                    body.velocity.y *= -0.6; // Rebote con menos pérdida de energía
+                                    
+                                    // Añadir fricción horizontal cuando toca el suelo
+                                    body.velocity.x *= 0.8;
+                                    body.velocity.z *= 0.8;
                                 }
                                 
                                 // Simular rebote en los bordes de la mesa

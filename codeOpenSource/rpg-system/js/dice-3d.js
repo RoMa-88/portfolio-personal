@@ -331,9 +331,9 @@ class Dice3D {
                 break;
         }
 
-        // Posición inicial
-        diceBody.position.set(x, 6, z);
-        diceMesh.position.set(x, 6, z);
+        // Posición inicial (más alta para mejor caída)
+        diceBody.position.set(x, 8, z);
+        diceMesh.position.set(x, 8, z);
         diceMesh.castShadow = true;
 
         // Añadir al mundo (verificar que existe)
@@ -382,17 +382,17 @@ class Dice3D {
                 // Aplicar fuerza aleatoria
                 if (dice.body) {
                     const force = new CANNON.Vec3(
-                        (Math.random() - 0.5) * 6, // Reducido de 10 a 6
-                        Math.random() * 3 + 3,     // Reducido de 5+5 a 3+3
-                        (Math.random() - 0.5) * 6  // Reducido de 10 a 6
+                        (Math.random() - 0.5) * 8, // Aumentado para más movimiento horizontal
+                        Math.random() * 2 + 2,     // Reducido para menos caída vertical
+                        (Math.random() - 0.5) * 8  // Aumentado para más movimiento horizontal
                     );
                     dice.body.applyImpulse(force, dice.body.position);
 
-                    // Aplicar rotación inicial
+                    // Aplicar rotación inicial más intensa
                     const angularForce = new CANNON.Vec3(
-                        (Math.random() - 0.5) * 4,
-                        (Math.random() - 0.5) * 4,
-                        (Math.random() - 0.5) * 4
+                        (Math.random() - 0.5) * 8, // Aumentado para más rotación
+                        (Math.random() - 0.5) * 8, // Aumentado para más rotación
+                        (Math.random() - 0.5) * 8  // Aumentado para más rotación
                     );
                     dice.body.angularVelocity.set(angularForce.x, angularForce.y, angularForce.z);
                     
