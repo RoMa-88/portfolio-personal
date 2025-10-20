@@ -615,7 +615,7 @@ document.addEventListener('DOMContentLoaded', function () {
             item.appendChild(meter);
             item.appendChild(label);
             // Diferir para animación
-            requestAnimationFrame(() => { fill.style.width = `${(value/10)*100}%`; });
+            requestAnimationFrame(() => { fill.style.width = `${(value / 10) * 100}%`; });
         }
     });
 
