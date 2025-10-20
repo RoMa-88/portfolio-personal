@@ -4,32 +4,32 @@ let currentLanguage = localStorage.getItem('language') || 'es';
 function updateLanguage(lang) {
     currentLanguage = lang;
     localStorage.setItem('language', lang);
-    
+
     // Update current language indicator
     const currentLangSpan = document.getElementById('currentLang');
     if (currentLangSpan) {
         currentLangSpan.textContent = lang.toUpperCase();
     }
-    
+
     // Update all translatable elements
     const elements = document.querySelectorAll('[data-translate]');
     elements.forEach(element => {
         const key = element.getAttribute('data-translate');
         const keys = key.split('.');
         let translation = translations[currentLanguage];
-        
+
         for (let k of keys) {
             translation = translation[k];
         }
-        
+
         if (translation) {
             element.textContent = translation;
         }
     });
-    
+
     // Update page title
     document.title = translations[currentLanguage].hero.title + ' - Marc RoMa-88';
-    
+
     // Update form placeholders
     updateFormPlaceholders();
 }
@@ -41,16 +41,16 @@ function updateFormPlaceholders() {
         const key = element.getAttribute('data-translate-placeholder');
         const keys = key.split('.');
         let translation = translations[currentLanguage];
-        
+
         for (let k of keys) {
             translation = translation[k];
         }
-        
+
         if (translation) {
             element.placeholder = translation;
         }
     });
-    
+
     // Update button text
     const sendBtn = document.querySelector('button[type="submit"]');
     if (sendBtn) {
@@ -97,19 +97,19 @@ document.addEventListener('DOMContentLoaded', function () {
             themeIcon.className = 'fas fa-sun';
         }
     }
-    
+
     // Initialize language system
     updateLanguage(currentLanguage);
-    
+
     // Navigation function for projects
-    window.navigateToProjects = function() {
+    window.navigateToProjects = function () {
         // Try multiple navigation methods
         const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '');
         const projectsUrl = baseUrl + '/codeOpenSource/';
-        
+
         // Method 1: Direct navigation
         window.location.href = projectsUrl;
-        
+
         // Fallback: Try alternative paths after a short delay
         setTimeout(() => {
             if (window.location.href === window.location.origin + window.location.pathname) {
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.location.href = './codeOpenSource/';
             }
         }, 100);
-        
+
         setTimeout(() => {
             if (window.location.href === window.location.origin + window.location.pathname) {
                 // Method 3: Try with absolute path from root
@@ -125,14 +125,14 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }, 200);
     };
-    
+
     // Language toggle functionality
     const langOptions = document.querySelectorAll('.lang-option');
     langOptions.forEach(option => {
-        option.addEventListener('click', function() {
+        option.addEventListener('click', function () {
             const selectedLang = this.getAttribute('data-lang');
             updateLanguage(selectedLang);
-            
+
             // Add animation effect
             const langBtn = document.getElementById('langBtn');
             langBtn.style.transform = 'scale(0.95)';
@@ -587,6 +587,58 @@ document.addEventListener('DOMContentLoaded', function () {
 window.addEventListener('error', function (e) {
     console.error('Error:', e.error);
     // You can add error reporting here if needed
+});
+
+// ===== CERTIFICATES MODAL LOGIC =====
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('certificateModal');
+    const viewPdfBtn = document.getElementById('viewPdfBtn');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalLogoImg = modal?.querySelector('.modal-logo img');
+
+    function openModal(options) {
+        if (!modal) return;
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        if (options?.title) modalTitle.textContent = options.title;
+        if (options?.logoSrc) {
+            if (modalLogoImg) modalLogoImg.src = options.logoSrc;
+        }
+        if (options?.pdf) {
+            viewPdfBtn.style.display = '';
+            viewPdfBtn.href = options.pdf;
+        } else {
+            viewPdfBtn.style.display = 'none';
+        }
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        if (!modal) return;
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    // Open from certificate cards
+    document.querySelectorAll('.certificate-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const title = card.getAttribute('data-title') || 'Certificado';
+            const pdf = card.getAttribute('data-pdf') || '';
+            const img = card.querySelector('img');
+            openModal({ title, pdf, logoSrc: img ? img.src : undefined });
+        });
+    });
+
+    // Close handlers
+    modal?.addEventListener('click', (e) => {
+        const target = e.target;
+        if (!(target instanceof HTMLElement)) return;
+        if (target.dataset.close === 'modal') closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
 });
 
 // ===== UTILITY FUNCTIONS =====
