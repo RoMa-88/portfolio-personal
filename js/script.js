@@ -589,6 +589,47 @@ window.addEventListener('error', function (e) {
     // You can add error reporting here if needed
 });
 
+// ===== TECH SKILL METER & SIMPLE ACCORDION =====
+document.addEventListener('DOMContentLoaded', function () {
+    // Asignar valores 1–10 por defecto por tecnología
+    const defaults = new Map([
+        ['HTML5', 9], ['CSS3', 9], ['JavaScript', 9], ['Bootstrap', 7], ['Tailwind CSS', 7],
+        ['Java', 6], ['PHP', 6], ['Python', 7], ['MySQL', 7], ['MongoDB', 6], ['Oracle', 5],
+        ['GitHub', 7], ['GitLab', 7], ['Docker', 6], ['Linux', 7], ['WordPress', 8], ['R', 5]
+    ]);
+
+    document.querySelectorAll('.tech-item').forEach(item => {
+        const name = (item.querySelector('.tech-name')?.textContent || '').trim();
+        const value = Math.max(1, Math.min(10, defaults.get(name) || 6));
+
+        // Evitar duplicados si ya existe
+        if (!item.querySelector('.skill-meter')) {
+            const meter = document.createElement('div');
+            meter.className = 'skill-meter';
+            const fill = document.createElement('div');
+            fill.className = 'skill-meter-fill';
+            meter.appendChild(fill);
+            const label = document.createElement('div');
+            label.className = 'skill-meter-label';
+            label.textContent = `${value}/10`;
+            item.appendChild(meter);
+            item.appendChild(label);
+            // Diferir para animación
+            requestAnimationFrame(() => { fill.style.width = `${(value/10)*100}%`; });
+        }
+    });
+
+    // Acordeón básico: click en el título alterna visibilidad
+    document.querySelectorAll('.skills-category').forEach(cat => {
+        const title = cat.querySelector('.skills-category-title');
+        if (!title) return;
+        title.style.cursor = 'pointer';
+        title.addEventListener('click', () => {
+            cat.classList.toggle('collapsed');
+        });
+    });
+});
+
 // ===== CERTIFICATES MODAL LOGIC =====
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('certificateModal');
