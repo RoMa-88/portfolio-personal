@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Cyberpunk Atlas - Demo de Características</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            font-family: 'Orbitron', monospace;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .demo-title {
+            color: #00d4ff;
+            font-size: 36px;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+            margin-bottom: 10px;
+        }
+
+        .demo-subtitle {
+            color: #8a2be2;
+            font-size: 18px;
+            opacity: 0.8;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(22, 33, 62, 0.8));
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(0, 212, 255, 0.6);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .feature-title {
+            color: #00d4ff;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .feature-description {
+            color: #b0b0b0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .demo-buttons {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .demo-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff0080, #8a2be2);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-family: 'Orbitron', monospace;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .demo-btn:hover {
+            background: linear-gradient(135deg, #8a2be2, #ff0080);
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .demo-btn.secondary {
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+        }
+
+        .demo-btn.secondary:hover {
+            background: linear-gradient(135deg, #0099cc, #00d4ff);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1 class="demo-title">🎮 Cyberpunk Atlas</h1>
+            <p class="demo-subtitle">Nuevas características implementadas</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🎨</span>
+                <h3 class="feature-title">Efectos Glitch</h3>
+                <p class="feature-description">
+                    Botones con efectos glitch cyberpunk, animaciones de distorsión y efectos de resplandor que dan vida
+                    a la interfaz.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🃏</span>
+                <h3 class="feature-title">Flip 3D Mejorado</h3>
+                <p class="feature-description">
+                    Tarjetas con efectos de volteo 3D espectaculares, clip-path personalizado y animaciones suaves con
+                    cubic-bezier.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🌍</span>
+                <h3 class="feature-title">Globo Holográfico</h3>
+                <p class="feature-description">
+                    Mini-globo en cada tarjeta que muestra la ubicación real de la ciudad con efectos de resplandor y
+                    animaciones.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">📊</span>
+                <h3 class="feature-title">Contenido Expandible</h3>
+                <p class="feature-description">
+                    Modal de información expandida al hacer clic en los botones, mostrando detalles específicos de cada
+                    ciudad.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🎯</span>
+                <h3 class="feature-title">Interactividad Avanzada</h3>
+                <p class="feature-description">
+                    Eventos personalizados, efectos hover, animaciones de escala y comunicación entre componentes.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🖼️</span>
+                <h3 class="feature-title">Imágenes Personalizadas</h3>
+                <p class="feature-description">
+                    Imágenes específicas para cada ciudad, tanto en la cara frontal como en la trasera, con efectos de
+                    filtro.
+                </p>
+            </div>
+        </div>
+
+        <div class="demo-buttons">
+            <a href="cyberpunk-atlas.html" class="demo-btn">🚀 Ver Atlas Completo</a>
+            <a href="index.html" class="demo-btn secondary">← Volver al Dashboard</a>
+        </div>
+    </div>
+</body>
+
+</html>
+
+
+
+
+
+
+
+

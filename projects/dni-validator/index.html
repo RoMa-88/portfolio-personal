@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Validador de DNI Español - Marc RoMa-88</title>
+    <link rel="stylesheet" href="css/dni-validator-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: #0a0a0a;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #b8b8b8;
+            font-size: 1rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.2rem;
+            border: 2px solid #333333;
+            border-radius: 8px;
+            background: #1a1a1a;
+            color: #ffffff;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+        }
+
+        button {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        .output {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: 2px solid;
+            transition: all 0.3s ease;
+        }
+
+        .valido {
+            color: #10b981;
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .invalido {
+            color: #ef4444;
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #b8b8b8;
+            text-align: left;
+        }
+
+        .examples {
+            margin-top: 1rem;
+            text-align: left;
+        }
+
+        .examples h3 {
+            color: #8b5cf6;
+            margin-bottom: 0.5rem;
+        }
+
+        .examples ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .examples li {
+            margin: 0.3rem 0;
+            color: #b8b8b8;
+            font-family: 'Courier New', monospace;
+        }
+
+        .back-btn {
+            background: transparent;
+            color: #8b5cf6;
+            border: 2px solid #8b5cf6;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .back-btn:hover {
+            background: #8b5cf6;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #8b5cf6;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: float 10s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.5;
+            }
+
+            90% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <h1>🆔 Validador de DNI Español</h1>
+
+        <div class="input-group">
+            <label for="dniInput">Introduce tu DNI:</label>
+            <input type="text" id="dniInput" placeholder="12345678Z" maxlength="9">
+        </div>
+
+        <button onclick="validarDNI()">Validar DNI</button>
+
+        <div id="resultado" class="output" style="display: none;"></div>
+
+        <div class="info">
+            <strong>Información:</strong><br>
+            El DNI debe tener 8 números seguidos de una letra de control.
+        </div>
+
+        <div class="examples">
+            <h3>Ejemplos válidos:</h3>
+            <ul>
+                <li>12345678Z</li>
+                <li>87654321X</li>
+                <li>11111111H</li>
+            </ul>
+        </div>
+
+        <a href="../" class="back-btn">← Volver al Portfolio</a>
+    </div>
+
+    <script>
+        // Función para calcular la letra del DNI
+        function calcularLetra(numero) {
+            const letras = 'TRWAGMYFPDXBNJZSQVHLCKE';
+            return letras[numero % 23];
+        }
+
+        // Función para validar el formato del DNI
+        function validarFormato(dni) {
+            const regex = /^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$/i;
+            return regex.test(dni);
+        }
+
+        // Función principal de validación
+        function validarDNI() {
+            const dni = document.getElementById('dniInput').value.trim().toUpperCase();
+            const resultado = document.getElementById('resultado');
+
+            if (!dni) {
+                mostrarResultado('Por favor, introduce un DNI', false);
+                return;
+            }
+
+            if (!validarFormato(dni)) {
+                mostrarResultado('❌ Formato inválido. Debe ser 8 números + 1 letra', false);
+                return;
+            }
+
+            const numero = dni.substring(0, 8);
+            const letra = dni.substring(8, 9);
+            const letraCalculada = calcularLetra(parseInt(numero));
+
+            if (letra === letraCalculada) {
+                mostrarResultado(`✅ DNI válido: ${dni}`, true);
+            } else {
+                mostrarResultado(`❌ DNI inválido. La letra debería ser ${letraCalculada}`, false);
+            }
+        }
+
+        // Función para mostrar el resultado
+        function mostrarResultado(mensaje, esValido) {
+            const resultado = document.getElementById('resultado');
+            resultado.textContent = mensaje;
+            resultado.className = `output ${esValido ? 'valido' : 'invalido'}`;
+            resultado.style.display = 'block';
+
+            // Animación
+            resultado.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                resultado.style.transform = 'scale(1)';
+            }, 100);
+        }
+
+        // Permitir validar al presionar Enter
+        document.getElementById('dniInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                validarDNI();
+            }
+        });
+
+        // Auto-validar mientras se escribe
+        document.getElementById('dniInput').addEventListener('input', function (e) {
+            const valor = e.target.value.toUpperCase();
+            e.target.value = valor;
+
+            // Si tiene 9 caracteres, validar automáticamente
+            if (valor.length === 9) {
+                setTimeout(validarDNI, 300);
+            }
+        });
+
+        // Crear partículas de fondo
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * window.innerWidth + 'px';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (5 + Math.random() * 10) + 's';
+
+                particlesContainer.appendChild(particle);
+
+                // Remover partícula después de la animación
+                setTimeout(() => {
+                    particle.remove();
+                }, 15000);
+            }
+        }
+
+        // Crear partículas cada 3 segundos
+        createParticles();
+        setInterval(createParticles, 3000);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍄 Índice Micológico Catalunya - En Desarrollo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            max-width: 700px;
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+        }
+
+        .icon {
+            font-size: 4rem;
+            color: #f59e0b;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            color: #f59e0b;
+            margin-bottom: 1rem;
+            font-size: 2.2rem;
+        }
+
+        .status {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            display: inline-block;
+        }
+
+        .description {
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            color: #d1d5db;
+        }
+
+        .stations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .station {
+            background: rgba(245, 158, 11, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #f59e0b;
+        }
+
+        .station h3 {
+            color: #f59e0b;
+            margin-bottom: 0.5rem;
+        }
+
+        .station p {
+            color: #d1d5db;
+            font-size: 0.9rem;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .tech-tag {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .features {
+            text-align: left;
+            background: rgba(245, 158, 11, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #f59e0b;
+            margin-bottom: 2rem;
+        }
+
+        .features h3 {
+            color: #f59e0b;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .features li {
+            padding: 0.5rem 0;
+            position: relative;
+            padding-left: 1.5rem;
+            color: #d1d5db;
+        }
+
+        .features li::before {
+            content: '🍄';
+            position: absolute;
+            left: 0;
+        }
+
+        .algorithm {
+            background: rgba(139, 92, 246, 0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #8b5cf6;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .algorithm h3 {
+            color: #8b5cf6;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .algorithm code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 4px;
+            display: block;
+            font-family: 'Courier New', monospace;
+            color: #f59e0b;
+            overflow-x: auto;
+        }
+
+        .progress {
+            margin: 2rem 0;
+        }
+
+        .progress-bar {
+            background: rgba(245, 158, 11, 0.2);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+            height: 100%;
+            width: 45%;
+            border-radius: 4px;
+            animation: progress 2s ease-in-out;
+        }
+
+        @keyframes progress {
+            from { width: 0%; }
+            to { width: 45%; }
+        }
+
+        .progress-text {
+            color: #f59e0b;
+            font-size: 0.9rem;
+        }
+
+        .contact {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .contact a {
+            color: #f59e0b;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact a:hover {
+            color: #d97706;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🍄</div>
+        <h1>Índice Micológico Catalunya</h1>
+        <div class="status">🚧 En Desarrollo</div>
+        
+        <p class="description">
+            Análisis de datos meteorológicos de Meteocat para predecir las mejores épocas 
+            de recolección de setas en diferentes zonas de Catalunya.
+        </p>
+
+        <div class="stations">
+            <div class="station">
+                <h3>XO - Vic</h3>
+                <p>Estación principal para datos del interior de Catalunya</p>
+            </div>
+            <div class="station">
+                <h3>XL - El Prat</h3>
+                <p>Estación para datos de la zona costera</p>
+            </div>
+        </div>
+
+        <div class="tech-stack">
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">API Meteocat</span>
+            <span class="tech-tag">Pandas</span>
+            <span class="tech-tag">Matplotlib</span>
+        </div>
+
+        <div class="algorithm">
+            <h3>🧮 Algoritmo del Índice</h3>
+            <code>
+def indice_micologico_simple(lluvia7, lluvia14, pct_t_ok):
+    # Normalizaciones: 20mm/7d = "ple", 40mm/14d = "ple"
+    n7 = min(lluvia7 / 20.0, 1.0)
+    n14 = min(lluvia14 / 40.0, 1.0)
+    return 0.5*n7 + 0.3*n14 + 0.2*pct_t_ok
+            </code>
+        </div>
+
+        <div class="features">
+            <h3>🚧 Características en Desarrollo</h3>
+            <ul>
+                <li>Descarga de datos de estaciones XO (Vic) y XL (El Prat)</li>
+                <li>Análisis de precipitaciones y temperaturas</li>
+                <li>Índice micológico personalizado</li>
+                <li>Gráficos y visualizaciones</li>
+                <li>Predicción por zonas geográficas</li>
+                <li>Mapa interactivo por comarcas</li>
+            </ul>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="progress-text">Progreso: 45% completado</div>
+        </div>
+
+        <div class="contact">
+            <p><strong>Desarrollado por:</strong> <a href="https://github.com/RoMa-88/portfolio-personal#contact" target="_blank" class="author-link">Marc RoMa-88</a></p>
+            <p><strong>Contacto:</strong> <a href="mailto:m4rc.roma7@gmail.com">m4rc.roma7@gmail.com</a></p>
+            <p><strong>GitHub:</strong> <a href="https://github.com/RoMa-88" target="_blank">@RoMa-88</a></p>
+        </div>
+    </div>
+</body>
+</html>

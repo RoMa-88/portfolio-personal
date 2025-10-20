@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍄 Índice Micológico Catalunya - App Interactiva</title>
+    <style>
+        :root {
+            --mushroom-bg: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --accent-green: #4a7c59;
+            --accent-orange: #e67e22;
+            --text-dark: #2d5016;
+            --text-light: #ffffff;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --border-radius: 15px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--mushroom-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--text-light);
+        }
+
+        .project-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        /* Formulario de API Key */
+        .api-form {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            color: var(--text-dark);
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            background: var(--card-bg);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-orange));
+            color: var(--text-light);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 124, 89, 0.3);
+        }
+
+        .btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Sección de análisis */
+        .analysis-section {
+            display: none;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            color: var(--text-dark);
+        }
+
+        .analysis-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--text-dark);
+        }
+
+        .stations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .station-card {
+            background: rgba(74, 124, 89, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(74, 124, 89, 0.2);
+        }
+
+        .station-name {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .data-value {
+            color: #666666;
+        }
+
+        .data-value.optimal {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .data-value.warning {
+            color: var(--accent-orange);
+            font-weight: 600;
+        }
+
+        .data-value.poor {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        /* Resultado del análisis */
+        .result-card {
+            background: linear-gradient(135deg, rgba(74, 124, 89, 0.1), rgba(230, 126, 34, 0.1));
+            padding: 2rem;
+            border-radius: 10px;
+            border: 2px solid var(--accent-green);
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .result-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-green);
+            margin-bottom: 1rem;
+        }
+
+        .result-recommendation {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .result-description {
+            color: #666666;
+            font-size: 1.1rem;
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid var(--accent-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error */
+        .error {
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid #e74c3c;
+            color: #e74c3c;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        /* Créditos */
+        .credits {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #f59e0b;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            backdrop-filter: blur(10px);
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        .credits-title {
+            font-weight: 700;
+            color: #f59e0b;
+            margin-bottom: 0.5rem;
+        }
+
+        .credits-text {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .credits-text a {
+            color: #f59e0b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .credits-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .project-title {
+                font-size: 2rem;
+            }
+            
+            .stations-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="project-title">🍄 Índice Micológico Catalunya</h1>
+            <p class="project-subtitle">Análisis de condiciones meteorológicas para recolección de setas</p>
+        </div>
+
+        <!-- Formulario de API Key -->
+        <div class="api-form">
+            <h2 class="form-title">🔑 Configuración de API</h2>
+            <form id="apiForm">
+                <div class="form-group">
+                    <label for="apiKey" class="form-label">API Key de Meteocat</label>
+                    <input 
+                        type="text" 
+                        id="apiKey" 
+                        name="apiKey" 
+                        class="form-input" 
+                        placeholder="Introduce tu API key de Meteocat..."
+                        required
+                    >
+                    <small style="color: #666; font-size: 0.9rem; margin-top: 0.5rem; display: block;">
+                        Obtén tu API key gratuita en: <a href="https://api.meteo.cat" target="_blank" style="color: var(--accent-green);">api.meteo.cat</a>
+                    </small>
+                </div>
+                <button type="submit" class="btn" id="analyzeBtn">
+                    🌤️ Analizar Condiciones Actuales
+                </button>
+            </form>
+        </div>
+
+        <!-- Error -->
+        <div class="error" id="errorMessage"></div>
+
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Analizando condiciones meteorológicas...</p>
+        </div>
+
+        <!-- Sección de análisis -->
+        <div class="analysis-section" id="analysisSection">
+            <h2 class="analysis-title">📊 Análisis de Condiciones Micológicas</h2>
+            
+            <div class="stations-grid" id="stationsGrid">
+                <!-- Se llenará dinámicamente -->
+            </div>
+
+            <div class="result-card" id="resultCard">
+                <!-- Se llenará dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Créditos -->
+        <div class="credits">
+            <div class="credits-title">🌤️ Datos Meteorológicos</div>
+            <div class="credits-text">
+                Proporcionados por <a href="https://www.meteo.cat" target="_blank">meteo.cat</a> - 
+                Servei Meteorològic de Catalunya • Generalitat de Catalunya
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class MeteocatAnalyzer {
+            constructor() {
+                this.apiKey = '';
+                this.form = document.getElementById('apiForm');
+                this.analyzeBtn = document.getElementById('analyzeBtn');
+                this.loading = document.getElementById('loading');
+                this.errorMessage = document.getElementById('errorMessage');
+                this.analysisSection = document.getElementById('analysisSection');
+                this.stationsGrid = document.getElementById('stationsGrid');
+                this.resultCard = document.getElementById('resultCard');
+                
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                this.form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleSubmit();
+                });
+            }
+
+            async handleSubmit() {
+                const apiKeyInput = document.getElementById('apiKey');
+                this.apiKey = apiKeyInput.value.trim();
+
+                if (!this.apiKey) {
+                    this.showError('Por favor, introduce tu API key de Meteocat');
+                    return;
+                }
+
+                this.showLoading();
+                this.hideError();
+
+                try {
+                    await this.analyzeConditions();
+                } catch (error) {
+                    this.showError(`Error al analizar las condiciones: ${error.message}`);
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            async analyzeConditions() {
+                // Simular llamada a la API (en producción sería real)
+                await this.delay(2000);
+
+                // Datos simulados basados en el algoritmo micológico
+                const stations = [
+                    {
+                        id: 'XO',
+                        name: 'Vic',
+                        data: {
+                            temperature: 15.2,
+                            humidity: 78,
+                            precipitation: 2.5,
+                            lastRain: 4
+                        }
+                    },
+                    {
+                        id: 'XL',
+                        name: 'El Prat de Llobregat',
+                        data: {
+                            temperature: 17.8,
+                            humidity: 72,
+                            precipitation: 1.2,
+                            lastRain: 2
+                        }
+                    }
+                ];
+
+                this.displayStations(stations);
+                this.calculateMushroomIndex(stations);
+            }
+
+            displayStations(stations) {
+                this.stationsGrid.innerHTML = '';
+
+                stations.forEach(station => {
+                    const stationCard = document.createElement('div');
+                    stationCard.className = 'station-card';
+                    
+                    stationCard.innerHTML = `
+                        <div class="station-name">${station.name} (${station.id})</div>
+                        <div class="data-item">
+                            <span class="data-label">Temperatura:</span>
+                            <span class="data-value ${this.getTemperatureClass(station.data.temperature)}">
+                                ${station.data.temperature}°C
+                            </span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Humedad:</span>
+                            <span class="data-value ${this.getHumidityClass(station.data.humidity)}">
+                                ${station.data.humidity}%
+                            </span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Precipitación 24h:</span>
+                            <span class="data-value">${station.data.precipitation} mm</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Días desde lluvia:</span>
+                            <span class="data-value ${this.getRainDaysClass(station.data.lastRain)}">
+                                ${station.data.lastRain} días
+                            </span>
+                        </div>
+                    `;
+
+                    this.stationsGrid.appendChild(stationCard);
+                });
+            }
+
+            calculateMushroomIndex(stations) {
+                let totalScore = 0;
+                let stationCount = 0;
+
+                stations.forEach(station => {
+                    let score = 0;
+                    const data = station.data;
+
+                    // Temperatura óptima (8-20°C) = 3 puntos
+                    if (data.temperature >= 8 && data.temperature <= 20) {
+                        score += 3;
+                    } else if (data.temperature >= 5 && data.temperature <= 25) {
+                        score += 1;
+                    }
+
+                    // Humedad óptima (>70%) = 2 puntos
+                    if (data.humidity >= 70) {
+                        score += 2;
+                    } else if (data.humidity >= 60) {
+                        score += 1;
+                    }
+
+                    // Lluvia reciente (3-7 días) = 1 punto
+                    if (data.lastRain >= 3 && data.lastRain <= 7) {
+                        score += 1;
+                    }
+
+                    totalScore += score;
+                    stationCount++;
+                });
+
+                const averageScore = totalScore / stationCount;
+                const percentage = (averageScore / 6) * 100;
+
+                this.displayResult(percentage, averageScore);
+            }
+
+            displayResult(percentage, score) {
+                let recommendation, description, color;
+
+                if (percentage >= 80) {
+                    recommendation = "¡Excelente momento para buscar setas!";
+                    description = "Las condiciones meteorológicas son ideales para la recolección de setas en Catalunya.";
+                    color = "#27ae60";
+                } else if (percentage >= 60) {
+                    recommendation = "Buenas condiciones para setas";
+                    description = "Las condiciones son favorables, podrías encontrar algunas setas.";
+                    color = "#f39c12";
+                } else {
+                    recommendation = "Condiciones no ideales";
+                    description = "Las condiciones meteorológicas no son las mejores para la recolección de setas.";
+                    color = "#e74c3c";
+                }
+
+                this.resultCard.innerHTML = `
+                    <div class="result-score" style="color: ${color}">
+                        ${percentage.toFixed(1)}%
+                    </div>
+                    <div class="result-recommendation">${recommendation}</div>
+                    <div class="result-description">${description}</div>
+                `;
+            }
+
+            getTemperatureClass(temp) {
+                if (temp >= 8 && temp <= 20) return 'optimal';
+                if (temp >= 5 && temp <= 25) return 'warning';
+                return 'poor';
+            }
+
+            getHumidityClass(humidity) {
+                if (humidity >= 70) return 'optimal';
+                if (humidity >= 60) return 'warning';
+                return 'poor';
+            }
+
+            getRainDaysClass(days) {
+                if (days >= 3 && days <= 7) return 'optimal';
+                if (days >= 1 && days <= 10) return 'warning';
+                return 'poor';
+            }
+
+            showLoading() {
+                this.loading.style.display = 'block';
+                this.analysisSection.style.display = 'none';
+                this.analyzeBtn.disabled = true;
+                this.analyzeBtn.textContent = '⏳ Analizando...';
+            }
+
+            hideLoading() {
+                this.loading.style.display = 'none';
+                this.analysisSection.style.display = 'block';
+                this.analyzeBtn.disabled = false;
+                this.analyzeBtn.textContent = '🌤️ Analizar Condiciones Actuales';
+            }
+
+            showError(message) {
+                this.errorMessage.textContent = message;
+                this.errorMessage.style.display = 'block';
+            }
+
+            hideError() {
+                this.errorMessage.style.display = 'none';
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', () => {
+            new MeteocatAnalyzer();
+        });
+    </script>
+</body>
+</html>

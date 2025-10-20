@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizador de Corte 3D - Demo</title>
+    <link rel="stylesheet" href="css/optimizador-3d-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            padding: 2rem;
+            border-radius: 8px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: #8b5cf6;
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #7c3aed;
+            transform: translateY(-2px);
+        }
+
+        .demo-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .info-card {
+            background: #2a2a2a;
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 2rem;
+        }
+
+        .info-card h3 {
+            color: #8b5cf6;
+            margin-bottom: 1rem;
+        }
+
+        .simulation {
+            background: #2a2a2a;
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .block-visualization {
+            width: 200px;
+            height: 150px;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            margin: 0 auto 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .piece {
+            position: absolute;
+            border: 1px solid #ffffff;
+            border-radius: 2px;
+            opacity: 0.8;
+        }
+
+        .piece-1 {
+            background: #ef4444;
+            width: 30px;
+            height: 20px;
+            top: 10px;
+            left: 10px;
+        }
+
+        .piece-2 {
+            background: #10b981;
+            width: 25px;
+            height: 25px;
+            top: 40px;
+            left: 10px;
+        }
+
+        .piece-3 {
+            background: #3b82f6;
+            width: 35px;
+            height: 15px;
+            top: 70px;
+            left: 10px;
+        }
+
+        .piece-4 {
+            background: #f97316;
+            width: 20px;
+            height: 30px;
+            top: 10px;
+            left: 50px;
+        }
+
+        .piece-5 {
+            background: #8b5cf6;
+            width: 40px;
+            height: 20px;
+            top: 40px;
+            left: 50px;
+        }
+
+        .piece-6 {
+            background: #06b6d4;
+            width: 30px;
+            height: 25px;
+            top: 70px;
+            left: 50px;
+        }
+
+        .author-link {
+            color: #10b981;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .author-link:hover {
+            color: #34d399;
+            border-bottom-color: #34d399;
+            transform: translateY(-1px);
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .results {
+            background: #2a2a2a;
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .results h3 {
+            color: #8b5cf6;
+            margin-bottom: 1rem;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            color: #b8b8b8;
+        }
+
+        .metric-value {
+            color: #8b5cf6;
+            font-weight: 600;
+        }
+
+        .code-section {
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .code-section h3 {
+            color: #8b5cf6;
+            margin-bottom: 1rem;
+        }
+
+        .code-preview {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .download-btn {
+            background: #10b981;
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .features {
+            background: #2a2a2a;
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 2rem;
+        }
+
+        .features h3 {
+            color: #8b5cf6;
+            margin-bottom: 1rem;
+        }
+
+        .features ul {
+            list-style: none;
+        }
+
+        .features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .features li:before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <a href="../" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Volver a Proyectos
+        </a>
+
+        <div class="header">
+            <h1>🧱 Optimizador de Corte 3D</h1>
+            <p>Algoritmo para optimizar colocación de piezas en bloques de espuma</p>
+        </div>
+
+        <div class="demo-section">
+            <div class="info-card">
+                <h3>📋 Descripción del Proyecto</h3>
+                <p>
+                    Algoritmo Python desarrollado para simular y optimizar la colocación de piezas
+                    dentro de un bloque cúbico de espuma, respetando restricciones de altura y
+                    aprovechando al máximo el volumen disponible.
+                </p>
+                <p>
+                    <strong>Tecnologías:</strong> Python, NumPy, Matplotlib, Algoritmos de Optimización
+                </p>
+            </div>
+
+            <div class="simulation">
+                <h3>🎮 Simulación Visual</h3>
+                <div class="block-visualization">
+                    <div class="piece piece-1"></div>
+                    <div class="piece piece-2"></div>
+                    <div class="piece piece-3"></div>
+                    <div class="piece piece-4"></div>
+                    <div class="piece piece-5"></div>
+                    <div class="piece piece-6"></div>
+                </div>
+                <p>Visualización 3D del bloque con piezas optimizadas</p>
+                <div class="controls">
+                    <button class="btn" onclick="runOptimization()">
+                        <i class="fas fa-play"></i> Ejecutar Optimización
+                    </button>
+                    <button class="btn" onclick="resetSimulation()">
+                        <i class="fas fa-redo"></i> Reiniciar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="results" id="results" style="display: none;">
+            <h3>📊 Resultados de la Optimización</h3>
+            <div class="metric">
+                <span class="metric-label">Piezas colocadas:</span>
+                <span class="metric-value" id="placedPieces">0</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Piezas no colocadas:</span>
+                <span class="metric-value" id="unplacedPieces">0</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Eficiencia:</span>
+                <span class="metric-value" id="efficiency">0%</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Volumen ocupado:</span>
+                <span class="metric-value" id="occupiedVolume">0 cm³</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Volumen total:</span>
+                <span class="metric-value" id="totalVolume">0 cm³</span>
+            </div>
+        </div>
+
+        <div class="code-section">
+            <h3>💻 Código del Proyecto</h3>
+            <div class="code-preview">
+                <div style="color: #8b5cf6;">#!/usr/bin/env python3</div>
+                <div style="color: #10b981;">"""</div>
+                <div style="color: #10b981;">🧱 Optimizador de Corte 3D para Bloques de Espuma</div>
+                <div style="color: #10b981;">Autor: <a href="https://github.com/RoMa-88/portfolio-personal#contact"
+                        target="_blank" class="author-link">Marc RoMa-88</a> (@RoMa-88)</div>
+                <div style="color: #10b981;">Fecha: 2025</div>
+                <div style="color: #10b981;">"""</div>
+                <br>
+                <div style="color: #3b82f6;">import</div> <span style="color: #ffffff;">matplotlib.pyplot</span> <span
+                    style="color: #3b82f6;">as</span> <span style="color: #ffffff;">plt</span>
+                <div style="color: #3b82f6;">import</div> <span style="color: #ffffff;">numpy</span> <span
+                    style="color: #3b82f6;">as</span> <span style="color: #ffffff;">np</span>
+                <div style="color: #3b82f6;">import</div> <span style="color: #ffffff;">random</span>
+                <br>
+                <div style="color: #8b5cf6;">class</div> <span style="color: #ffffff;">Pieza</span><span
+                    style="color: #ffffff;">:</span>
+                <div style="color: #b8b8b8;"> </div><span style="color: #8b5cf6;">def</span> <span
+                    style="color: #ffffff;">__init__</span><span style="color: #ffffff;">(</span><span
+                    style="color: #ffffff;">self</span><span style="color: #ffffff;">,</span> <span
+                    style="color: #ffffff;">nombre</span><span style="color: #ffffff;">,</span> <span
+                    style="color: #ffffff;">ancho</span><span style="color: #ffffff;">,</span> <span
+                    style="color: #ffffff;">alto</span><span style="color: #ffffff;">,</span> <span
+                    style="color: #ffffff;">profundidad</span><span style="color: #ffffff;">):</span>
+                <div style="color: #b8b8b8;"> </div><span style="color: #ffffff;">self</span><span
+                    style="color: #ffffff;">.</span><span style="color: #ffffff;">nombre</span> <span
+                    style="color: #ffffff;">=</span> <span style="color: #ffffff;">nombre</span>
+                <div style="color: #b8b8b8;"> </div><span style="color: #ffffff;">self</span><span
+                    style="color: #ffffff;">.</span><span style="color: #ffffff;">ancho</span> <span
+                    style="color: #ffffff;">=</span> <span style="color: #ffffff;">ancho</span>
+                <div style="color: #b8b8b8;"> </div><span style="color: #ffffff;">self</span><span
+                    style="color: #ffffff;">.</span><span style="color: #ffffff;">alto</span> <span
+                    style="color: #ffffff;">=</span> <span style="color: #ffffff;">alto</span>
+                <div style="color: #b8b8b8;"> </div><span style="color: #ffffff;">self</span><span
+                    style="color: #ffffff;">.</span><span style="color: #ffffff;">profundidad</span> <span
+                    style="color: #ffffff;">=</span> <span style="color: #ffffff;">profundidad</span>
+                <div style="color: #b8b8b8;"> </div><span style="color: #ffffff;">self</span><span
+                    style="color: #ffffff;">.</span><span style="color: #ffffff;">volumen</span> <span
+                    style="color: #ffffff;">=</span> <span style="color: #ffffff;">ancho</span> <span
+                    style="color: #ffffff;">*</span> <span style="color: #ffffff;">alto</span> <span
+                    style="color: #ffffff;">*</span> <span style="color: #ffffff;">profundidad</span>
+                <br>
+                <div style="color: #8b5cf6;">class</div> <span style="color: #ffffff;">Bloque</span><span
+                    style="color: #ffffff;">:</span>
+                <div style="color: #b8b8b8;"> </div><span style="color: #8b5cf6;">def</span> <span
+                    style="color: #ffffff;">__init__</span><span style="color: #ffffff;">(</span><span
+                    style="color: #ffffff;">self</span><span style="color: #ffffff;">,</span> <span
+                    style="color: #ffffff;">ancho</span><span style="color: #ffffff;">,</span> <span
+                    style="color: #ffffff;">alto</span><span style="color: #ffffff;">,</span> <span
+                    style="color: #ffffff;">profundidad</span><span style="color: #ffffff;">):</span>
+                <div style="color: #b8b8b8;"> </div><span style="color: #ffffff;">self</span><span
+                    style="color: #ffffff;">.</span><span style="color: #ffffff;">ancho</span> <span
+                    style="color: #ffffff;">=</span> <span style="color: #ffffff;">ancho</span>
+                <div style="color: #b8b8b8;"> </div><span style="color: #ffffff;">self</span><span
+                    style="color: #ffffff;">.</span><span style="color: #ffffff;">alto</span> <span
+                    style="color: #ffffff;">=</span> <span style="color: #ffffff;">alto</span>
+                <div style="color: #b8b8b8;"> </div><span style="color: #ffffff;">self</span><span
+                    style="color: #ffffff;">.</span><span style="color: #ffffff;">profundidad</span> <span
+                    style="color: #ffffff;">=</span> <span style="color: #ffffff;">profundidad</span>
+                <div style="color: #b8b8b8;"> </div><span style="color: #ffffff;">self</span><span
+                    style="color: #ffffff;">.</span><span style="color: #ffffff;">volumen_total</span> <span
+                    style="color: #ffffff;">=</span> <span style="color: #ffffff;">ancho</span> <span
+                    style="color: #ffffff;">*</span> <span style="color: #ffffff;">alto</span> <span
+                    style="color: #ffffff;">*</span> <span style="color: #ffffff;">profundidad</span>
+                <br>
+                <div style="color: #8b5cf6;">def</div> <span style="color: #ffffff;">main</span><span
+                    style="color: #ffffff;">():</span>
+                <div style="color: #b8b8b8;"> </div><span style="color: #ffffff;">print</span><span
+                    style="color: #ffffff;">(</span><span style="color: #f97316;">"🧱 Optimizador de Corte 3D para
+                    Bloques de Espuma"</span><span style="color: #ffffff;">)</span>
+                <div style="color: #b8b8b8;"> </div><span style="color: #ffffff;">bloque</span> <span
+                    style="color: #ffffff;">=</span> <span style="color: #ffffff;">Bloque</span><span
+                    style="color: #ffffff;">(</span><span style="color: #ffffff;">200</span><span
+                    style="color: #ffffff;">,</span> <span style="color: #ffffff;">118</span><span
+                    style="color: #ffffff;">,</span> <span style="color: #ffffff;">180</span><span
+                    style="color: #ffffff;">)</span>
+                <div style="color: #b8b8b8;"> </div><span style="color: #ffffff;">print</span><span
+                    style="color: #ffffff;">(</span><span style="color: #f97316;">f"📦 Bloque creado:
+                    {bloque.ancho}x{bloque.alto}x{bloque.profundidad} cm"</span><span style="color: #ffffff;">)</span>
+            </div>
+            <a href="optimizador-3d.py" class="download-btn" download>
+                <i class="fas fa-download"></i> Descargar Código Completo
+            </a>
+        </div>
+
+        <div class="features">
+            <h3>🚀 Características del Algoritmo</h3>
+            <ul>
+                <li>Algoritmo greedy para optimización rápida</li>
+                <li>Gestión automática de rotaciones de piezas</li>
+                <li>Visualización 3D con Matplotlib</li>
+                <li>Respeto de restricciones de altura (150cm)</li>
+                <li>Cálculo de eficiencia en tiempo real</li>
+                <li>Reporte detallado de resultados</li>
+                <li>Sistema de huecos para optimización</li>
+                <li>Detección de colisiones entre piezas</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function runOptimization() {
+            // Simular optimización
+            const results = document.getElementById('results');
+            results.style.display = 'block';
+
+            // Animar los resultados
+            animateValue('placedPieces', 0, 8, 1000);
+            animateValue('unplacedPieces', 0, 2, 1000);
+            animateValue('efficiency', 0, 85, 1000);
+            animateValue('occupiedVolume', 0, 425000, 1000);
+            animateValue('totalVolume', 0, 500000, 1000);
+
+            // Animar las piezas
+            const pieces = document.querySelectorAll('.piece');
+            pieces.forEach((piece, index) => {
+                setTimeout(() => {
+                    piece.style.animation = 'pulse 0.5s ease';
+                }, index * 100);
+            });
+        }
+
+        function resetSimulation() {
+            const results = document.getElementById('results');
+            results.style.display = 'none';
+
+            const pieces = document.querySelectorAll('.piece');
+            pieces.forEach(piece => {
+                piece.style.animation = 'none';
+            });
+        }
+
+        function animateValue(id, start, end, duration) {
+            const element = document.getElementById(id);
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= end) {
+                    current = end;
+                    clearInterval(timer);
+                }
+
+                if (id === 'efficiency') {
+                    element.textContent = Math.floor(current) + '%';
+                } else if (id === 'occupiedVolume' || id === 'totalVolume') {
+                    element.textContent = Math.floor(current).toLocaleString() + ' cm³';
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 16);
+        }
+
+        // CSS para animación de pulso
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏠 Gestor Inmobiliario - CRUD Funcional</title>
+    <link rel="stylesheet" href="css/gestor-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            color: #f59e0b;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid #f59e0b;
+            color: #f59e0b;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .nav-tab:hover,
+        .nav-tab.active {
+            background: #f59e0b;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(245, 158, 11, 0.05);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #f59e0b;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #d97706;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .property-card {
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+        }
+
+        .property-card h3 {
+            color: #f59e0b;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .property-info {
+            margin-bottom: 1rem;
+        }
+
+        .property-info p {
+            margin-bottom: 0.5rem;
+            color: #d1d5db;
+        }
+
+        .property-info strong {
+            color: #f59e0b;
+        }
+
+        .property-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 2px solid #22c55e;
+            color: #22c55e;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid #ef4444;
+            color: #ef4444;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+            color: #3b82f6;
+        }
+
+        .preview-card {
+            background: rgba(139, 92, 246, 0.1);
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .preview-card h3 {
+            color: #8b5cf6;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid #f59e0b;
+            color: #f59e0b;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .step.active {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .step.completed {
+            background: #22c55e;
+            border-color: #22c55e;
+            color: white;
+        }
+
+        .data-list {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .data-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .map-container {
+            height: 300px;
+            width: 100%;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            margin: 1rem 0;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .photos-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .photo-item {
+            position: relative;
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .photo-preview {
+            width: 100%;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-preview .placeholder {
+            color: #f59e0b;
+            font-size: 2rem;
+        }
+
+        .photo-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .btn-photo {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .map-search {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .map-search input {
+            flex: 1;
+        }
+
+        .coordinates {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .coordinates input {
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .property-card .map-mini {
+            height: 150px;
+            width: 100%;
+            border: 1px solid #f59e0b;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .photo-gallery img {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #f59e0b;
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .properties-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .coordinates {
+                grid-template-columns: 1fr;
+            }
+
+            .map-search {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏠 Gestor Inmobiliario</h1>
+            <p style="color: #d1d5db; font-size: 1.1rem;">Sistema CRUD completo para gestión de propiedades</p>
+        </div>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showTab('nueva-propiedad')">➕ Nueva Propiedad</div>
+            <div class="nav-tab" onclick="showTab('consultar')">📋 Consultar Propiedades</div>
+            <div class="nav-tab" onclick="showTab('exportar')">📄 Exportar Datos</div>
+            <div class="nav-tab" onclick="showTab('estadisticas')">📊 Estadísticas</div>
+        </div>
+
+        <!-- Tab Nueva Propiedad -->
+        <div id="nueva-propiedad" class="tab-content active">
+            <div class="step-indicator">
+                <div class="step active" id="step-1">1. Datos Básicos</div>
+                <div class="step" id="step-2">2. Revisar</div>
+                <div class="step" id="step-3">3. Confirmar</div>
+            </div>
+
+            <div id="form-step-1">
+                <h2>📝 Datos de la Propiedad</h2>
+                <form id="property-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="direccion">📍 Dirección:</label>
+                            <input type="text" id="direccion" name="direccion" required placeholder="Carrer Major, 123">
+                        </div>
+                        <div class="form-group">
+                            <label for="cp">📮 Código Postal:</label>
+                            <input type="text" id="cp" name="cp" required placeholder="08500">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="valor_mercado">💰 Valor de Mercado (€):</label>
+                        <input type="number" id="valor_mercado" name="valor_mercado" step="0.01" required
+                            placeholder="250000.00">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dormitorios">🛏️ Dormitorios:</label>
+                            <select id="dormitorios" name="dormitorios" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5+</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="banos">🚿 Baños:</label>
+                            <select id="banos" name="banos" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4+</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="terraza">🏞️ Terraza:</label>
+                            <select id="terraza" name="terraza" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="Sí">Sí</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="eficiencia">⚡ Eficiencia Energética:</label>
+                            <select id="eficiencia" name="eficiencia">
+                                <option value="">No especificada</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
+                                <option value="F">F</option>
+                                <option value="G">G</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="estado">🏠 Estado de la Propiedad:</label>
+                        <select id="estado" name="estado" required>
+                            <option value="">Seleccionar estado...</option>
+                            <option value="Vacio">🏠 Vacío</option>
+                            <option value="Okupado">⚠️ Okupado</option>
+                            <option value="Alquilado">🔑 Alquilado</option>
+                            <option value="Propietario">👤 Propietario</option>
+                            <option value="En Propiedad">🏡 En Propiedad</option>
+                        </select>
+                    </div>
+
+                    <!-- Google Maps Integration -->
+                    <div class="form-group">
+                        <label for="map-search">🗺️ Buscar Ubicación en Google Maps:</label>
+                        <div class="map-search">
+                            <input type="text" id="map-search" placeholder="Buscar dirección en Google Maps...">
+                            <button type="button" class="btn btn-small" onclick="searchOnMap()">🔍 Buscar</button>
+                        </div>
+                        <div class="coordinates">
+                            <input type="text" id="latitude" name="latitude" placeholder="Latitud" readonly>
+                            <input type="text" id="longitude" name="longitude" placeholder="Longitud" readonly>
+                        </div>
+                        <div id="map" class="map-container"></div>
+                    </div>
+
+                    <!-- Photo Management -->
+                    <div class="form-group">
+                        <label>📸 Fotos de la Propiedad:</label>
+                        <div class="photos-container" id="photos-container">
+                            <div class="photo-item">
+                                <div class="photo-preview">
+                                    <div class="placeholder">📷</div>
+                                </div>
+                                <input type="file" class="file-input" accept="image/*"
+                                    onchange="handlePhotoUpload(this, 0)">
+                                <button type="button" class="btn btn-photo"
+                                    onclick="document.querySelector('input[type=file]').click()">📁 Subir Foto</button>
+                                <button type="button" class="btn btn-photo btn-secondary" onclick="removePhoto(0)">🗑️
+                                    Eliminar</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-small" onclick="addPhotoSlot()">➕ Añadir Más Fotos</button>
+                    </div>
+
+                    <button type="button" class="btn" onclick="previewProperty()">👁️ Previsualizar</button>
+                </form>
+            </div>
+
+            <div id="form-step-2" style="display: none;">
+                <h2>👁️ Previsualización</h2>
+                <div class="preview-card" id="preview-content">
+                    <!-- El contenido se genera dinámicamente -->
+                </div>
+                <div style="text-align: center;">
+                    <button type="button" class="btn btn-secondary" onclick="editProperty()">✏️ Editar</button>
+                    <button type="button" class="btn" onclick="confirmProperty()">✅ Confirmar</button>
+                </div>
+            </div>
+
+            <div id="form-step-3" style="display: none;">
+                <h2>✅ Propiedad Guardada</h2>
+                <div class="alert alert-success">
+                    <strong>¡Éxito!</strong> La propiedad ha sido guardada correctamente.
+                </div>
+                <div style="text-align: center;">
+                    <button type="button" class="btn" onclick="resetForm()">➕ Nueva Propiedad</button>
+                    <button type="button" class="btn btn-secondary" onclick="showTab('consultar')">📋 Ver
+                        Propiedades</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Consultar Propiedades -->
+        <div id="consultar" class="tab-content">
+            <h2>📋 Consultar Propiedades</h2>
+
+            <div class="form-group">
+                <input type="text" class="search-box" id="search-box"
+                    placeholder="🔍 Buscar por dirección, CP, valor..." onkeyup="filterProperties()">
+            </div>
+
+            <div class="properties-grid" id="properties-grid">
+                <!-- Las propiedades se cargan dinámicamente -->
+            </div>
+
+            <div id="no-properties" style="display: none; text-align: center; color: #d1d5db; margin-top: 2rem;">
+                <p>No hay propiedades registradas. <a href="#" onclick="showTab('nueva-propiedad')"
+                        style="color: #f59e0b;">¡Añade la primera!</a></p>
+            </div>
+        </div>
+
+        <!-- Tab Exportar Datos -->
+        <div id="exportar" class="tab-content">
+            <h2>📄 Exportar Datos</h2>
+
+            <div class="alert alert-info">
+                <strong>💡 Información:</strong> Los datos se exportan en formato TXT que se incrementa línea a línea.
+            </div>
+
+            <div class="form-group">
+                <label for="export-format">Formato de exportación:</label>
+                <select id="export-format">
+                    <option value="txt">TXT (Texto plano)</option>
+                    <option value="csv">CSV (Excel compatible)</option>
+                </select>
+            </div>
+
+            <button type="button" class="btn" onclick="exportData()">📥 Descargar Datos</button>
+            <button type="button" class="btn btn-secondary" onclick="viewExportPreview()">👁️ Previsualizar</button>
+
+            <div id="export-preview" style="display: none; margin-top: 2rem;">
+                <h3>Previsualización del archivo:</h3>
+                <div class="data-list" id="export-content">
+                    <!-- Contenido de exportación -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Estadísticas -->
+        <div id="estadisticas" class="tab-content">
+            <h2>📊 Estadísticas</h2>
+
+            <div class="properties-grid">
+                <div class="property-card">
+                    <h3>📈 Resumen General</h3>
+                    <div class="property-info">
+                        <p><strong>Total Propiedades:</strong> <span id="total-properties">0</span></p>
+                        <p><strong>Valor Total:</strong> <span id="total-value">0€</span></p>
+                        <p><strong>Valor Promedio:</strong> <span id="avg-value">0€</span></p>
+                        <p><strong>Última Actualización:</strong> <span id="last-update">-</span></p>
+                    </div>
+                </div>
+
+                <div class="property-card">
+                    <h3>🏠 Por Dormitorios</h3>
+                    <div class="property-info" id="dormitorios-stats">
+                        <!-- Se genera dinámicamente -->
+                    </div>
+                </div>
+
+                <div class="property-card">
+                    <h3>⚡ Eficiencia Energética</h3>
+                    <div class="property-info" id="eficiencia-stats">
+                        <!-- Se genera dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Maps API -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
+
+    <script>
+        // Variables globales
+        let map;
+        let marker;
+        let geocoder;
+        let photos = [];
+        let photoIndex = 0;
+
+        // Base de datos local (LocalStorage)
+        let properties = JSON.parse(localStorage.getItem('gestor_inmobiliario')) || [];
+
+        // Datos de ejemplo
+        if (properties.length === 0) {
+            properties = [
+                {
+                    id: 1,
+                    direccion: "Carrer Major, 123",
+                    cp: "08500",
+                    valor_mercado: 250000,
+                    dormitorios: "3",
+                    banos: "2",
+                    terraza: "Sí",
+                    eficiencia: "C",
+                    estado: "Alquilado",
+                    fecha_creacion: new Date().toISOString()
+                },
+                {
+                    id: 2,
+                    direccion: "Avinguda de la Pau, 45",
+                    cp: "08001",
+                    valor_mercado: 180000,
+                    dormitorios: "2",
+                    banos: "1",
+                    terraza: "No",
+                    eficiencia: "D",
+                    estado: "Vacio",
+                    fecha_creacion: new Date().toISOString()
+                }
+            ];
+            saveProperties();
+        }
+
+        function saveProperties() {
+            localStorage.setItem('gestor_inmobiliario', JSON.stringify(properties));
+        }
+
+        function showTab(tabName) {
+            // Ocultar todas las pestañas
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remover clase active de todos los botones
+            const buttons = document.querySelectorAll('.nav-tab');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Mostrar la pestaña seleccionada
+            document.getElementById(tabName).classList.add('active');
+
+            // Activar el botón correspondiente
+            event.target.classList.add('active');
+
+            // Cargar datos específicos de cada pestaña
+            if (tabName === 'consultar') {
+                loadProperties();
+            } else if (tabName === 'estadisticas') {
+                loadStatistics();
+            }
+        }
+
+        function previewProperty() {
+            const form = document.getElementById('property-form');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // Validar campos requeridos
+            if (!data.direccion || !data.cp || !data.valor_mercado || !data.dormitorios || !data.banos || !data.terraza) {
+                alert('Por favor, completa todos los campos requeridos.');
+                return;
+            }
+
+            // Generar preview
+            const preview = `
+                <h3>🏠 ${data.direccion}</h3>
+                    <div class="property-info">
+                        <p><strong>📍 Dirección:</strong> ${data.direccion}</p>
+                        <p><strong>📮 Código Postal:</strong> ${data.cp}</p>
+                        <p><strong>💰 Valor de Mercado:</strong> ${parseFloat(data.valor_mercado).toLocaleString()}€</p>
+                        <p><strong>🛏️ Dormitorios:</strong> ${data.dormitorios}</p>
+                        <p><strong>🚿 Baños:</strong> ${data.banos}</p>
+                        <p><strong>🏞️ Terraza:</strong> ${data.terraza}</p>
+                        <p><strong>⚡ Eficiencia:</strong> ${data.eficiencia || 'No especificada'}</p>
+                        <p><strong>🏠 Estado:</strong> ${data.estado || 'No especificado'}</p>
+                        ${data.latitude && data.longitude ? `<p><strong>🗺️ Coordenadas:</strong> ${data.latitude}, ${data.longitude}</p>` : ''}
+                    </div>
+                    ${getPhotosPreview()}
+            `;
+
+            document.getElementById('preview-content').innerHTML = preview;
+
+            // Cambiar a paso 2
+            document.getElementById('form-step-1').style.display = 'none';
+            document.getElementById('form-step-2').style.display = 'block';
+
+            // Actualizar indicador de pasos
+            document.getElementById('step-1').classList.remove('active');
+            document.getElementById('step-1').classList.add('completed');
+            document.getElementById('step-2').classList.add('active');
+        }
+
+        function editProperty() {
+            // Volver al paso 1
+            document.getElementById('form-step-2').style.display = 'none';
+            document.getElementById('form-step-1').style.display = 'block';
+
+            // Actualizar indicador de pasos
+            document.getElementById('step-1').classList.remove('completed');
+            document.getElementById('step-1').classList.add('active');
+            document.getElementById('step-2').classList.remove('active');
+        }
+
+        function confirmProperty() {
+            const form = document.getElementById('property-form');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // Crear nueva propiedad
+            const newProperty = {
+                id: Date.now(), // ID único basado en timestamp
+                ...data,
+                valor_mercado: parseFloat(data.valor_mercado),
+                latitude: data.latitude || null,
+                longitude: data.longitude || null,
+                photos: photos.filter(photo => photo), // Filtrar fotos vacías
+                fecha_creacion: new Date().toISOString()
+            };
+
+            // Añadir a la base de datos
+            properties.push(newProperty);
+            saveProperties();
+
+            // Cambiar a paso 3
+            document.getElementById('form-step-2').style.display = 'none';
+            document.getElementById('form-step-3').style.display = 'block';
+
+            // Actualizar indicador de pasos
+            document.getElementById('step-2').classList.remove('active');
+            document.getElementById('step-2').classList.add('completed');
+            document.getElementById('step-3').classList.add('active');
+
+            // Mostrar mensaje de éxito
+            console.log('Propiedad guardada:', newProperty);
+        }
+
+        function resetForm() {
+            // Resetear formulario
+            document.getElementById('property-form').reset();
+
+            // Volver al paso 1
+            document.getElementById('form-step-3').style.display = 'none';
+            document.getElementById('form-step-1').style.display = 'block';
+
+            // Resetear indicadores
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active', 'completed');
+            });
+            document.getElementById('step-1').classList.add('active');
+        }
+
+        function loadProperties() {
+            const grid = document.getElementById('properties-grid');
+            const noProperties = document.getElementById('no-properties');
+
+            if (properties.length === 0) {
+                grid.style.display = 'none';
+                noProperties.style.display = 'block';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            noProperties.style.display = 'none';
+
+            grid.innerHTML = properties.map(prop => `
+                <div class="property-card">
+                    <h3>🏠 ${prop.direccion}</h3>
+                    <div class="property-info">
+                        <p><strong>Código Postal:</strong> ${prop.cp}</p>
+                        <p><strong>Valor de Mercado:</strong> ${prop.valor_mercado.toLocaleString()}€</p>
+                        <p><strong>Dormitorios:</strong> ${prop.dormitorios} | <strong>Baños:</strong> ${prop.banos}</p>
+                        <p><strong>Terraza:</strong> ${prop.terraza} | <strong>Eficiencia:</strong> ${prop.eficiencia || 'No especificada'}</p>
+                        <p><strong>Estado:</strong> ${prop.estado || 'No especificado'}</p>
+                        <p><strong>Fecha:</strong> ${new Date(prop.fecha_creacion).toLocaleDateString()}</p>
+                        ${prop.latitude && prop.longitude ? `<div class="map-mini" id="map-${prop.id}"></div>` : ''}
+                        ${prop.photos && prop.photos.length > 0 ? `<div class="photo-gallery">${prop.photos.map(photo => `<img src="${photo}" alt="Foto de la propiedad">`).join('')}</div>` : ''}
+                    </div>
+                    <div class="property-actions">
+                        <button class="btn btn-small btn-secondary" onclick="editPropertyById(${prop.id})">✏️ Editar</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteProperty(${prop.id})">🗑️ Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterProperties() {
+            const searchTerm = document.getElementById('search-box').value.toLowerCase();
+            const cards = document.querySelectorAll('.property-card');
+
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function deleteProperty(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta propiedad?')) {
+                properties = properties.filter(prop => prop.id !== id);
+                saveProperties();
+                loadProperties();
+                loadStatistics();
+            }
+        }
+
+        function editPropertyById(id) {
+            const property = properties.find(prop => prop.id === id);
+            if (property) {
+                // Llenar formulario con datos existentes
+                document.getElementById('direccion').value = property.direccion;
+                document.getElementById('cp').value = property.cp;
+                document.getElementById('valor_mercado').value = property.valor_mercado;
+                document.getElementById('dormitorios').value = property.dormitorios;
+                document.getElementById('banos').value = property.banos;
+                document.getElementById('terraza').value = property.terraza;
+                document.getElementById('eficiencia').value = property.eficiencia;
+                document.getElementById('estado').value = property.estado;
+
+                // Coordenadas
+                if (property.latitude && property.longitude) {
+                    document.getElementById('latitude').value = property.latitude;
+                    document.getElementById('longitude').value = property.longitude;
+
+                    // Centrar mapa si está disponible
+                    if (map && geocoder) {
+                        const location = new google.maps.LatLng(property.latitude, property.longitude);
+                        map.setCenter(location);
+                        map.setZoom(15);
+
+                        if (marker) {
+                            marker.setPosition(location);
+                        } else {
+                            marker = new google.maps.Marker({
+                                position: location,
+                                map: map,
+                                title: 'Ubicación de la propiedad'
+                            });
+                        }
+                    }
+                }
+
+                // Cargar fotos
+                if (property.photos && property.photos.length > 0) {
+                    photos = [...property.photos];
+                    loadPhotosInForm();
+                } else {
+                    photos = [];
+                }
+
+                // Cambiar a pestaña de nueva propiedad
+                showTab('nueva-propiedad');
+
+                // Marcar como edición
+                window.editingId = id;
+            }
+        }
+
+        function loadPhotosInForm() {
+            const container = document.getElementById('photos-container');
+            container.innerHTML = '';
+
+            photos.forEach((photo, index) => {
+                const photoItem = document.createElement('div');
+                photoItem.className = 'photo-item';
+                photoItem.innerHTML = `
+                    <div class="photo-preview">
+                        <img src="${photo}" alt="Foto de la propiedad">
+                    </div>
+                    <input type="file" class="file-input" accept="image/*" onchange="handlePhotoUpload(this, ${index})">
+                    <div class="photo-actions">
+                        <button type="button" class="btn btn-photo" onclick="this.previousElementSibling.click()">📁 Cambiar Foto</button>
+                        <button type="button" class="btn btn-photo btn-secondary" onclick="removePhoto(${index})">🗑️ Eliminar</button>
+                    </div>
+                `;
+                container.appendChild(photoItem);
+            });
+
+            // Añadir slot vacío si no hay fotos
+            if (photos.length === 0) {
+                addPhotoSlot();
+            }
+        }
+
+        function exportData() {
+            const format = document.getElementById('export-format').value;
+            let content = '';
+
+            if (format === 'txt') {
+                content = properties.map(prop =>
+                    `PROPIEDAD: ${prop.direccion} | CP: ${prop.cp} | VALOR: ${prop.valor_mercado}€ | DORM: ${prop.dormitorios} | BAÑOS: ${prop.banos} | TERRAZA: ${prop.terraza} | EFICIENCIA: ${prop.eficiencia || 'N/A'} | TRANSPORTE: ${prop.transp_publico || 'N/A'} | FECHA: ${new Date(prop.fecha_creacion).toLocaleDateString()}`
+                ).join('\n');
+            } else if (format === 'csv') {
+                content = 'Dirección,Código Postal,Valor,Dormitorios,Baños,Terraza,Eficiencia,Transporte,Fecha\n';
+                content += properties.map(prop =>
+                    `"${prop.direccion}","${prop.cp}","${prop.valor_mercado}","${prop.dormitorios}","${prop.banos}","${prop.terraza}","${prop.eficiencia || ''}","${prop.transp_publico || ''}","${new Date(prop.fecha_creacion).toLocaleDateString()}"`
+                ).join('\n');
+            }
+
+            // Crear y descargar archivo
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `propiedades_${new Date().toISOString().split('T')[0]}.${format}`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function viewExportPreview() {
+            const format = document.getElementById('export-format').value;
+            let content = '';
+
+            if (format === 'txt') {
+                content = properties.map(prop =>
+                    `PROPIEDAD: ${prop.direccion} | CP: ${prop.cp} | VALOR: ${prop.valor_mercado}€ | DORM: ${prop.dormitorios} | BAÑOS: ${prop.banos} | TERRAZA: ${prop.terraza} | EFICIENCIA: ${prop.eficiencia || 'N/A'} | TRANSPORTE: ${prop.transp_publico || 'N/A'} | FECHA: ${new Date(prop.fecha_creacion).toLocaleDateString()}`
+                ).join('\n');
+            } else if (format === 'csv') {
+                content = 'Dirección,Código Postal,Valor,Dormitorios,Baños,Terraza,Eficiencia,Transporte,Fecha\n';
+                content += properties.map(prop =>
+                    `"${prop.direccion}","${prop.cp}","${prop.valor_mercado}","${prop.dormitorios}","${prop.banos}","${prop.terraza}","${prop.eficiencia || ''}","${prop.transp_publico || ''}","${new Date(prop.fecha_creacion).toLocaleDateString()}"`
+                ).join('\n');
+            }
+
+            document.getElementById('export-content').innerHTML = `<pre>${content}</pre>`;
+            document.getElementById('export-preview').style.display = 'block';
+        }
+
+        function loadStatistics() {
+            const total = properties.length;
+            const totalValue = properties.reduce((sum, prop) => sum + prop.valor_mercado, 0);
+            const avgValue = total > 0 ? totalValue / total : 0;
+
+            document.getElementById('total-properties').textContent = total;
+            document.getElementById('total-value').textContent = totalValue.toLocaleString() + '€';
+            document.getElementById('avg-value').textContent = Math.round(avgValue).toLocaleString() + '€';
+            document.getElementById('last-update').textContent = new Date().toLocaleDateString();
+
+            // Estadísticas por dormitorios
+            const dormitoriosStats = {};
+            properties.forEach(prop => {
+                dormitoriosStats[prop.dormitorios] = (dormitoriosStats[prop.dormitorios] || 0) + 1;
+            });
+
+            document.getElementById('dormitorios-stats').innerHTML = Object.entries(dormitoriosStats)
+                .map(([dorm, count]) => `<p><strong>${dorm} dorm:</strong> ${count} propiedades</p>`)
+                .join('');
+
+            // Estadísticas por eficiencia
+            const eficienciaStats = {};
+            properties.forEach(prop => {
+                const efic = prop.eficiencia || 'No especificada';
+                eficienciaStats[efic] = (eficienciaStats[efic] || 0) + 1;
+            });
+
+            document.getElementById('eficiencia-stats').innerHTML = Object.entries(eficienciaStats)
+                .map(([efic, count]) => `<p><strong>${efic}:</strong> ${count} propiedades</p>`)
+                .join('');
+        }
+
+        // Google Maps Functions
+        function initMap() {
+            // Inicializar mapa centrado en Barcelona
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 13,
+                center: { lat: 41.3851, lng: 2.1734 }, // Barcelona
+                mapTypeId: 'roadmap'
+            });
+
+            geocoder = new google.maps.Geocoder();
+
+            // Agregar listener para clicks en el mapa
+            map.addListener('click', function (event) {
+                const lat = event.latLng.lat();
+                const lng = event.latLng.lng();
+
+                document.getElementById('latitude').value = lat.toFixed(6);
+                document.getElementById('longitude').value = lng.toFixed(6);
+
+                // Actualizar marcador
+                if (marker) {
+                    marker.setPosition(event.latLng);
+                } else {
+                    marker = new google.maps.Marker({
+                        position: event.latLng,
+                        map: map,
+                        title: 'Ubicación de la propiedad'
+                    });
+                }
+
+                // Geocodificación inversa para obtener dirección
+                geocoder.geocode({ location: event.latLng }, function (results, status) {
+                    if (status === 'OK' && results[0]) {
+                        document.getElementById('direccion').value = results[0].formatted_address;
+                    }
+                });
+            });
+        }
+
+        function searchOnMap() {
+            const address = document.getElementById('map-search').value;
+
+            if (address) {
+                geocoder.geocode({ address: address }, function (results, status) {
+                    if (status === 'OK') {
+                        const location = results[0].geometry.location;
+
+                        map.setCenter(location);
+                        map.setZoom(15);
+
+                        // Actualizar coordenadas
+                        document.getElementById('latitude').value = location.lat().toFixed(6);
+                        document.getElementById('longitude').value = location.lng().toFixed(6);
+
+                        // Actualizar dirección
+                        document.getElementById('direccion').value = results[0].formatted_address;
+
+                        // Actualizar marcador
+                        if (marker) {
+                            marker.setPosition(location);
+                        } else {
+                            marker = new google.maps.Marker({
+                                position: location,
+                                map: map,
+                                title: 'Ubicación de la propiedad'
+                            });
+                        }
+                    } else {
+                        alert('No se encontró la dirección: ' + status);
+                    }
+                });
+            }
+        }
+
+        // Photo Management Functions
+        function handlePhotoUpload(input, index) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const photoItem = input.closest('.photo-item');
+                    const preview = photoItem.querySelector('.photo-preview');
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Foto de la propiedad">`;
+
+                    // Guardar foto en array
+                    photos[index] = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function addPhotoSlot() {
+            const container = document.getElementById('photos-container');
+            const newIndex = container.children.length;
+
+            const photoItem = document.createElement('div');
+            photoItem.className = 'photo-item';
+            photoItem.innerHTML = `
+                <div class="photo-preview">
+                    <div class="placeholder">📷</div>
+                </div>
+                <input type="file" class="file-input" accept="image/*" onchange="handlePhotoUpload(this, ${newIndex})">
+                <div class="photo-actions">
+                    <button type="button" class="btn btn-photo" onclick="this.previousElementSibling.click()">📁 Subir Foto</button>
+                    <button type="button" class="btn btn-photo btn-secondary" onclick="removePhoto(${newIndex})">🗑️ Eliminar</button>
+                </div>
+            `;
+
+            container.appendChild(photoItem);
+        }
+
+        function removePhoto(index) {
+            const container = document.getElementById('photos-container');
+            if (container.children.length > 1) {
+                container.children[index].remove();
+                photos.splice(index, 1);
+            } else {
+                // Si es la última foto, solo limpiar
+                const photoItem = container.children[0];
+                const preview = photoItem.querySelector('.photo-preview');
+                preview.innerHTML = '<div class="placeholder">📷</div>';
+                const input = photoItem.querySelector('input[type="file"]');
+                input.value = '';
+                photos = [];
+            }
+        }
+
+        function getPhotosPreview() {
+            if (photos.length > 0) {
+                return `
+                    <div class="photo-gallery">
+                        ${photos.map(photo => `<img src="${photo}" alt="Foto de la propiedad">`).join('')}
+                    </div>
+                `;
+            }
+            return '<p style="color: #d1d5db; font-style: italic;">No hay fotos subidas</p>';
+        }
+
+        // Inicializar al cargar la página
+        document.addEventListener('DOMContentLoaded', function () {
+            loadProperties();
+            loadStatistics();
+
+            // Si no hay API key de Google Maps, mostrar mensaje
+            if (typeof google === 'undefined') {
+                document.getElementById('map').innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #f59e0b; text-align: center;">
+                        <div>
+                            <p><strong>🗺️ Google Maps</strong></p>
+                            <p>Para activar los mapas, configura tu API key de Google Maps</p>
+                            <p style="font-size: 0.9rem; color: #d1d5db;">Reemplaza "YOUR_API_KEY" en el código</p>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏠 Gestor Inmobiliario - En Desarrollo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            max-width: 600px;
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+        }
+
+        .icon {
+            font-size: 4rem;
+            color: #f59e0b;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        h1 {
+            color: #f59e0b;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .status {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            display: inline-block;
+        }
+
+        .description {
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            color: #d1d5db;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .tech-tag {
+            background: var(--gradient-primary, linear-gradient(135deg, #8b5cf6, #3b82f6));
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .features {
+            text-align: left;
+            background: rgba(245, 158, 11, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #f59e0b;
+            margin-bottom: 2rem;
+        }
+
+        .features h3 {
+            color: #f59e0b;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .features li {
+            padding: 0.5rem 0;
+            position: relative;
+            padding-left: 1.5rem;
+            color: #d1d5db;
+        }
+
+        .features li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: #f59e0b;
+        }
+
+        .progress {
+            margin: 2rem 0;
+        }
+
+        .progress-bar {
+            background: rgba(245, 158, 11, 0.2);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+            height: 100%;
+            width: 60%;
+            border-radius: 4px;
+            animation: progress 2s ease-in-out;
+        }
+
+        @keyframes progress {
+            from { width: 0%; }
+            to { width: 60%; }
+        }
+
+        .progress-text {
+            color: #f59e0b;
+            font-size: 0.9rem;
+        }
+
+        .contact {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .contact a {
+            color: #f59e0b;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact a:hover {
+            color: #d97706;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🏠</div>
+        <h1>Gestor Inmobiliario</h1>
+        <div class="status">🚧 En Desarrollo</div>
+        
+        <p class="description">
+            Sistema web CRUD para gestión de propiedades inmobiliarias. 
+            Reemplaza el Excel arcaico con una base de datos estructurada, 
+            formularios dinámicos y gestión de citas.
+        </p>
+
+        <div class="tech-stack">
+            <span class="tech-tag">PHP</span>
+            <span class="tech-tag">MySQL</span>
+            <span class="tech-tag">MVC</span>
+            <span class="tech-tag">PDO</span>
+        </div>
+
+        <div class="features">
+            <h3>🚧 Características en Desarrollo</h3>
+            <ul>
+                <li>CRUD completo de propiedades</li>
+                <li>Gestión de contactos por propiedad</li>
+                <li>Sistema de citas y agenda</li>
+                <li>Exportación a Excel/CSV</li>
+                <li>Validaciones y seguridad</li>
+                <li>Interfaz responsive</li>
+            </ul>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="progress-text">Progreso: 60% completado</div>
+        </div>
+
+        <div class="contact">
+            <p><strong>Desarrollado por:</strong> <a href="https://github.com/RoMa-88/portfolio-personal#contact" target="_blank" class="author-link">Marc RoMa-88</a></p>
+            <p><strong>Contacto:</strong> <a href="mailto:m4rc.roma7@gmail.com">m4rc.roma7@gmail.com</a></p>
+            <p><strong>GitHub:</strong> <a href="https://github.com/RoMa-88" target="_blank">@RoMa-88</a></p>
+        </div>
+    </div>
+</body>
+</html>

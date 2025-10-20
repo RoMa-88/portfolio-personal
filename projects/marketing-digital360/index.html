@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketingDigital360 - Proyecto Web</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .project-header {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .project-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .project-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .info-card h3 {
+            color: #ff6b35;
+            margin-bottom: 1rem;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tech-tag {
+            background: #e9ecef;
+            color: #495057;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .screenshots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .screenshot {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .screenshot img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .placeholder {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 3rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .placeholder i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: #ff6b35;
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #e55a2b;
+            transform: translateY(-2px);
+        }
+
+        .features {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .features h3 {
+            color: #ff6b35;
+            margin-bottom: 1rem;
+        }
+
+        .features ul {
+            list-style: none;
+        }
+
+        .features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .features li:before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <a href="../" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Volver a Proyectos
+        </a>
+
+        <div class="project-header">
+            <h1>MarketingDigital360</h1>
+            <p>Diseño completo de web corporativa con WordPress</p>
+        </div>
+
+        <div class="project-info">
+            <div class="info-card">
+                <h3>📋 Descripción del Proyecto</h3>
+                <p>
+                    Desarrollo completo de la página web corporativa para MarketingDigital360, 
+                    una agencia de marketing digital. El proyecto incluye diseño responsive, 
+                    optimización SEO y integración de formularios de contacto.
+                </p>
+                <div class="tech-stack">
+                    <span class="tech-tag">WordPress</span>
+                    <span class="tech-tag">PHP</span>
+                    <span class="tech-tag">HTML5</span>
+                    <span class="tech-tag">CSS3</span>
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">Responsive Design</span>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>🎯 Características Principales</h3>
+                <ul class="features">
+                    <li>Diseño responsive y moderno</li>
+                    <li>Optimización SEO completa</li>
+                    <li>Formularios de contacto funcionales</li>
+                    <li>Integración con redes sociales</li>
+                    <li>Animaciones CSS fluidas</li>
+                    <li>Panel de administración WordPress</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="screenshots">
+            <div class="screenshot">
+                <div class="placeholder">
+                    <i class="fas fa-image"></i>
+                    <h4>Homepage</h4>
+                    <p>Vista principal de la web</p>
+                </div>
+            </div>
+
+            <div class="screenshot">
+                <div class="placeholder">
+                    <i class="fas fa-image"></i>
+                    <h4>Sección Servicios</h4>
+                    <p>Catálogo de servicios ofrecidos</p>
+                </div>
+            </div>
+
+            <div class="screenshot">
+                <div class="placeholder">
+                    <i class="fas fa-image"></i>
+                    <h4>Formulario de Contacto</h4>
+                    <p>Formulario funcional de contacto</p>
+                </div>
+            </div>
+
+            <div class="screenshot">
+                <div class="placeholder">
+                    <i class="fas fa-image"></i>
+                    <h4>Vista Móvil</h4>
+                    <p>Diseño responsive en dispositivos móviles</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h3>🚀 Resultados Obtenidos</h3>
+            <p>
+                La web de MarketingDigital360 fue desarrollada con éxito, manteniendo la coherencia 
+                visual del logotipo con animaciones fluidas y transiciones elegantes. El sitio web 
+                es completamente responsive y optimizado para motores de búsqueda.
+            </p>
+            <p>
+                <strong>Nota:</strong> Este proyecto fue desarrollado para un cliente real y 
+                representa mi experiencia en diseño web corporativo con WordPress.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

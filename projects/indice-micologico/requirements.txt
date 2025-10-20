@@ -1,0 +1,16 @@
+# Dependències per l'Índex Micològic Catalunya
+# Basat en meteocat-api-client de herrera-lu
+
+requests>=2.28.0
+pandas>=1.5.0
+matplotlib>=3.6.0
+numpy>=1.21.0
+python-dotenv>=0.19.0
+
+# Dependències opcionals per visualitzacions avançades
+seaborn>=0.11.0
+plotly>=5.0.0
+
+# Per desenvolupament i testing
+pytest>=7.0.0
+pytest-cov>=4.0.0

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todos los Proyectos - Marc RoMa-88</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .projects-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            color: #8a2be2;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .project-card {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: #00d4ff;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .project-title {
+            color: #00d4ff;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .project-description {
+            color: #b0b0b0;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #8a2be2, #ff0080);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .project-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tech-tag {
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .page-title {
+            color: #ffffff;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-family: 'Orbitron', monospace;
+            text-align: center;
+        }
+
+        .page-subtitle {
+            color: #b0b0b0;
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="projects-container">
+        <a href="../index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Volver al Portfolio
+        </a>
+
+        <h1 class="page-title">Todos los Proyectos</h1>
+        <p class="page-subtitle">Explora mi colección completa de proyectos de desarrollo web</p>
+
+        <div class="projects-grid">
+            <!-- Cyberpunk Interface -->
+            <div class="project-card">
+                <h3 class="project-title">👾 Cyberpunk Interface</h3>
+                <p class="project-description">Dashboard futurista con estética ciberpunk, efectos glitch y animaciones
+                    neon. Interfaz inmersiva con temática retro-futurista.</p>
+                <div class="project-links">
+                    <a href="cyberpunk-interface/" class="project-link">
+                        <i class="fas fa-external-link-alt"></i> Ver Proyecto
+                    </a>
+                    <a href="https://github.com/RoMa-88/portfolio-personal" class="project-link">
+                        <i class="fab fa-github"></i> Código
+                    </a>
+                </div>
+                <div class="tech-tags">
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">CSS3</span>
+                    <span class="tech-tag">Animations</span>
+                </div>
+            </div>
+
+            <!-- Memory Game -->
+            <div class="project-card">
+                <h3 class="project-title">🧠 Memory Game</h3>
+                <p class="project-description">Juego de memoria interactivo con efectos visuales y sistema de
+                    puntuación. Perfecto para entrenar la memoria y la concentración.</p>
+                <div class="project-links">
+                    <a href="memory-game/" class="project-link">
+                        <i class="fas fa-external-link-alt"></i> Ver Proyecto
+                    </a>
+                    <a href="https://github.com/RoMa-88/portfolio-personal" class="project-link">
+                        <i class="fab fa-github"></i> Código
+                    </a>
+                </div>
+                <div class="tech-tags">
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">HTML5</span>
+                    <span class="tech-tag">CSS3</span>
+                </div>
+            </div>
+
+            <!-- RPG Dice Counter -->
+            <div class="project-card">
+                <h3 class="project-title">🎲 RPG Dice Counter</h3>
+                <p class="project-description">Contador de dados para juegos de rol con animaciones 3D y física
+                    realista. Incluye diferentes tipos de dados y estadísticas.</p>
+                <div class="project-links">
+                    <a href="rpg-dice-counter/" class="project-link">
+                        <i class="fas fa-external-link-alt"></i> Ver Proyecto
+                    </a>
+                    <a href="https://github.com/RoMa-88/portfolio-personal" class="project-link">
+                        <i class="fab fa-github"></i> Código
+                    </a>
+                </div>
+                <div class="tech-tags">
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">Three.js</span>
+                    <span class="tech-tag">3D Graphics</span>
+                </div>
+            </div>
+
+            <!-- Smart Garden -->
+            <div class="project-card">
+                <h3 class="project-title">🌱 Smart Garden Assistant</h3>
+                <p class="project-description">Dashboard de jardinería inteligente con APIs meteorológicas y gestión de
+                    plantas. Ideal para jardineros modernos.</p>
+                <div class="project-links">
+                    <a href="smart-garden/" class="project-link">
+                        <i class="fas fa-external-link-alt"></i> Ver Proyecto
+                    </a>
+                    <a href="https://github.com/RoMa-88/portfolio-personal" class="project-link">
+                        <i class="fab fa-github"></i> Código
+                    </a>
+                </div>
+                <div class="tech-tags">
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">Material Design</span>
+                    <span class="tech-tag">IoT Dashboard</span>
+                </div>
+            </div>
+
+            <!-- Optimizador 3D -->
+            <div class="project-card">
+                <h3 class="project-title">📐 Optimizador 3D</h3>
+                <p class="project-description">Herramienta de optimización de corte 3D con algoritmo genético. Maximiza
+                    el aprovechamiento de materiales.</p>
+                <div class="project-links">
+                    <a href="optimizador-3d/" class="project-link">
+                        <i class="fas fa-external-link-alt"></i> Ver Proyecto
+                    </a>
+                    <a href="https://github.com/RoMa-88/portfolio-personal" class="project-link">
+                        <i class="fab fa-github"></i> Código
+                    </a>
+                </div>
+                <div class="tech-tags">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">Algoritmos</span>
+                    <span class="tech-tag">Optimización</span>
+                </div>
+            </div>
+
+            <!-- Gestor Inmobiliario -->
+            <div class="project-card">
+                <h3 class="project-title">🏠 Gestor Inmobiliario</h3>
+                <p class="project-description">CRUD completo con Google Maps, gestión de fotos y exportación de datos.
+                    Sistema completo para gestión inmobiliaria.</p>
+                <div class="project-links">
+                    <a href="gestor-inmobiliario/app.html" class="project-link">
+                        <i class="fas fa-external-link-alt"></i> Ver Proyecto
+                    </a>
+                    <a href="https://github.com/RoMa-88/portfolio-personal" class="project-link">
+                        <i class="fab fa-github"></i> Código
+                    </a>
+                </div>
+                <div class="tech-tags">
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">Google Maps</span>
+                    <span class="tech-tag">PHP</span>
+                </div>
+            </div>
+
+            <!-- Índice Micológico -->
+            <div class="project-card">
+                <h3 class="project-title">🍄 Índice Micológico</h3>
+                <p class="project-description">Análisis de condiciones meteorológicas para recolección de setas con API
+                    Meteocat. Herramienta para micólogos.</p>
+                <div class="project-links">
+                    <a href="indice-micologico/app.html" class="project-link">
+                        <i class="fas fa-external-link-alt"></i> Ver Proyecto
+                    </a>
+                    <a href="https://github.com/RoMa-88/portfolio-personal" class="project-link">
+                        <i class="fab fa-github"></i> Código
+                    </a>
+                </div>
+                <div class="tech-tags">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">API Meteocat</span>
+                    <span class="tech-tag">Data Analysis</span>
+                </div>
+            </div>
+
+            <!-- DNI Validator -->
+            <div class="project-card">
+                <h3 class="project-title">🆔 Validador de DNI</h3>
+                <p class="project-description">Validador de DNI español con verificación de dígito de control.
+                    Herramienta útil para formularios web.</p>
+                <div class="project-links">
+                    <a href="dni-validator/" class="project-link">
+                        <i class="fas fa-external-link-alt"></i> Ver Proyecto
+                    </a>
+                    <a href="https://github.com/RoMa-88/portfolio-personal" class="project-link">
+                        <i class="fab fa-github"></i> Código
+                    </a>
+                </div>
+                <div class="tech-tags">
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">HTML5</span>
+                    <span class="tech-tag">CSS3</span>
+                </div>
+            </div>
+
+            <!-- Marketing Digital 360 -->
+            <div class="project-card">
+                <h3 class="project-title">📈 MarketingDigital360</h3>
+                <p class="project-description">Web corporativa con WordPress, diseño responsive y animaciones fluidas.
+                    Ejemplo de desarrollo web profesional.</p>
+                <div class="project-links">
+                    <a href="marketing-digital360/" class="project-link">
+                        <i class="fas fa-external-link-alt"></i> Ver Proyecto
+                    </a>
+                    <a href="https://github.com/RoMa-88/portfolio-personal" class="project-link">
+                        <i class="fab fa-github"></i> Código
+                    </a>
+                </div>
+                <div class="tech-tags">
+                    <span class="tech-tag">WordPress</span>
+                    <span class="tech-tag">CSS3</span>
+                    <span class="tech-tag">PHP</span>
+                </div>
+            </div>
+
+            <!-- Crows Valky -->
+            <div class="project-card">
+                <h3 class="project-title">🎵 Crows Valky</h3>
+                <p class="project-description">Proyecto musical con integración de Spotify. Muestra de trabajo creativo
+                    combinando tecnología y arte.</p>
+                <div class="project-links">
+                    <a href="crows-valky/" class="project-link">
+                        <i class="fas fa-external-link-alt"></i> Ver Proyecto
+                    </a>
+                    <a href="https://github.com/RoMa-88/portfolio-personal" class="project-link">
+                        <i class="fab fa-github"></i> Código
+                    </a>
+                </div>
+                <div class="tech-tags">
+                    <span class="tech-tag">HTML5</span>
+                    <span class="tech-tag">CSS3</span>
+                    <span class="tech-tag">Spotify API</span>
+                </div>
+            </div>
+
+            <!-- Rubik's Cube -->
+            <div class="project-card">
+                <h3 class="project-title">🧩 Rubik's Cube</h3>
+                <p class="project-description">Simulador 3D del cubo de Rubik con controles interactivos. Proyecto de
+                    gráficos 3D y lógica de juegos.</p>
+                <div class="project-links">
+                    <a href="rubik-cube/" class="project-link">
+                        <i class="fas fa-external-link-alt"></i> Ver Proyecto
+                    </a>
+                    <a href="https://github.com/RoMa-88/portfolio-personal" class="project-link">
+                        <i class="fab fa-github"></i> Código
+                    </a>
+                </div>
+                <div class="tech-tags">
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">Three.js</span>
+                    <span class="tech-tag">3D Graphics</span>
+                </div>
+            </div>
+
+            <!-- RPG System -->
+            <div class="project-card">
+                <h3 class="project-title">🎲 Sistema RPG Completo</h3>
+                <p class="project-description">Sistema modular para juegos de rol con dados 3D, física realista, gestión
+                    de jugadores y estadísticas avanzadas.</p>
+                <div class="project-links">
+                    <a href="rpg-system/" class="project-link">
+                        <i class="fas fa-external-link-alt"></i> Ver Proyecto
+                    </a>
+                    <a href="https://github.com/RoMa-88/portfolio-personal" class="project-link">
+                        <i class="fab fa-github"></i> Código
+                    </a>
+                </div>
+                <div class="tech-tags">
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">Three.js</span>
+                    <span class="tech-tag">Cannon.js</span>
+                    <span class="tech-tag">Modular</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

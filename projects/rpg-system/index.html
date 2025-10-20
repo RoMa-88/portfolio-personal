@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎲 RPG Dice & Life Counter - Sistema Completo</title>
+    <link rel="stylesheet" href="css/rpg-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Alegreya:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Sistema de carga con promesas para Cannon.js
+        window.loadCannonJS = () => {
+            return new Promise((resolve, reject) => {
+                // Lista de CDNs para probar
+                const cdns = [
+                    'https://cdn.jsdelivr.net/npm/cannon@0.20.0/build/cannon.min.js',
+                    'https://unpkg.com/cannon@0.20.0/build/cannon.min.js',
+                    'https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.20.0/cannon.min.js',
+                    'https://cdn.skypack.dev/cannon@0.20.0'
+                ];
+
+                let currentIndex = 0;
+
+                const tryLoadCDN = () => {
+                    if (currentIndex >= cdns.length) {
+                        reject(new Error('No se pudo cargar Cannon.js desde ningún CDN'));
+                        return;
+                    }
+
+                    const script = document.createElement('script');
+                    script.src = cdns[currentIndex];
+                    
+                    script.onload = () => {
+                        console.log(`✅ Cannon.js cargado desde: ${cdns[currentIndex]}`);
+                        resolve();
+                    };
+                    
+                    script.onerror = () => {
+                        console.log(`❌ Falló CDN: ${cdns[currentIndex]}`);
+                        currentIndex++;
+                        tryLoadCDN();
+                    };
+                    
+                    document.head.appendChild(script);
+                };
+
+                tryLoadCDN();
+            });
+        };
+
+        // Cargar Cannon.js con promesas
+        window.loadCannonJS()
+            .then(() => {
+                console.log('🎉 Cannon.js cargado exitosamente');
+                // Reinicializar el sistema 3D cuando esté listo
+                if (window.rpgSystem && window.rpgSystem.dice3DManager && window.rpgSystem.dice3DManager.init3D) {
+                    setTimeout(() => {
+                        window.rpgSystem.dice3DManager.init3D();
+                    }, 500);
+                }
+            })
+            .catch((error) => {
+                console.error('💥 Error cargando Cannon.js:', error.message);
+                // Crear una versión simplificada de Cannon.js
+                window.createFallbackCannon();
+                // El sistema RPG ya está esperando, no necesitamos reinicializar
+            });
+
+        // Crear una versión simplificada de Cannon.js como último recurso
+        window.createFallbackCannon = () => {
+            console.log('🔧 Creando versión simplificada COMPLETA de Cannon.js...');
+            
+            window.CANNON = {
+                World: function() {
+                    this.bodies = [];
+                    this.gravity = new CANNON.Vec3(0, -9.82, 0);
+                    
+                    // Método para añadir cuerpos al mundo
+                    this.add = function(body) {
+                        this.bodies.push(body);
+                        console.log(`✅ Cuerpo añadido al mundo. Total: ${this.bodies.length}`);
+                    };
+                    
+                    // Método para eliminar cuerpos del mundo
+                    this.remove = function(body) {
+                        const index = this.bodies.indexOf(body);
+                        if (index > -1) {
+                            this.bodies.splice(index, 1);
+                            console.log(`✅ Cuerpo eliminado del mundo. Total: ${this.bodies.length}`);
+                        }
+                    };
+                    
+                    this.step = function(dt) {
+                        // Simulación básica sin física real
+                        this.bodies.forEach(body => {
+                            if (body.position && body.velocity) {
+                                // Aplicar fricción
+                                const friction = 0.98;
+                                body.velocity.x *= friction;
+                                body.velocity.z *= friction;
+                                
+                                // Limitar velocidad máxima
+                                const maxSpeed = 15;
+                                const speed = Math.sqrt(body.velocity.x**2 + body.velocity.y**2 + body.velocity.z**2);
+                                if (speed > maxSpeed) {
+                                    const factor = maxSpeed / speed;
+                                    body.velocity.x *= factor;
+                                    body.velocity.y *= factor;
+                                    body.velocity.z *= factor;
+                                }
+                                
+                                body.position.x += body.velocity.x * dt;
+                                body.position.y += body.velocity.y * dt;
+                                body.position.z += body.velocity.z * dt;
+                                
+                                // Simular gravedad (reducida)
+                                body.velocity.y += this.gravity.y * dt * 0.5; // Gravedad reducida a la mitad
+                                
+                                // Simular rebote en el suelo (y = 0.5 para evitar sumersión)
+                                if (body.position.y <= 0.5 && body.velocity.y < 0) {
+                                    body.position.y = 0.5; // Elevar ligeramente sobre la mesa
+                                    body.velocity.y *= -0.6; // Rebote con menos pérdida de energía
+                                    
+                                    // Añadir fricción horizontal cuando toca el suelo
+                                    body.velocity.x *= 0.8;
+                                    body.velocity.z *= 0.8;
+                                }
+                                
+                                // Simular rebote en los bordes de la mesa
+                                const tableSize = 10;
+                                if (body.position.x > tableSize && body.velocity.x > 0) {
+                                    body.position.x = tableSize;
+                                    body.velocity.x *= -0.6;
+                                }
+                                if (body.position.x < -tableSize && body.velocity.x < 0) {
+                                    body.position.x = -tableSize;
+                                    body.velocity.x *= -0.6;
+                                }
+                                if (body.position.z > tableSize && body.velocity.z > 0) {
+                                    body.position.z = tableSize;
+                                    body.velocity.z *= -0.6;
+                                }
+                                if (body.position.z < -tableSize && body.velocity.z < 0) {
+                                    body.position.z = -tableSize;
+                                    body.velocity.z *= -0.6;
+                                }
+                            }
+                        });
+                    };
+                },
+                Body: function(options) {
+                    this.position = new CANNON.Vec3(0, 0, 0);
+                    this.quaternion = new CANNON.Quaternion(0, 0, 0, 1);
+                    this.velocity = new CANNON.Vec3(0, 0, 0);
+                    this.angularVelocity = new CANNON.Vec3(0, 0, 0);
+                    this.shapes = [];
+                    this.mass = options?.mass || 1;
+                    
+                    // Métodos necesarios
+                    this.addShape = function(shape) {
+                        this.shapes.push(shape);
+                    };
+                    
+                    this.removeShape = function(shape) {
+                        const index = this.shapes.indexOf(shape);
+                        if (index > -1) {
+                            this.shapes.splice(index, 1);
+                        }
+                    };
+                    
+                    this.applyImpulse = function(impulse, worldPoint) {
+                        if (this.velocity) {
+                            this.velocity.x += impulse.x / this.mass;
+                            this.velocity.y += impulse.y / this.mass;
+                            this.velocity.z += impulse.z / this.mass;
+                        }
+                    };
+                    
+                    this.applyForce = function(force, worldPoint) {
+                        if (this.velocity) {
+                            this.velocity.x += force.x / this.mass;
+                            this.velocity.y += force.y / this.mass;
+                            this.velocity.z += force.z / this.mass;
+                        }
+                    };
+                },
+                Box: function(size) {
+                    this.type = 'Box';
+                    this.size = size;
+                },
+                Sphere: function(radius) {
+                    this.type = 'Sphere';
+                    this.radius = radius;
+                },
+                Cylinder: function(radiusTop, radiusBottom, height, numSegments) {
+                    this.type = 'Cylinder';
+                    this.radiusTop = radiusTop;
+                    this.radiusBottom = radiusBottom;
+                    this.height = height;
+                    this.numSegments = numSegments || 8;
+                },
+                Cone: function(radius, height, numSegments) {
+                    this.type = 'Cone';
+                    this.radius = radius;
+                    this.height = height;
+                    this.numSegments = numSegments || 8;
+                },
+                ConvexPolyhedron: function(vertices, faces) {
+                    this.type = 'ConvexPolyhedron';
+                    this.vertices = vertices || [];
+                    this.faces = faces || [];
+                },
+                Plane: function() {
+                    this.type = 'Plane';
+                },
+                Vec3: function(x, y, z) {
+                    this.x = x || 0;
+                    this.y = y || 0;
+                    this.z = z || 0;
+                    
+                    // Métodos necesarios
+                    this.set = function(x, y, z) {
+                        this.x = x;
+                        this.y = y;
+                        this.z = z;
+                    };
+                    
+                    this.copy = function(vector) {
+                        this.x = vector.x;
+                        this.y = vector.y;
+                        this.z = vector.z;
+                    };
+                    
+                    this.vadd = function(vector) {
+                        return new CANNON.Vec3(this.x + vector.x, this.y + vector.y, this.z + vector.z);
+                    };
+                    
+                    this.vsub = function(vector) {
+                        return new CANNON.Vec3(this.x - vector.x, this.y - vector.y, this.z - vector.z);
+                    };
+                },
+                Quaternion: function(x, y, z, w) {
+                    this.x = x || 0;
+                    this.y = y || 0;
+                    this.z = z || 0;
+                    this.w = w || 1;
+                    
+                    // Métodos necesarios
+                    this.set = function(x, y, z, w) {
+                        this.x = x;
+                        this.y = y;
+                        this.z = z;
+                        this.w = w;
+                    };
+                    
+                    this.copy = function(quaternion) {
+                        this.x = quaternion.x;
+                        this.y = quaternion.y;
+                        this.z = quaternion.z;
+                        this.w = quaternion.w;
+                    };
+                    
+                    this.setFromAxisAngle = function(axis, angle) {
+                        const s = Math.sin(angle / 2);
+                        this.x = axis.x * s;
+                        this.y = axis.y * s;
+                        this.z = axis.z * s;
+                        this.w = Math.cos(angle / 2);
+                    };
+                },
+                ContactMaterial: function() {},
+                Material: function() {}
+            };
+
+            console.log('✅ Versión simplificada COMPLETA de Cannon.js creada');
+            
+            // Reinicializar el sistema 3D
+            if (window.rpgSystem && window.rpgSystem.dice3DManager && window.rpgSystem.dice3DManager.init3D) {
+                setTimeout(() => {
+                    window.rpgSystem.dice3DManager.init3D();
+                }, 500);
+            }
+        };
+
+        // Verificar que las librerías se cargan
+        window.addEventListener('load', () => {
+            console.log('🔍 Verificando librerías...');
+            console.log('Three.js:', typeof THREE !== 'undefined' ? '✅ Cargado' : '❌ No cargado');
+            console.log('Cannon.js:', typeof CANNON !== 'undefined' ? '✅ Cargado' : '❌ No cargado');
+            
+            if (typeof THREE !== 'undefined') {
+                console.log('Three.js Scene:', typeof THREE.Scene !== 'undefined' ? '✅ Disponible' : '❌ No disponible');
+            }
+            
+            if (typeof CANNON !== 'undefined') {
+                console.log('Cannon.js World:', typeof CANNON.World !== 'undefined' ? '✅ Disponible' : '❌ No disponible');
+            }
+        });
+    </script>
+</head>
+<body>
+    <!-- Fondo de Castillo -->
+    <div class="castle-background"></div>
+    
+    <!-- Efecto de Fuego -->
+    <div class="fire-animation"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1>🎲 RPG Dice & Life Counter</h1>
+            <p>Herramienta completa para juegos de rol con dados 3D y contador de vidas</p>
+        </header>
+
+        <main class="main-content">
+            <div class="game-table">
+                <!-- Panel de Dados -->
+                <section class="dice-panel">
+                    <div class="panel-title">
+                        <h2><i class="fas fa-dice-d20"></i> Tirador de Dados</h2>
+                        <p>Selecciona el tipo de dado y la cantidad</p>
+                    </div>
+
+                    <!-- Selector de Tipo de Dado -->
+                    <div class="dice-options">
+                        <button class="dice-btn" data-sides="2" data-type="moneda">
+                            <i class="fas fa-circle"></i>
+                            <span>Moneda</span>
+                            <small>0=Cara, 1=Cruz</small>
+                        </button>
+                        <button class="dice-btn" data-sides="4" data-type="d4">
+                            <i class="fas fa-dice-d4"></i>
+                            <span>d4</span>
+                            <small>4 caras</small>
+                        </button>
+                        <button class="dice-btn active" data-sides="6" data-type="d6">
+                            <i class="fas fa-dice-d6"></i>
+                            <span>d6</span>
+                            <small>6 caras</small>
+                        </button>
+                        <button class="dice-btn" data-sides="8" data-type="d8">
+                            <i class="fas fa-dice-d8"></i>
+                            <span>d8</span>
+                            <small>8 caras</small>
+                        </button>
+                        <button class="dice-btn" data-sides="10" data-type="d10">
+                            <i class="fas fa-dice-d10"></i>
+                            <span>d10</span>
+                            <small>10 caras</small>
+                        </button>
+                        <button class="dice-btn" data-sides="20" data-type="d20">
+                            <i class="fas fa-dice-d20"></i>
+                            <span>d20</span>
+                            <small>20 caras</small>
+                        </button>
+                        <button class="dice-btn" data-sides="100" data-type="d100">
+                            <i class="fas fa-dice-d20"></i>
+                            <span>d100</span>
+                            <small>100 caras</small>
+                        </button>
+                    </div>
+
+                    <!-- Controles de Tirada -->
+                    <div class="dice-controls">
+                        <div class="control-group">
+                            <label for="diceQuantity">Cantidad:</label>
+                            <input type="number" id="diceQuantity" min="1" max="20" value="1">
+                        </div>
+                        <button id="rollDice" class="roll-btn">
+                            <i class="fas fa-hand-rock"></i>
+                            Lanzar
+                        </button>
+                    </div>
+
+                    <!-- Vista 3D -->
+                    <div class="dice-3d-container">
+                        <div id="dice3D" class="dice-3d-viewport">
+                            <!-- Three.js canvas se insertará aquí -->
+                        </div>
+                        <div class="dice-controls-3d">
+                            <button id="throwDice" class="throw-btn">
+                                <i class="fas fa-hand-rock"></i>
+                                Lanzar Dados 3D
+                            </button>
+                            <button id="resetDice" class="reset-btn">
+                                <i class="fas fa-undo"></i>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Área de Resultados -->
+                    <div class="results-area">
+                        <div class="dice-display" id="diceDisplay">
+                            <!-- Los dados aparecerán aquí -->
+                        </div>
+                        <div class="result-summary" id="resultSummary">
+                            <!-- Resumen de resultados -->
+                        </div>
+                        <div class="roll-stats" id="rollStats">
+                            <!-- Estadísticas si hay 3+ dados -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Panel de Jugadores -->
+                <section class="players-panel">
+                    <div class="panel-title">
+                        <h2><i class="fas fa-users"></i> Contador de Vidas</h2>
+                        <p>Gestiona los jugadores y sus puntos de vida</p>
+                        <button id="addPlayerBtn" class="add-player-btn">
+                            <i class="fas fa-plus"></i>
+                            Añadir Jugador
+                        </button>
+                    </div>
+
+                    <div class="players-grid" id="playersGrid">
+                        <!-- Las tarjetas de jugadores aparecerán aquí -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Formulario de Jugador -->
+    <div class="player-form" id="playerForm">
+        <div class="form-content">
+            <h3>Añadir/Editar Jugador</h3>
+            <div class="form-group">
+                <label for="playerName">Nombre:</label>
+                <input type="text" id="playerName" placeholder="Nombre del jugador" required>
+            </div>
+            <div class="form-group">
+                <label for="playerHp">Puntos de Vida:</label>
+                <input type="number" id="playerHp" value="20" min="1" required>
+            </div>
+            <div class="form-group">
+                <label for="playerGradient">Color:</label>
+                <select id="playerGradient">
+                    <option value="red-orange">Rojo-Naranja</option>
+                    <option value="green-brown">Verde-Marrón</option>
+                    <option value="turquoise-blue">Turquesa-Azul</option>
+                    <option value="violet-pink">Violeta-Rosa</option>
+                    <option value="gold-bronze">Oro-Bronce</option>
+                    <option value="silver-grey">Plata-Gris</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button id="savePlayer" class="save-btn">Guardar</button>
+                <button id="cancelPlayer" class="cancel-btn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Estadísticas -->
+    <div class="stats-modal" id="statsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Estadísticas de Tirada</h3>
+                <button class="close-modal" id="closeStatsModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="statsContent">
+                    <!-- Contenido de estadísticas -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 RPG Dice & Life Counter - Sistema Completo</p>
+        <p>Desarrollado por <a href="https://github.com/RoMa-88/portfolio-personal#contact" target="_blank" class="author-link">Marc RoMa-88</a> - Herramienta de Rol Avanzada</p>
+    </footer>
+
+    <!-- Scripts del Sistema -->
+    <script src="js/storage.js"></script>
+    <script src="js/dice-core.js"></script>
+    <script src="js/dice-3d.js"></script>
+    <script src="js/players.js"></script>
+    <script src="js/rpg-system.js"></script>
+</body>
+</html>

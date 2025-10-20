@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎲 Cubo de Rubik 3D - Marc RoMa-88</title>
+    <style>
+        :root {
+            --background-color: #1a1a2e;
+            --card-background: #16213e;
+            --text-color: #e0e0e0;
+            --secondary-text-color: #a0a0a0;
+            --accent-color: #8b5cf6;
+            --secondary-accent-color: #f59e0b;
+            --border-color: #0f3460;
+            --input-background: #0f3460;
+            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--background-color) 0%, var(--card-background) 100%);
+            color: var(--text-color);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .game-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(22, 33, 62, 0.95);
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 2px solid var(--accent-color);
+            z-index: 100;
+        }
+
+        .header h1 {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+        }
+
+        .header p {
+            color: var(--secondary-text-color);
+            font-size: 1rem;
+        }
+
+        .controls {
+            position: absolute;
+            top: 120px;
+            left: 20px;
+            background: rgba(22, 33, 62, 0.9);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 2px solid var(--secondary-accent-color);
+            z-index: 100;
+            min-width: 200px;
+        }
+
+        .controls h3 {
+            color: var(--secondary-accent-color);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-group label {
+            display: block;
+            color: var(--secondary-text-color);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin: 0.2rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--secondary-accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-small {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+            width: auto;
+            margin: 0.1rem;
+        }
+
+        .info {
+            position: absolute;
+            top: 120px;
+            right: 20px;
+            background: rgba(22, 33, 62, 0.9);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 2px solid var(--accent-color);
+            z-index: 100;
+            max-width: 250px;
+        }
+
+        .info h3 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .info p {
+            color: var(--secondary-text-color);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .canvas-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 200;
+        }
+
+        .loading h2 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .loading p {
+            color: var(--secondary-text-color);
+        }
+
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--accent-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .color-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .color-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .color-btn.active {
+            border-color: var(--secondary-accent-color);
+            transform: scale(1.2);
+        }
+
+        .author-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .author-link:hover {
+            color: #00d4ff;
+            border-bottom-color: #00d4ff;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .controls, .info {
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                margin: 1rem;
+                max-width: none;
+            }
+
+            .header h1 {
+                font-size: 1.4rem;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🎲 Cubo de Rubik 3D</h1>
+            <p>Simulación interactiva con Three.js - Desarrollado por <a href="https://github.com/RoMa-88/portfolio-personal#contact" target="_blank" class="author-link">Marc RoMa-88</a></p>
+        </div>
+
+        <div class="controls">
+            <h3>🎮 Controles</h3>
+            
+            <div class="control-group">
+                <label>Rotación Automática:</label>
+                <button class="btn btn-small" onclick="toggleAutoRotate()">🔄 Toggle</button>
+            </div>
+
+            <div class="control-group">
+                <label>Reset Posición:</label>
+                <button class="btn btn-small" onclick="resetCube()">🔄 Reset</button>
+            </div>
+
+            <div class="control-group">
+                <label>Rotación Manual:</label>
+                <button class="btn btn-small" onclick="rotateX()">↕️ Rotar X</button>
+                <button class="btn btn-small" onclick="rotateY()">↔️ Rotar Y</button>
+                <button class="btn btn-small" onclick="rotateZ()">🔄 Rotar Z</button>
+            </div>
+
+            <div class="control-group">
+                <label>Zoom:</label>
+                <button class="btn btn-small" onclick="zoomIn()">🔍+ Zoom In</button>
+                <button class="btn btn-small" onclick="zoomOut()">🔍- Zoom Out</button>
+            </div>
+
+            <div class="control-group">
+                <label>Colores:</label>
+                <div class="color-selector">
+                    <div class="color-btn" style="background: #ff0000;" onclick="setCubeColor(0xff0000)" title="Rojo"></div>
+                    <div class="color-btn" style="background: #00ff00;" onclick="setCubeColor(0x00ff00)" title="Verde"></div>
+                    <div class="color-btn" style="background: #0000ff;" onclick="setCubeColor(0x0000ff)" title="Azul"></div>
+                    <div class="color-btn" style="background: #ffff00;" onclick="setCubeColor(0xffff00)" title="Amarillo"></div>
+                    <div class="color-btn" style="background: #ff8000;" onclick="setCubeColor(0xff8000)" title="Naranja"></div>
+                    <div class="color-btn" style="background: #ffffff;" onclick="setCubeColor(0xffffff)" title="Blanco"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info">
+            <h3>ℹ️ Información</h3>
+            <p><strong>🎮 Controles:</strong></p>
+            <p>• Mouse: Rotar cámara</p>
+            <p>• Rueda: Zoom</p>
+            <p>• Botones: Rotaciones específicas</p>
+            <p><strong>🎯 Objetivo:</strong></p>
+            <p>Simulación 3D del cubo de Rubik con física realista y animaciones suaves.</p>
+        </div>
+
+        <div class="canvas-container">
+            <div class="loading" id="loading">
+                <h2>🎲 Cargando Cubo de Rubik...</h2>
+                <div class="spinner"></div>
+                <p>Inicializando Three.js y geometría 3D</p>
+            </div>
+            <canvas id="gameCanvas"></canvas>
+        </div>
+    </div>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        // Variables globales
+        let scene, camera, renderer, controls;
+        let cube, cubeMesh;
+        let autoRotate = true;
+        let currentColor = 0x6699ff;
+        let animationId;
+
+        // Classe Game: crea escena, càmera i renderer. Manté un "world" simple.
+        class Game {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                // Escena i fons
+                this.scene = new THREE.Scene();
+                this.scene.background = new THREE.Color(0x0d0d0f); // fons fosc estil metal
+
+                // Càmera
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                this.camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 100);
+                this.camera.position.set(2, 1.2, 3); // (CAT) punt de vista inicial
+                this.camera.lookAt(0, 0, 0);
+
+                // Renderer (canvas)
+                this.renderer = new THREE.WebGLRenderer({ 
+                    antialias: true, 
+                    canvas: document.getElementById('gameCanvas'),
+                    alpha: true 
+                });
+                this.renderer.setSize(w, h);
+                this.renderer.shadowMap.enabled = true;
+                this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+                // Llum bàsica
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+                this.scene.add(ambientLight);
+
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+                directionalLight.position.set(5, 5, 5);
+                directionalLight.castShadow = true;
+                this.scene.add(directionalLight);
+
+                // Controls
+                this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+                this.controls.enableDamping = true;
+                this.controls.dampingFactor = 0.05;
+                this.controls.autoRotate = true;
+                this.controls.autoRotateSpeed = 1.0;
+
+                // "world" perquè altres classes puguin accedir a l'escena
+                this.world = { scene: this.scene };
+
+                // (CAT) Gestió de resize
+                window.addEventListener('resize', () => {
+                    this.camera.aspect = window.innerWidth / window.innerHeight;
+                    this.camera.updateProjectionMatrix();
+                    this.renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+
+                // Asignar a variables globales
+                scene = this.scene;
+                camera = this.camera;
+                renderer = this.renderer;
+                controls = this.controls;
+            }
+
+            // (CAT) Bucle d'animació (game loop) senzill
+            start() {
+                this.clock = new THREE.Clock();
+                const tick = () => {
+                    const dt = this.clock.getDelta(); // (CAT) temps entre frames
+                    this.controls.update();
+                    
+                    if (this.update) this.update(dt); // (CAT) hook per actualitzacions del joc
+                    this.renderer.render(this.scene, this.camera);
+                    animationId = requestAnimationFrame(tick);
+                };
+                tick();
+            }
+        }
+
+        // Classe Cube: contenidor amb 3 pivots per separar posició (holder), animació (animator)
+        // i el contingut real (object). Després hi afegirem peces/arestes/rounding.
+        class Cube {
+            constructor(game, opts = {}) {
+                this.game = game;
+
+                // (CAT) Paràmetres geomètrics inicials (encara no tots aplicats)
+                this.geometry = {
+                    pieceCornerRadius: 0.13,
+                    edgeCornerRoundness: 0.15,
+                    edgeScale: 0.82,
+                    edgeDepth: 0.01,
+                    size: 1.0,
+                    ...(opts.geometry || {})
+                };
+
+                // (CAT) Pivots: "holder" (traslació global) → "animator" (rotacions) → "object" (malla)
+                this.holder = new THREE.Object3D();
+                this.animator = new THREE.Object3D();
+                this.object = new THREE.Object3D();
+
+                this.holder.add(this.animator);
+                this.animator.add(this.object);
+                this.game.world.scene.add(this.holder);
+
+                console.log('[Cube] init', this.geometry);
+            }
+
+            buildRubikCube() {
+                // Crear 27 cubos pequeños (3x3x3)
+                const cubeSize = this.geometry.size / 3;
+                const spacing = this.geometry.size / 3;
+                const startPos = -this.geometry.size / 2 + cubeSize / 2;
+
+                // Colores del cubo de Rubik
+                const colors = [
+                    0xff0000, // Rojo
+                    0x00ff00, // Verde  
+                    0x0000ff, // Azul
+                    0xffff00, // Amarillo
+                    0xff8000, // Naranja
+                    0xffffff  // Blanco
+                ];
+
+                // Geometría base para cada cubo pequeño
+                const geometry = new THREE.BoxGeometry(cubeSize * 0.9, cubeSize * 0.9, cubeSize * 0.9);
+                
+                for (let x = 0; x < 3; x++) {
+                    for (let y = 0; y < 3; y++) {
+                        for (let z = 0; z < 3; z++) {
+                            // Material con colores diferentes para cada cara
+                            const materials = [
+                                new THREE.MeshLambertMaterial({ color: colors[0] }), // Derecha (Rojo)
+                                new THREE.MeshLambertMaterial({ color: colors[1] }), // Izquierda (Verde)
+                                new THREE.MeshLambertMaterial({ color: colors[2] }), // Arriba (Azul)
+                                new THREE.MeshLambertMaterial({ color: colors[3] }), // Abajo (Amarillo)
+                                new THREE.MeshLambertMaterial({ color: colors[4] }), // Frente (Naranja)
+                                new THREE.MeshLambertMaterial({ color: colors[5] })  // Atrás (Blanco)
+                            ];
+
+                            const cube = new THREE.Mesh(geometry, materials);
+                            cube.position.set(
+                                startPos + x * spacing,
+                                startPos + y * spacing,
+                                startPos + z * spacing
+                            );
+                            cube.castShadow = true;
+                            cube.receiveShadow = true;
+
+                            this.object.add(cube);
+                        }
+                    }
+                }
+
+                console.log('[Cube] Rubik cube creado con 27 cubos pequeños');
+                return this;
+            }
+
+            buildDebugBox() {
+                // (CAT) Crea una caixa simple per validar el pipeline visual.
+                const s = this.geometry.size;
+                const geometry = new THREE.BoxGeometry(s, s, s);
+
+                const material = new THREE.MeshStandardMaterial({
+                    color: currentColor,
+                    metalness: 0.1,
+                    roughness: 0.6
+                });
+
+                this.mesh = new THREE.Mesh(geometry, material);
+                this.mesh.castShadow = true;
+                this.mesh.receiveShadow = true;
+                this.object.add(this.mesh);
+
+                console.log('[Cube] debug box creada');
+                return this;
+            }
+
+            // (CAT) Helpers fluides per col·locar el cub a l'escena
+            setPosition(x, y, z) { this.holder.position.set(x, y, z); return this; }
+            setRotation(x, y, z) { this.holder.rotation.set(x, y, z); return this; }
+            setScale(x, y = x, z = x) { this.holder.scale.set(x, y, z); return this; }
+
+            update(dt) {
+                // (CAT) Exemple: animació suau de rotació al voltant de Y
+                if (autoRotate) {
+                    this.animator.rotation.y += dt * 0.5;
+                }
+            }
+        }
+
+        // Funciones de control
+        function toggleAutoRotate() {
+            autoRotate = !autoRotate;
+            controls.autoRotate = autoRotate;
+            console.log('Auto-rotación:', autoRotate ? 'Activada' : 'Desactivada');
+        }
+
+        function resetCube() {
+            if (cube) {
+                cube.holder.rotation.set(0, 0, 0);
+                cube.animator.rotation.set(0, 0, 0);
+            }
+            controls.reset();
+            console.log('Cubo reseteado');
+        }
+
+        function rotateX() {
+            if (cube) {
+                cube.animator.rotation.x += Math.PI / 4;
+            }
+        }
+
+        function rotateY() {
+            if (cube) {
+                cube.animator.rotation.y += Math.PI / 4;
+            }
+        }
+
+        function rotateZ() {
+            if (cube) {
+                cube.animator.rotation.z += Math.PI / 4;
+            }
+        }
+
+        function zoomIn() {
+            camera.position.multiplyScalar(0.9);
+            controls.update();
+        }
+
+        function zoomOut() {
+            camera.position.multiplyScalar(1.1);
+            controls.update();
+        }
+
+        function setCubeColor(color) {
+            currentColor = color;
+            if (cube && cube.mesh) {
+                cube.mesh.material.color.setHex(color);
+            }
+            
+            // Actualizar botones de color
+            document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Inicialización del juego
+        function initGame() {
+            try {
+                // Ocultar loading
+                document.getElementById('loading').style.display = 'none';
+
+                // Crear juego
+                const game = new Game();
+                
+                // Crear cubo de Rubik
+                cube = new Cube(game, { geometry: { size: 2.0 } });
+                cube.buildRubikCube().setPosition(0, 0, 0);
+
+                // Configurar update loop
+                game.update = (dt) => {
+                    cube.update(dt);
+                };
+
+                // Iniciar bucle de animación
+                game.start();
+
+                console.log('🎲 Juego del Cubo de Rubik inicializado correctamente');
+            } catch (error) {
+                console.error('Error al inicializar el juego:', error);
+                document.getElementById('loading').innerHTML = `
+                    <h2>❌ Error al cargar</h2>
+                    <p>No se pudo inicializar Three.js</p>
+                    <p>Verifica tu conexión a internet</p>
+                `;
+            }
+        }
+
+        // Inicializar cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simular carga
+            setTimeout(initGame, 1000);
+        });
+    </script>
+</body>
+</html>

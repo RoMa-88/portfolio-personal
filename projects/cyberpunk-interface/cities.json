@@ -1,0 +1,182 @@
+[
+    {
+        "id": 1,
+        "name": "Night City",
+        "lat": 37.7749,
+        "lng": -122.4194,
+        "location": "Costa Oeste, California, EE.UU.",
+        "created": "1988",
+        "year_fiction": "2077",
+        "source": {
+            "type": "Videojuego / Rol",
+            "firstAppearance": "Cyberpunk 2020 (juego de rol, 1988)",
+            "otherAppearances": [
+                "Cyberpunk 2077 (videojuego, 2020)",
+                "Cyberpunk: Edgerunners (anime, 2022)"
+            ],
+            "description": "Metrópolis corporativa donde la tecnología y la humanidad se fusionan en un mundo de implantes cibernéticos y violencia urbana."
+        },
+        "tags": [
+            "Corporaciones",
+            "Implantes",
+            "Violencia urbana",
+            "Neon"
+        ],
+        "image": "images/night-city.jpg",
+        "backImage": "images/night-cityCyberpunk2077.jpg",
+        "globePosition": {
+            "x": "65%",
+            "y": "35%"
+        }
+    },
+    {
+        "id": 2,
+        "name": "Chiba City",
+        "lat": 35.6073,
+        "lng": 140.1063,
+        "location": "Japón",
+        "created": "1984",
+        "year_fiction": "2050",
+        "source": {
+            "type": "Novela",
+            "firstAppearance": "Neuromante, William Gibson (1984)",
+            "otherAppearances": [
+                "Trilogía del Sprawl",
+                "Johnny Mnemonic (película, 1995)"
+            ],
+            "description": "Centro de clínicas clandestinas y tecnología cibernética, donde los implantes son tan comunes como el aire que respiras."
+        },
+        "tags": [
+            "Ciberimplantes",
+            "Clínicas clandestinas",
+            "Alta tecnología",
+            "Ciberespacio"
+        ],
+        "image": "images/chibi-cityNeuromancer.jpg",
+        "backImage": "images/chibi-cityNeuromancer.jpg",
+        "globePosition": {
+            "x": "78%",
+            "y": "38%"
+        }
+    },
+    {
+        "id": 3,
+        "name": "Neo-Tokyo",
+        "lat": 35.6895,
+        "lng": 139.6917,
+        "location": "Japón (sobre las ruinas de Tokio)",
+        "created": "1982",
+        "year_fiction": "2019",
+        "source": {
+            "type": "Manga / Anime",
+            "firstAppearance": "Akira (manga, 1982)",
+            "otherAppearances": [
+                "Akira (película, 1988)",
+                "Akira (anime, 2021)"
+            ],
+            "description": "Megalópolis post-apocalíptica donde la energía psíquica y la tecnología colisionan en un torbellino de destrucción y renacimiento."
+        },
+        "tags": [
+            "Megalópolis",
+            "Mutaciones",
+            "Violencia urbana",
+            "Poderes psíquicos"
+        ],
+        "image": "images/neo-tokyoAkira.jpg",
+        "backImage": "images/neo-tokyoAkira.jpg",
+        "globePosition": {
+            "x": "78%",
+            "y": "37%"
+        }
+    },
+    {
+        "id": 4,
+        "name": "Mega-City One",
+        "lat": 40.7128,
+        "lng": -74.006,
+        "location": "Costa Este, EE.UU.",
+        "created": "1977",
+        "year_fiction": "2080",
+        "source": {
+            "type": "Cómic",
+            "firstAppearance": "Judge Dredd (2000 AD, 1977)",
+            "otherAppearances": [
+                "Película: Dredd (2012)",
+                "Judge Dredd (1995)"
+            ],
+            "description": "Superciudad autoritaria donde los Jueces son ley, orden y ejecución en una sociedad superpoblada y violenta."
+        },
+        "tags": [
+            "Autoritarismo",
+            "Superpoblación",
+            "Justicia brutal",
+            "Post-apocalíptico"
+        ],
+        "image": "images/mega-city_oneDredd.jpg",
+        "backImage": "images/mega-city_oneDredd.jpg",
+        "globePosition": {
+            "x": "28%",
+            "y": "40%"
+        }
+    },
+    {
+        "id": 5,
+        "name": "Delta City",
+        "lat": 42.3314,
+        "lng": -83.0458,
+        "location": "Detroit, EE.UU.",
+        "created": "1987",
+        "year_fiction": "2030",
+        "source": {
+            "type": "Película",
+            "firstAppearance": "RoboCop (1987)",
+            "otherAppearances": [
+                "RoboCop: The Series (1994)",
+                "RoboCop (2014)"
+            ],
+            "description": "Utopía corporativa fallida donde la tecnología y la corrupción se mezclan, dando lugar a cyborgs policiales."
+        },
+        "tags": [
+            "Utopía fallida",
+            "Corrupción",
+            "Corporaciones",
+            "Cyborgs"
+        ],
+        "image": "images/delta_cityRobocop.jpg",
+        "backImage": "images/delta_cityRobocop.jpg",
+        "globePosition": {
+            "x": "30%",
+            "y": "42%"
+        }
+    },
+    {
+        "id": 6,
+        "name": "Olympus",
+        "lat": 37.9838,
+        "lng": 23.7275,
+        "location": "Grecia (ciudad ficticia inspirada en Atenas)",
+        "created": "1985",
+        "year_fiction": "2130",
+        "source": {
+            "type": "Manga / Anime",
+            "firstAppearance": "Appleseed, Masamune Shirow (1985)",
+            "otherAppearances": [
+                "Película Appleseed (2004)",
+                "Appleseed Alpha (2014)"
+            ],
+            "description": "Tecnópolis utópica donde la inteligencia artificial y los humanos coexisten en una sociedad aparentemente perfecta."
+        },
+        "tags": [
+            "IA",
+            "Tecnocracia",
+            "Utopía distópica",
+            "Androides"
+        ],
+        "image": "images/Appelseed.jpg",
+        "backImage": "images/Appelseed.jpg",
+        "globePosition": {
+            "x": "52%",
+            "y": "45%"
+        }
+    }
+]
