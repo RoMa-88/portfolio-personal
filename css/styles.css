@@ -1399,10 +1399,66 @@ body {
     font-size: 0.9rem;
 }
 
-.training-table-wrapper { width: 100%; overflow-x: auto; }
-.training-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-.training-table th, .training-table td { border: 1px solid var(--border-color); padding: 0.5rem 0.75rem; }
-.training-table thead th { background: var(--bg-primary); color: var(--text-accent); text-align: left; }
+/* ===== TRAINING TABLES ===== */
+.training-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.training-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.training-table th,
+.training-table td {
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.75rem;
+}
+
+.training-table thead th {
+    background: var(--bg-primary);
+    color: var(--text-accent);
+    text-align: left;
+}
+
+.training-table tbody tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.training-table tbody tr.total td {
+    font-weight: 700;
+    color: var(--text-accent);
+}
+
+.training-table tbody tr.uf td {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+.training-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.training-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.training-table th,
+.training-table td {
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.75rem;
+}
+
+.training-table thead th {
+    background: var(--bg-primary);
+    color: var(--text-accent);
+    text-align: left;
+}
 
 /* ===== MODAL ===== */
 .modal {
