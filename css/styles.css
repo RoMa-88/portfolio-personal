@@ -575,6 +575,21 @@ body {
     gap: 2rem;
 }
 
+.about-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.badge-pill {
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+}
+
 .about-card {
     background: var(--bg-tertiary);
     padding: 2rem;
@@ -975,6 +990,89 @@ body {
 .skills {
     padding: 6rem 0;
     background: var(--bg-secondary);
+}
+
+.skills-stack {
+    display: grid;
+    gap: 2rem;
+}
+
+.skills-category {
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.skills-category-title {
+    color: var(--text-accent);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.tech-item {
+    display: grid;
+    justify-items: center;
+    gap: 0.4rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.tech-name {
+    font-weight: 600;
+}
+
+.tech-level {
+    font-size: 0.8rem;
+    color: var(--text-accent);
+}
+
+.tech-desc {
+    color: var(--text-secondary);
+}
+
+/* ===== SOFT SKILLS ===== */
+.soft-skills {
+    margin-top: 1rem;
+}
+
+.soft-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.soft-category {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+.soft-category h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-accent);
+}
+
+.soft-list {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: var(--text-secondary);
+}
+
+.soft-list li {
+    margin: 0.2rem 0;
 }
 
 /* ===== SKILLS LOGOS GRID ===== */

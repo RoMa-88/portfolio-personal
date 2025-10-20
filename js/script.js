@@ -620,9 +620,11 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.style.overflow = '';
     }
 
-    // Open from certificate cards
+    // Open from certificate cards (ignore clicks on links inside)
     document.querySelectorAll('.certificate-card').forEach(card => {
         card.addEventListener('click', () => {
+            const isInsideLink = window.event && (window.event.target.closest('a') !== null);
+            if (isInsideLink) return;
             const title = card.getAttribute('data-title') || 'Certificado';
             const pdf = card.getAttribute('data-pdf') || '';
             const img = card.querySelector('img');
