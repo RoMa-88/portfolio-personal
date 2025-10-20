@@ -1488,6 +1488,10 @@ body {
     border-radius: 12px;
     padding: 1.5rem;
     z-index: 1;
+    max-height: 85vh; /* permitir scroll interno */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .modal-close {
@@ -1512,6 +1516,8 @@ body {
     color: var(--text-secondary);
     display: grid;
     gap: 1rem;
+    overflow-y: auto; /* scroll del contenido */
+    max-height: calc(85vh - 120px);
 }
 
 .modal-logo {
