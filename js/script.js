@@ -651,6 +651,19 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             viewPdfBtn.style.display = 'none';
         }
+        // Insert optional template content
+        const body = modal.querySelector('.modal-body');
+        const existing = body.querySelector('.injected');
+        if (existing) existing.remove();
+        if (options?.templateId) {
+            const tpl = document.getElementById(options.templateId);
+            if (tpl && 'content' in tpl) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'injected';
+                wrapper.appendChild(tpl.content.cloneNode(true));
+                body.appendChild(wrapper);
+            }
+        }
         document.body.style.overflow = 'hidden';
     }
 
@@ -669,7 +682,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const title = card.getAttribute('data-title') || 'Certificado';
             const pdf = card.getAttribute('data-pdf') || '';
             const img = card.querySelector('img');
-            openModal({ title, pdf, logoSrc: img ? img.src : undefined });
+            const templateId = card.getAttribute('data-template') || '';
+            openModal({ title, pdf, logoSrc: img ? img.src : undefined, templateId });
         });
     });
 
